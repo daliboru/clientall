@@ -88,11 +88,7 @@ export const Users: CollectionConfig = {
         return true
       }
 
-      return {
-        id: {
-          equals: req.user.id,
-        },
-      }
+      return false
     },
     update: async ({ req }) => {
       if (!req.user) {

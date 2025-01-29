@@ -13,21 +13,22 @@ class AuthService {
         body: JSON.stringify(credentials),
       })
 
-      if (!result.ok) {
-        throw new Error('Login failed')
-      }
-
       const json = await result.json()
+
+      if (!result.ok) {
+        // Extract error message from the API response
+        const errorMessage = json.errors?.[0]?.message || 'Login failed'
+        throw new Error(errorMessage)
+      }
 
       return {
         user: json.user,
       }
     } catch (error) {
       if (error instanceof Error) {
-        throw new Error(`External login failed: ${error.message}`)
-      } else {
-        throw new Error('External login failed')
+        throw error
       }
+      throw new Error('An unexpected error occurred')
     }
   }
 
