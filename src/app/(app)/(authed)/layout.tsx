@@ -3,8 +3,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Inter as FontSans } from 'next/font/google'
 import { ReactNode } from 'react'
-import Nav from '../../../../components/Nav'
-import { cn } from '../../../../lib/utils'
+import Nav from '../../../components/Nav'
+import { cn } from '../../../lib/utils'
 
 const queryClient = new QueryClient()
 

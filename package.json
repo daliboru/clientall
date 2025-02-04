@@ -12,7 +12,9 @@
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation next lint",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
+    "migration:create": "npm run payload migrate:create $1",
+    "migration:up": "npm run payload migrate"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
@@ -20,6 +22,7 @@
     "@payloadcms/email-nodemailer": "^3.17.1",
     "@payloadcms/next": "latest",
     "@payloadcms/payload-cloud": "latest",
+    "@payloadcms/plugin-multi-tenant": "^3.20.0",
     "@payloadcms/richtext-lexical": "latest",
     "@radix-ui/react-avatar": "^1.1.2",
     "@radix-ui/react-label": "^2.1.1",

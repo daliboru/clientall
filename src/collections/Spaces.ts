@@ -27,6 +27,29 @@ export const Spaces: CollectionConfig = {
       relationTo: 'users',
       hasMany: true,
       required: true,
+      access: {
+        read: async ({ req: { user }, doc }) => {
+          if (!user) return false
+          if (user.role === 'admin') return true
+
+          if (doc) {
+            return doc.administrators.includes(user.id)
+          }
+        },
+        update: async ({ req: { user }, doc }) => {
+          if (!user) return false
+          if (user.role === 'admin') return true
+
+          // Check if user is the first administrator (owner)
+          if (doc) return doc.administrators[0] === user.id
+
+          return false
+        },
+        create: async ({ req: { user } }) => {
+          if (!user) return false
+          return user.role === 'admin' || user.role === 'customer'
+        },
+      },
       hooks: {
         afterChange: [
           async ({ req, value: newAdminIds, previousValue: oldAdminIds, originalDoc }) => {

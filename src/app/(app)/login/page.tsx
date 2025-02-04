@@ -3,11 +3,13 @@
 import { LoginForm } from '@/components/login-form'
 import { authService } from '@/lib/services/auth/authService'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const from = searchParams.get('from')
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -18,14 +20,15 @@ export default function LoginPage() {
           throw new Error('User not found')
         }
 
-        router.replace('/dashboard')
+        // Redirect to the original requested URL or dashboard
+        router.replace(from || '/dashboard')
       } catch (error) {
         // User is not logged in, stay on login page
       }
     }
 
     checkAuth()
-  }, [router])
+  }, [router, from])
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">

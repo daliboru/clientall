@@ -40,6 +40,10 @@ export const Users: CollectionConfig = {
       admin: {
         position: 'sidebar',
       },
+      access: {
+        create: ({ req: { user } }) => user?.role === 'admin',
+        update: ({ req: { user } }) => user?.role === 'admin',
+      },
     },
     {
       name: 'avatar',
@@ -73,9 +77,23 @@ export const Users: CollectionConfig = {
         return true
       }
 
+      const administratorIds = req.user.spaces
+        ?.flatMap((value) => {
+          if (typeof value === 'object' && 'administrators' in value) {
+            return value.administrators
+          }
+          return []
+        })
+        ?.map((value) => {
+          if (typeof value === 'object' && 'id' in value) {
+            return value.id
+          }
+          return value
+        })
+
       return {
         id: {
-          equals: req.user.id,
+          in: administratorIds,
         },
       }
     },

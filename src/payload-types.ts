@@ -123,7 +123,6 @@ export interface Space {
 export interface Note {
   id: number;
   content: string;
-  type: 'document' | 'task' | 'note';
   space: number | Space;
   createdBy?: (number | null) | User;
   updatedAt: string;
@@ -248,7 +247,6 @@ export interface SpacesSelect<T extends boolean = true> {
  */
 export interface NotesSelect<T extends boolean = true> {
   content?: T;
-  type?: T;
   space?: T;
   createdBy?: T;
   updatedAt?: T;

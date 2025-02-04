@@ -9,16 +9,6 @@ export const Notes: CollectionConfig = {
       required: true,
     },
     {
-      name: 'type',
-      type: 'select',
-      required: true,
-      options: [
-        { label: 'Document', value: 'document' },
-        { label: 'Task', value: 'task' },
-        { label: 'Note', value: 'note' },
-      ],
-    },
-    {
       name: 'space',
       type: 'relationship',
       relationTo: 'spaces',
