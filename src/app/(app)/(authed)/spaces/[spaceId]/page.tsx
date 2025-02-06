@@ -3,10 +3,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { asManyRel, isMediaRel } from '@/lib/payload-utils'
 import { Space, User } from '@/payload-types'
 import { useQuery } from '@tanstack/react-query'
+import { formatDistanceToNow } from 'date-fns'
 import { ChevronLeft } from 'lucide-react'
 import { notFound, useParams, useRouter } from 'next/navigation'
 
@@ -72,6 +74,8 @@ export default function SpacePage() {
         Back
       </Button>
       <h1 className="text-3xl font-bold">{space.name}</h1>
+
+      {/* About Card */}
       <Card>
         <CardHeader>
           <CardTitle>About this space</CardTitle>
@@ -81,23 +85,60 @@ export default function SpacePage() {
           <div>
             <h3 className="text-sm font-medium mb-2">Administrators</h3>
             <div className="flex flex-wrap gap-2">
-              {asManyRel<User>(space.administrators).map((admin) => (
+              {asManyRel<User>(space.administrators).map((user) => (
                 <div
-                  key={admin.id}
+                  key={user.id}
                   className="flex items-center gap-2 bg-muted px-3 py-1 rounded-full"
                 >
                   <Avatar className="h-6 w-6">
                     <AvatarImage
-                      src={isMediaRel(admin.avatar) ? admin.avatar.url : undefined}
-                      alt={admin.name}
+                      src={isMediaRel(user.avatar) ? user.avatar.url : undefined}
+                      alt={user.name}
                     />
-                    <AvatarFallback>{getInitials(admin.name)}</AvatarFallback>
+                    <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
                   </Avatar>
-                  <span className="text-sm">{admin.name}</span>
+                  <span className="text-sm">{user.name}</span>
                 </div>
               ))}
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Notes Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Notes</CardTitle>
+          <CardDescription>All notes in this space</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {asManyRel(space.relatedNotes?.docs).length === 0 ? (
+            <p className="text-sm text-muted-foreground">No notes yet</p>
+          ) : (
+            asManyRel(space.relatedNotes?.docs).map((note) => (
+              <div key={note.id} className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Avatar className="h-6 w-6">
+                    <AvatarImage
+                      src={
+                        isMediaRel(note.createdBy?.avatar) ? note.createdBy.avatar.url : undefined
+                      }
+                      alt={note.createdBy?.name}
+                    />
+                    <AvatarFallback>
+                      {note.createdBy?.name ? getInitials(note.createdBy.name) : '??'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm font-medium">{note.createdBy?.name}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {formatDistanceToNow(new Date(note.createdAt), { addSuffix: true })}
+                  </span>
+                </div>
+                <p className="text-sm">{note.content}</p>
+                <Separator />
+              </div>
+            ))
+          )}
         </CardContent>
       </Card>
     </div>

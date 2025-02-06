@@ -19,7 +19,11 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    spaces: {
+      relatedNotes: 'notes';
+    };
+  };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -112,6 +116,10 @@ export interface Space {
   id: number;
   name: string;
   description: string;
+  relatedNotes?: {
+    docs?: (number | Note)[] | null;
+    hasNextPage?: boolean | null;
+  } | null;
   administrators: (number | User)[];
   updatedAt: string;
   createdAt: string;
@@ -237,6 +245,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface SpacesSelect<T extends boolean = true> {
   name?: T;
   description?: T;
+  relatedNotes?: T;
   administrators?: T;
   updatedAt?: T;
   createdAt?: T;

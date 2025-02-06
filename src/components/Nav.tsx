@@ -1,10 +1,10 @@
 'use client'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useCurrentUser } from '@/hooks/useCurrentUser'
+import { useLogout } from '@/hooks/useLogout'
+import { isMediaRel } from '@/lib/payload-utils'
 import React from 'react'
-import { useCurrentUser } from '../hooks/useCurrentUser'
-import { useLogout } from '../hooks/useLogout'
-import { isMediaRel } from '../lib/payload-utils'
 import { Button } from './ui/button'
 import { Skeleton } from './ui/skeleton'
 
@@ -37,7 +37,7 @@ const Nav: React.FC = () => {
             <Avatar className="h-8 w-8 border-2 border-white/20">
               <AvatarImage
                 src={isMediaRel(user?.avatar) ? user.avatar.url : undefined}
-                alt={user?.name || ''}
+                alt={user?.name}
               />
               <AvatarFallback className="bg-purple-700 text-white">
                 {user?.name ? getInitials(user.name) : '??'}

@@ -91,6 +91,14 @@ export const Users: CollectionConfig = {
           return value
         })
 
+      if (!administratorIds?.length) {
+        return {
+          id: {
+            equals: req.user.id,
+          },
+        }
+      }
+
       return {
         id: {
           in: administratorIds,

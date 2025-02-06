@@ -3,11 +3,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { asManyRel, isMediaRel } from '@/lib/payload-utils'
+import { Space, User } from '@/payload-types'
 import { useRouter } from 'next/navigation'
 import React from 'react'
-import { useCurrentUser } from '../../../../hooks/useCurrentUser'
-import { Space, User } from '../../../../payload-types'
 
 const Dashboard: React.FC = () => {
   const router = useRouter()

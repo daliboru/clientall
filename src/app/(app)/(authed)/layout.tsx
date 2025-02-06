@@ -6,7 +6,15 @@ import { ReactNode } from 'react'
 import Nav from '../../../components/Nav'
 import { cn } from '../../../lib/utils'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+    },
+  },
+})
 
 type LayoutProps = {
   children: ReactNode
