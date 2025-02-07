@@ -52,19 +52,12 @@ export const Users: CollectionConfig = {
       relationTo: 'media',
     },
     {
-      name: 'spaces',
-      type: 'relationship',
+      name: 'relatedSpaces',
+      type: 'join',
+      collection: 'spaces',
+      on: 'administrators',
+      maxDepth: 2,
       hasMany: true,
-      relationTo: 'spaces',
-      defaultValue: [],
-      admin: {
-        readOnly: true, // This field should only be modified through the Space collection
-        description: 'Spaces are automatically assigned when added as an administrator',
-      },
-      access: {
-        create: ({ req: { user } }) => user?.role === 'admin' || user?.role === 'customer',
-        update: ({ req: { user } }) => user?.role === 'admin' || user?.role === 'customer',
-      },
     },
   ],
   access: {
@@ -77,7 +70,7 @@ export const Users: CollectionConfig = {
         return true
       }
 
-      const administratorIds = req.user.spaces
+      const administratorIds = req.user.relatedSpaces?.docs
         ?.flatMap((value) => {
           if (typeof value === 'object' && 'administrators' in value) {
             return value.administrators

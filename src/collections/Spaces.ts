@@ -25,7 +25,6 @@ export const Spaces: CollectionConfig = {
       type: 'join',
       on: 'space',
       collection: 'notes',
-      maxDepth: 2,
     },
     {
       name: 'administrators',
@@ -33,7 +32,7 @@ export const Spaces: CollectionConfig = {
       relationTo: 'users',
       hasMany: true,
       required: true,
-      maxDepth: 1,
+      maxDepth: 2,
       access: {
         update: async ({ req: { user }, doc }) => {
           if (!user) return false

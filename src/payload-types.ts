@@ -20,6 +20,9 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
+    users: {
+      relatedSpaces: 'spaces';
+    };
     spaces: {
       relatedNotes: 'notes';
     };
@@ -74,10 +77,10 @@ export interface User {
   name: string;
   role: 'client' | 'admin' | 'customer';
   avatar?: (number | null) | Media;
-  /**
-   * Spaces are automatically assigned when added as an administrator
-   */
-  spaces?: (number | Space)[] | null;
+  relatedSpaces?: {
+    docs?: (number | Space)[] | null;
+    hasNextPage?: boolean | null;
+  } | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -209,7 +212,7 @@ export interface UsersSelect<T extends boolean = true> {
   name?: T;
   role?: T;
   avatar?: T;
-  spaces?: T;
+  relatedSpaces?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

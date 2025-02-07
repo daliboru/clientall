@@ -48,7 +48,7 @@ const Dashboard: React.FC = () => {
                 </CardFooter>
               </Card>
             ))
-          : asManyRel<Space>(user?.spaces).map((space) => (
+          : asManyRel<Space>(user?.relatedSpaces?.docs).map((space) => (
               <Card
                 key={space.id}
                 className="cursor-pointer hover:bg-muted/50 transition-colors"
@@ -82,7 +82,7 @@ const Dashboard: React.FC = () => {
                 </CardFooter>
               </Card>
             ))}
-        {!isLoading && (user?.spaces?.length ?? 0) === 0 && (
+        {!isLoading && (user?.relatedSpaces?.docs?.length ?? 0) === 0 && (
           <p className="text-muted-foreground col-span-full text-center py-8">
             No spaces found. Create your first space to get started.
           </p>

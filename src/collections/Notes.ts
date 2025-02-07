@@ -61,7 +61,8 @@ export const Notes: CollectionConfig = {
 
       // Extract space IDs from user's spaces array
       const spaceIds =
-        user.spaces?.map((space) => (typeof space === 'object' ? space.id : space)) || []
+        user.relatedSpaces?.docs?.map((space) => (typeof space === 'object' ? space.id : space)) ||
+        []
 
       return {
         space: {
@@ -70,43 +71,4 @@ export const Notes: CollectionConfig = {
       }
     },
   },
-  // endpoints: [
-  //   {
-  //     path: 'spaces/:id/notes',
-  //     method: 'get',
-  //     handler: async ({ query, payload, user }) => {
-  //       const spaceId = query.id as string
-
-  //       if (!user) {
-  //         return Response.json({ error: 'You must be logged in to view notes' }, { status: 401 })
-  //       }
-
-  //       try {
-  //         const space = await payload.findByID({
-  //           collection: 'spaces',
-  //           id: spaceId,
-  //         })
-
-  //         if (!space.administrators.includes(user.id)) {
-  //           return Response.json({ error: 'You do not have access to this space' }, { status: 403 })
-  //         }
-
-  //         // Get resources
-  //         const resources = await payload.find({
-  //           collection: 'notes',
-  //           where: {
-  //             space: {
-  //               equals: spaceId,
-  //             },
-  //           },
-  //           sort: '-createdAt',
-  //         })
-
-  //         return Response.json(resources)
-  //       } catch (_error) {
-  //         return Response.json({ error: 'Space not found' }, { status: 404 })
-  //       }
-  //     },
-  //   },
-  // ],
 }
