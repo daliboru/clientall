@@ -4,36 +4,16 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useSpace } from '@/hooks/useSpace'
 import { asManyRel, isMediaRel } from '@/lib/payload-utils'
-import { Space, User } from '@/payload-types'
-import { useQuery } from '@tanstack/react-query'
+import { getInitials } from '@/lib/utils'
+import { User } from '@/payload-types'
 import { PlusCircle } from 'lucide-react'
-import { notFound, useParams } from 'next/navigation'
+import { useParams } from 'next/navigation'
 
 export default function SpaceMembersPage() {
   const params = useParams<{ spaceId: string }>()
-
-  const { data: space, isLoading } = useQuery<Space>({
-    queryKey: ['space', params.spaceId],
-    queryFn: async () => {
-      const response = await fetch(`/api/spaces/${params.spaceId}`)
-      if (!response.ok) {
-        if (response.status === 404) {
-          notFound()
-        }
-        throw new Error('Failed to fetch space')
-      }
-      return response.json()
-    },
-  })
-
-  const getInitials = (name: string) => {
-    const names = name.split(' ')
-    if (names.length >= 2) {
-      return `${names[0][0]}${names[1][0]}`.toUpperCase()
-    }
-    return name.slice(0, 2).toUpperCase()
-  }
+  const { data: space, isLoading } = useSpace(params.spaceId)
 
   if (isLoading) {
     return (

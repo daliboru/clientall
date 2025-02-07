@@ -6,26 +6,12 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
-import { Space } from '@/payload-types'
-import { useQuery } from '@tanstack/react-query'
-import { notFound, useParams } from 'next/navigation'
+import { useSpace } from '@/hooks/useSpace'
+import { useParams } from 'next/navigation'
 
 export default function SpaceSettingsPage() {
   const params = useParams<{ spaceId: string }>()
-
-  const { data: space, isLoading } = useQuery<Space>({
-    queryKey: ['space', params.spaceId],
-    queryFn: async () => {
-      const response = await fetch(`/api/spaces/${params.spaceId}`)
-      if (!response.ok) {
-        if (response.status === 404) {
-          notFound()
-        }
-        throw new Error('Failed to fetch space')
-      }
-      return response.json()
-    },
-  })
+  const { data: space, isLoading } = useSpace(params.spaceId)
 
   if (isLoading) {
     return (
