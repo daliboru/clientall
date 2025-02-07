@@ -1,10 +1,11 @@
 'use client'
 
+import Nav from '@/components/Nav'
+import { Toaster } from '@/components/ui/toaster'
+import { cn } from '@/lib/utils'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Inter as FontSans } from 'next/font/google'
 import { ReactNode } from 'react'
-import Nav from '../../../components/Nav'
-import { cn } from '../../../lib/utils'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,6 +35,7 @@ const Layout = ({ children }: LayoutProps) => {
           <div className="w-full max-w-7xl px-6 mt-4">{children}</div>
         </div>
       </div>
+      <Toaster />
     </QueryClientProvider>
   )
 }

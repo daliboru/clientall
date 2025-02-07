@@ -4,8 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { asManyRel, isMediaRel } from '@/lib/payload-utils'
-import { Space, User } from '@/payload-types'
 import { getInitials } from '@/lib/utils'
+import { Space, User } from '@/payload-types'
 
 interface AboutCardProps {
   space: Space
@@ -39,14 +39,17 @@ export function AboutCard({ space, isLoading }: AboutCardProps) {
     <Card>
       <CardHeader>
         <CardTitle>About this space</CardTitle>
-        <CardDescription>{space.description}</CardDescription>
+        <CardDescription className="whitespace-pre-line">{space.description}</CardDescription>
       </CardHeader>
       <CardContent>
         <div>
           <h3 className="text-sm font-medium mb-2">Administrators</h3>
           <div className="flex flex-wrap gap-2">
             {asManyRel<User>(space.administrators).map((user) => (
-              <div key={user.id} className="flex items-center gap-2 bg-muted px-3 py-1 rounded-full">
+              <div
+                key={user.id}
+                className="flex items-center gap-2 bg-muted px-3 py-1 rounded-full"
+              >
                 <Avatar className="h-6 w-6">
                   <AvatarImage
                     src={isMediaRel(user.avatar) ? user.avatar.url : undefined}

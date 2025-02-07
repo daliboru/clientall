@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -11,6 +12,7 @@ interface SpaceNavProps {
 
 export default function SpaceNav({ spaceId }: SpaceNavProps) {
   const pathname = usePathname()
+  const { data: user } = useCurrentUser()
 
   const navItems = [
     {
@@ -24,12 +26,17 @@ export default function SpaceNav({ spaceId }: SpaceNavProps) {
     {
       name: 'Settings',
       path: `/spaces/${spaceId}/settings`,
+      roles: ['admin', 'customer'],
     },
   ]
 
+  const filteredNavItems = navItems.filter(
+    (item) => !item.roles || (user?.role && item.roles.includes(user.role)),
+  )
+
   return (
     <nav className="flex gap-2 border-b">
-      {navItems.map((item) => (
+      {filteredNavItems.map((item) => (
         <Link key={item.path} href={item.path}>
           <Button
             variant="ghost"
