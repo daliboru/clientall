@@ -27,16 +27,6 @@ export const Spaces: CollectionConfig = {
       collection: 'notes',
       maxDepth: 2,
     },
-    // {
-    //   name: 'notes',
-    //   type: 'relationship',
-    //   relationTo: 'notes',
-    //   hasMany: true,
-    //   admin: {
-    //     readOnly: true,
-    //     description: 'Notes associated with this space',
-    //   },
-    // },
     {
       name: 'administrators',
       type: 'relationship',
