@@ -1,4 +1,6 @@
 import type { CollectionConfig } from 'payload'
+import { asManyRel } from '../lib/payload-utils'
+import { User } from '../payload-types'
 
 export const Spaces: CollectionConfig = {
   slug: 'spaces',
@@ -36,10 +38,15 @@ export const Spaces: CollectionConfig = {
       access: {
         update: async ({ req: { user }, doc }) => {
           if (!user) return false
+
+          // Admin can update any space
           if (user.role === 'admin') return true
 
-          // Check if user is the first administrator (owner)
-          if (doc) return doc.administrators[0] === user.id
+          if (doc && Array.isArray(doc.administrators)) {
+            return asManyRel<User>(doc.administrators)
+              .filter((user) => user.role === 'customer')
+              .some((admin) => admin.id === user.id)
+          }
 
           return false
         },
