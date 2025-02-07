@@ -3,9 +3,10 @@ import { NextResponse } from 'next/server'
 
 export function middleware(request: NextRequest) {
   // Check if the route is under the (authed) group
-  if (request.nextUrl.pathname.startsWith('/spaces') || 
-      request.nextUrl.pathname.startsWith('/dashboard')) {
-    
+  if (
+    request.nextUrl.pathname.startsWith('/spaces') ||
+    request.nextUrl.pathname.startsWith('/dashboard')
+  ) {
     const isAuthenticated = request.cookies.has('payload-token')
 
     if (!isAuthenticated) {
@@ -19,5 +20,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/spaces/:path*']
+  matcher: ['/dashboard/:path*', '/spaces/:path*'],
 }
