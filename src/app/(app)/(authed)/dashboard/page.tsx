@@ -4,14 +4,16 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
+import { useSpaces } from '@/hooks/useSpaces'
 import { asManyRel, isMediaRel } from '@/lib/payload-utils'
-import { Space, User } from '@/payload-types'
+import { User } from '@/payload-types'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 
 const Dashboard: React.FC = () => {
   const router = useRouter()
-  const { data: user, isLoading } = useCurrentUser()
+  const { data: user, isLoading: isUserLoading } = useCurrentUser()
+  const { data: spaces, isLoading: isSpacesLoading } = useSpaces(user?.id)
 
   const handleSpaceClick = (spaceId: number) => {
     router.push(`/spaces/${spaceId}`)
@@ -24,6 +26,8 @@ const Dashboard: React.FC = () => {
     }
     return name.slice(0, 2).toUpperCase()
   }
+
+  const isLoading = isUserLoading || isSpacesLoading
 
   return (
     <>
@@ -48,7 +52,7 @@ const Dashboard: React.FC = () => {
                 </CardFooter>
               </Card>
             ))
-          : asManyRel<Space>(user?.relatedSpaces?.docs).map((space) => (
+          : spaces?.docs.map((space) => (
               <Card
                 key={space.id}
                 className="cursor-pointer hover:bg-muted/50 transition-colors"

@@ -31,7 +31,6 @@ export function useUpdateSpace(spaceId: string) {
       return response.json()
     },
     onSuccess: (response: SpaceResponse) => {
-      // Update the cache with the doc property from the response
       queryClient.setQueryData(['space', spaceId], response.doc)
     },
   })

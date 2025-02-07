@@ -34,6 +34,7 @@ export default function SpaceSettingsPage() {
         toast({
           title: 'Settings updated',
           description: 'Your space settings have been updated successfully.',
+          variant: 'success',
         })
       },
       onError: () => {
