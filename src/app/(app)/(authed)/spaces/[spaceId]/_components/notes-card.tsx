@@ -3,6 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useAddNote } from '@/hooks/useAddNote'
 import { isMediaRel, isRel } from '@/lib/payload-utils'
 import { getInitials } from '@/lib/utils'
@@ -45,7 +46,19 @@ export function NotesCard({ notes, isLoading }: NotesCardProps) {
         <AddNoteDialog onSubmit={handleAddNote} isSubmitting={isPending} />
       </CardHeader>
       <CardContent className="space-y-4">
-        {!notes?.docs.length ? (
+        {isLoading ? (
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-6 w-6 rounded-full" />
+                <Skeleton className="h-4 w-[100px]" />
+                <Skeleton className="h-4 w-[80px]" />
+              </div>
+              <Skeleton className="h-4 w-full" />
+              <Separator />
+            </div>
+          ))
+        ) : !notes?.docs.length ? (
           <p className="text-sm text-muted-foreground">No notes yet</p>
         ) : (
           notes.docs.map((note) => {
