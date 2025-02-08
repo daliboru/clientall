@@ -71,7 +71,6 @@ export default function SpaceSettingsPage() {
   }
 
   if (!space) return null
-  console.log(space)
 
   return (
     <>
