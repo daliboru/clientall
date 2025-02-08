@@ -18,6 +18,18 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   debug: process.env.NODE_ENV === 'development',
+  cors: {
+    origins: ['http://localhost:3000', process.env.NEXT_PUBLIC_SERVER_URL!].filter(Boolean),
+    headers: [
+      'Content-Type',
+      'Authorization',
+      'Content-Length',
+      'X-Requested-With',
+      'Accept',
+      'Origin',
+      'Cache-Control',
+    ],
+  },
   admin: {
     user: Users.slug,
     importMap: {
