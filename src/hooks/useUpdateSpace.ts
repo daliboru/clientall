@@ -1,5 +1,6 @@
 import { Space } from '@/payload-types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from './use-toast'
 
 interface UpdateSpaceData {
   name: string
@@ -32,6 +33,18 @@ export function useUpdateSpace(spaceId: string) {
     },
     onSuccess: (response: SpaceResponse) => {
       queryClient.setQueryData(['space', spaceId], response.doc)
+      toast({
+        title: 'Settings updated',
+        description: 'Your space settings have been updated successfully.',
+        variant: 'success',
+      })
+    },
+    onError: () => {
+      toast({
+        title: 'Error',
+        description: 'Failed to update space settings.',
+        variant: 'destructive',
+      })
     },
   })
 }

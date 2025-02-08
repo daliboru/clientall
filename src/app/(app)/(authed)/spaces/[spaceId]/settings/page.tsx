@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/hooks/use-toast'
 import { useSpace } from '@/hooks/useSpace'
 import { useUpdateSpace } from '@/hooks/useUpdateSpace'
 import { spaceSettingsSchema, type SpaceSettingsForm } from '@/lib/validations/space'
@@ -15,7 +14,6 @@ import { useParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 
 export default function SpaceSettingsPage() {
-  const { toast } = useToast()
   const params = useParams<{ spaceId: string }>()
   const { data: space, isLoading } = useSpace(params.spaceId)
   const { mutate: updateSpace, isPending } = useUpdateSpace(params.spaceId)
@@ -29,22 +27,7 @@ export default function SpaceSettingsPage() {
   })
 
   const onSubmit = form.handleSubmit((data) => {
-    updateSpace(data, {
-      onSuccess: () => {
-        toast({
-          title: 'Settings updated',
-          description: 'Your space settings have been updated successfully.',
-          variant: 'success',
-        })
-      },
-      onError: () => {
-        toast({
-          title: 'Error',
-          description: 'Failed to update space settings.',
-          variant: 'destructive',
-        })
-      },
-    })
+    updateSpace(data)
   })
 
   if (isLoading) {
