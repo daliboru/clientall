@@ -5,6 +5,7 @@ export function middleware(request: NextRequest) {
   // Check if the route is under the (authed) group
   if (
     request.nextUrl.pathname.startsWith('/spaces') ||
+    request.nextUrl.pathname.startsWith('/user-settings') ||
     request.nextUrl.pathname.startsWith('/dashboard')
   ) {
     const isAuthenticated = request.cookies.has('payload-token')
@@ -20,5 +21,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/spaces/:path*'],
+  matcher: ['/dashboard/:path*', '/spaces/:path*', '/user-settings'],
 }

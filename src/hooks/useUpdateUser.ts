@@ -9,14 +9,21 @@ export function useUpdateUser(user?: Partial<User>) {
     mutationFn: async (data: FormData) => {
       const response = await fetch(`/api/users/${user?.id}`, {
         method: 'PATCH',
+        credentials: 'include',
         body: data,
       })
 
+      const result = await response.json()
+
       if (!response.ok) {
-        throw new Error('Failed to update user')
+        throw new Error(result.message || 'Failed to update user')
       }
 
-      return response.json()
+      if (!result || !result.doc) {
+        throw new Error('Invalid response from server')
+      }
+
+      return result.doc
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['currentUser'] })
@@ -26,10 +33,10 @@ export function useUpdateUser(user?: Partial<User>) {
         variant: 'success',
       })
     },
-    onError: () => {
+    onError: (error: Error) => {
       toast({
         title: 'Error',
-        description: 'Failed to update profile settings.',
+        description: error.message || 'Failed to update profile settings.',
         variant: 'destructive',
       })
     },
