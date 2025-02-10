@@ -6,11 +6,18 @@ export function useUpdateUser(user?: Partial<User>) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (data: FormData) => {
+    mutationFn: async (formData: FormData) => {
+      const rawFormData = {
+        name: formData.get('name'),
+      }
+
       const response = await fetch(`/api/users/${user?.id}`, {
         method: 'PATCH',
         credentials: 'include',
-        body: data,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(rawFormData),
       })
 
       const result = await response.json()
