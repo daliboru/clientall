@@ -3,26 +3,25 @@
 import { LoginForm } from '@/components/login-form'
 import { authService } from '@/lib/services/auth/authService'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { Suspense, useEffect } from 'react'
 
 function LoginContent() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const from = searchParams.get('from')
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const user = await authService.getCurrentUser()
         if (!user) throw new Error('User not found')
-        router.replace(from || '/dashboard')
+
+        router.push('/dashboard')
       } catch (error) {
         // User is not logged in, stay on login page
       }
     }
     checkAuth()
-  }, [router, from])
+  }, [router])
 
   return (
     <div className="flex w-full max-w-sm flex-col gap-6">

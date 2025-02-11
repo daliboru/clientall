@@ -12,7 +12,7 @@ interface SpacesResponse {
 
 export function useSpaces(userId?: string | number) {
   return useQuery<SpacesResponse>({
-    queryKey: ['spaces', userId],
+    queryKey: ['spaces'],
     queryFn: async () => {
       const response = await fetch(`/api/spaces?where[administrators][equals]=${userId}`)
       if (!response.ok) {

@@ -37,10 +37,13 @@ import {
   type ProfileSettingsFormValues,
 } from '@/lib/validations/user-settings'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQueryClient } from '@tanstack/react-query'
 import { ChevronLeft, Loader2, Upload } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from '../../../../hooks/use-toast'
+import { updateUserAction } from './actions'
 
 export default function UserSettingsPage() {
   const { data: user, isLoading } = useCurrentUser()
@@ -48,6 +51,7 @@ export default function UserSettingsPage() {
   const [avatarPreview, setAvatarPreview] = useState('')
   const { mutate: updateUser, isPending } = useUpdateUser(user)
   const { mutate: deleteUser, isPending: isDeleting } = useDeleteUser()
+  const queryClient = useQueryClient()
 
   const route = useRouter()
 
@@ -77,15 +81,29 @@ export default function UserSettingsPage() {
     }
   }, [user, profileForm])
 
-  const onProfileSubmit = (values: ProfileSettingsFormValues) => {
+  const onProfileSubmit = async (values: ProfileSettingsFormValues) => {
     const formData = new FormData()
     if (values.name) {
       formData.append('name', values.name)
     }
-    if (avatar) {
-      formData.append('avatar', avatar)
+
+    const result = await updateUserAction(formData)
+
+    if (result.success) {
+      // Refresh the data
+      queryClient.invalidateQueries({ queryKey: ['currentUser'] })
+      toast({
+        title: 'Settings updated',
+        description: 'Your profile has been updated successfully.',
+        variant: 'success',
+      })
+    } else {
+      toast({
+        title: 'Error',
+        description: 'An error occurred while updating your profile.',
+        variant: 'destructive',
+      })
     }
-    updateUser(formData)
   }
 
   const onPasswordSubmit = (values: PasswordSettingsFormValues) => {

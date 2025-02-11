@@ -3,18 +3,17 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { Skeleton } from '@/components/ui/skeleton'
-import { useAddNote } from '@/hooks/useAddNote'
+import { toast } from '@/hooks/use-toast'
 import { isMediaRel, isRel } from '@/lib/payload-utils'
 import { getInitials } from '@/lib/utils'
 import { Note } from '@/payload-types'
 import { formatDistanceToNow } from 'date-fns'
-import { useParams } from 'next/navigation'
+import { createNote } from '../../lib/actions/notes'
 import { AddNoteDialog } from './add-note-dialog'
 
 interface NotesCardProps {
-  notes?: { docs: Note[] }
-  isLoading: boolean
+  notes: Note[]
+  spaceId: string
 }
 
 const getNoteAuthor = (note: Note) => {
@@ -25,15 +24,22 @@ const getNoteAuthor = (note: Note) => {
   }
 }
 
-export function NotesCard({ notes, isLoading }: NotesCardProps) {
-  const params = useParams<{ spaceId: string }>()
-  const { mutate: addNote, isPending } = useAddNote(params.spaceId)
-
+export function NotesCard({ notes, spaceId }: NotesCardProps) {
   const handleAddNote = async (content: string) => {
-    addNote({
-      content,
-      space: params.spaceId,
-    })
+    const result = await createNote(content, spaceId)
+
+    if (result.success) {
+      // Refresh the data
+      toast({
+        title: 'Note created successfully',
+        variant: 'success',
+      })
+    } else {
+      toast({
+        title: 'Something went wrong while creating the note',
+        variant: 'destructive',
+      })
+    }
   }
 
   return (
@@ -43,25 +49,13 @@ export function NotesCard({ notes, isLoading }: NotesCardProps) {
           <CardTitle>Notes</CardTitle>
           <CardDescription>All notes in this space</CardDescription>
         </div>
-        <AddNoteDialog onSubmit={handleAddNote} isSubmitting={isPending} />
+        <AddNoteDialog onSubmit={handleAddNote} />
       </CardHeader>
       <CardContent className="space-y-4">
-        {isLoading ? (
-          Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Skeleton className="h-6 w-6 rounded-full" />
-                <Skeleton className="h-4 w-[100px]" />
-                <Skeleton className="h-4 w-[80px]" />
-              </div>
-              <Skeleton className="h-4 w-full" />
-              <Separator />
-            </div>
-          ))
-        ) : !notes?.docs.length ? (
+        {notes.length === 0 ? (
           <p className="text-sm text-muted-foreground">No notes yet</p>
         ) : (
-          notes.docs.map((note) => {
+          notes.map((note) => {
             const author = getNoteAuthor(note)
             return (
               <div key={note.id} className="space-y-2">

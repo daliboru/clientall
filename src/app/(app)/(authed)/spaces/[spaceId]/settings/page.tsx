@@ -1,97 +1,22 @@
-'use client'
-
+import { SpaceSettingsForm } from '@/components/spaces/space-settings-form'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Textarea } from '@/components/ui/textarea'
-import { useSpace } from '@/hooks/useSpace'
-import { useUpdateSpace } from '@/hooks/useUpdateSpace'
-import { spaceSettingsSchema, type SpaceSettingsForm } from '@/lib/validations/space'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useParams } from 'next/navigation'
-import { useForm } from 'react-hook-form'
+import { getSpace } from '@/lib/actions/spaces'
 
-export default function SpaceSettingsPage() {
-  const params = useParams<{ spaceId: string }>()
-  const { data: space, isLoading } = useSpace(params.spaceId)
-  const { mutate: updateSpace, isPending } = useUpdateSpace(params.spaceId)
+type Params = Promise<{ spaceId: string }>
 
-  const form = useForm<SpaceSettingsForm>({
-    resolver: zodResolver(spaceSettingsSchema),
-    values: {
-      name: space?.name ?? '',
-      description: space?.description ?? '',
-    },
-  })
+export async function generateMetadata(props: { params: Params }) {
+  const params = await props.params
+  const spaceId = params.spaceId
+}
 
-  const onSubmit = form.handleSubmit((data) => {
-    updateSpace(data)
-  })
-
-  if (isLoading) {
-    return (
-      <>
-        <Card>
-          <CardHeader>
-            <Skeleton className="h-6 w-[150px] mb-2" />
-            <Skeleton className="h-4 w-full" />
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-[100px]" />
-              <Skeleton className="h-10 w-full" />
-            </div>
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-[100px]" />
-              <Skeleton className="h-24 w-full" />
-            </div>
-          </CardContent>
-        </Card>
-      </>
-    )
-  }
-
-  if (!space) return null
+export default async function SpaceSettingsPage(props: { params: Params }) {
+  const { spaceId } = await props.params
+  const space = await getSpace(spaceId)
 
   return (
     <>
-      <form onSubmit={onSubmit}>
-        <Card>
-          <CardHeader>
-            <CardTitle>Space Settings</CardTitle>
-            <CardDescription>Manage your space settings and preferences</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Space Name</Label>
-              <Input id="name" placeholder="Enter space name" {...form.register('name')} />
-              {form.formState.errors.name && (
-                <p className="text-sm text-destructive">{form.formState.errors.name.message}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                placeholder="Enter space description"
-                {...form.register('description')}
-              />
-              {form.formState.errors.description && (
-                <p className="text-sm text-destructive">
-                  {form.formState.errors.description.message}
-                </p>
-              )}
-            </div>
-            <div className="flex justify-end">
-              <Button type="submit" disabled={isPending}>
-                {isPending ? 'Saving...' : 'Save Changes'}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </form>
+      <SpaceSettingsForm space={space!} />
 
       <Card className="border-destructive">
         <CardHeader>

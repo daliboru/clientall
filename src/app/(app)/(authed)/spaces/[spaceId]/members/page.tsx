@@ -1,47 +1,22 @@
-'use client'
-
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
-import { useSpace } from '@/hooks/useSpace'
+import { getSpace } from '@/lib/actions/spaces'
 import { asManyRel, isMediaRel } from '@/lib/payload-utils'
 import { getInitials } from '@/lib/utils'
 import { User } from '@/payload-types'
 import { PlusCircle } from 'lucide-react'
-import { useParams } from 'next/navigation'
 
-export default function SpaceMembersPage() {
-  const params = useParams<{ spaceId: string }>()
-  const { data: space, isLoading } = useSpace(params.spaceId)
+type Params = Promise<{ spaceId: string }>
 
-  if (isLoading) {
-    return (
-      <>
-        <Card>
-          <CardHeader>
-            <Skeleton className="h-6 w-[150px] mb-2" />
-            <Skeleton className="h-4 w-full" />
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="flex items-center gap-3 p-2 rounded-lg border">
-                  <Skeleton className="h-10 w-10 rounded-full" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-[120px]" />
-                    <Skeleton className="h-3 w-[160px]" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </>
-    )
-  }
+export async function generateMetadata(props: { params: Params }) {
+  const params = await props.params
+  const spaceId = params.spaceId
+}
 
-  if (!space) return null
+export default async function SpaceMembersPage(props: { params: Params }) {
+  const { spaceId } = await props.params
+  const space = await getSpace(spaceId)
 
   return (
     <>
@@ -59,7 +34,7 @@ export default function SpaceMembersPage() {
         <CardContent>
           <div className="space-y-4">
             <div className="grid gap-4">
-              {asManyRel<User>(space.administrators || []).map((member) => (
+              {asManyRel<User>(space!.administrators).map((member) => (
                 <div
                   key={member.id}
                   className="flex items-center justify-between p-2 rounded-lg border"

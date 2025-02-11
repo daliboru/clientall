@@ -19,20 +19,29 @@ export function useUpdateSpace(spaceId: string) {
     mutationFn: async (data: UpdateSpaceData) => {
       const response = await fetch(`/api/spaces/${spaceId}`, {
         method: 'PATCH',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       })
 
+      const result = await response.json()
+
       if (!response.ok) {
-        throw new Error('Failed to update space')
+        throw new Error(result.message || 'Failed to update space')
       }
 
-      return response.json()
+      return result
     },
     onSuccess: (response: SpaceResponse) => {
+      // Update both caches immediately
       queryClient.setQueryData(['space', spaceId], response.doc)
+      queryClient.invalidateQueries({
+        queryKey: ['spaces'],
+        refetchType: 'all',
+      })
+
       toast({
         title: 'Settings updated',
         description: 'Your space settings have been updated successfully.',
