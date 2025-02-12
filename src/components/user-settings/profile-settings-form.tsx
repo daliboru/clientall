@@ -22,9 +22,21 @@ import {
 } from '@/lib/validations/user-settings'
 import { User } from '@/payload-types'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2, Upload } from 'lucide-react'
+import { Loader2, Trash2, Upload } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 interface ProfileSettingsFormProps {
   user: User
@@ -66,6 +78,8 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
         throw new Error(result.error || 'Failed to update profile')
       }
 
+      setAvatar(null)
+
       toast({
         title: 'Profile updated',
         description: 'Your profile has been updated successfully.',
@@ -90,6 +104,37 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
     }
   }
 
+  const handleRemoveAvatar = async () => {
+    setIsPending(true)
+    try {
+      const formData = new FormData()
+      formData.append('name', user.name)
+      formData.append('removeAvatar', 'true')
+
+      const result = await updateUser(formData)
+      if (result.success) {
+        setAvatar(null)
+        setAvatarPreview('')
+
+        toast({
+          title: 'Avatar removed',
+          description: 'Your profile picture has been removed.',
+          variant: 'success',
+        })
+      } else {
+        throw new Error(result.error || 'Failed to remove avatar')
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to remove avatar.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsPending(false)
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -99,17 +144,69 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-4">
-              <FormLabel>Profile Picture</FormLabel>
-              <div className="flex items-center gap-4">
-                <Avatar className="h-20 w-20">
-                  <AvatarImage
-                    src={avatarPreview || (isMediaRel(user.avatar) ? user.avatar.url : '')}
-                  />
-                  <AvatarFallback>{user.name ? getInitials(user.name) : 'U'}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <label htmlFor="avatar-upload" className="cursor-pointer">
+            <div className="space-y-6">
+              <div>
+                <FormLabel className="text-base">Profile Picture</FormLabel>
+                <CardDescription>
+                  This will be displayed on your profile and in spaces.
+                </CardDescription>
+              </div>
+
+              <div className="flex items-start gap-6">
+                <div className="relative group">
+                  <Avatar className="h-24 w-24 ring-2 ring-background">
+                    <AvatarImage
+                      src={avatarPreview || (isMediaRel(user.avatar) ? user.avatar.url : undefined)}
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="text-lg">
+                      {user.name ? getInitials(user.name) : 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  {(avatarPreview || isMediaRel(user.avatar)) && (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          size="icon"
+                          variant="destructive"
+                          className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          disabled={isPending}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Remove profile picture?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will permanently remove your profile picture. This action cannot be
+                            undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={handleRemoveAvatar}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Remove
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex flex-col text-sm text-muted-foreground">
+                    <span>Upload a new picture or remove the current one</span>
+                    <span>JPG, GIF or PNG. 1MB max.</span>
+                  </div>
+                  <label
+                    htmlFor="avatar-upload"
+                    className="inline-flex items-center gap-2 text-sm bg-secondary hover:bg-secondary/80 text-secondary-foreground px-4 py-2 rounded-md cursor-pointer transition-colors"
+                  >
                     <Input
                       id="avatar-upload"
                       type="file"
@@ -118,10 +215,8 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
                       onChange={handleAvatarChange}
                       disabled={isPending}
                     />
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-                      <Upload className="h-4 w-4" />
-                      Upload new picture
-                    </div>
+                    <Upload className="h-4 w-4" />
+                    Choose File
                   </label>
                 </div>
               </div>

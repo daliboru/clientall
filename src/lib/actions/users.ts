@@ -1,18 +1,19 @@
 'use server'
 
 import { profileSettingsSchema } from '@/lib/validations/user-settings'
-import { Media } from '@/payload-types'
+import { Media, User } from '@/payload-types'
 import config from '@payload-config'
 import { revalidatePath } from 'next/cache'
 import { headers as nextHeaders } from 'next/headers'
 import { getPayload } from 'payload'
+import { isMediaRel } from '../payload-utils'
 
 const payload = await getPayload({ config })
 
 export async function updateUser(formData: FormData) {
-  // Extract and validate form data
   const headers = await nextHeaders()
   const { name, avatar } = extractFormData(formData)
+  const removeAvatar = formData.get('removeAvatar') === 'true'
 
   const validationResult = validateUserData(name)
   if (!validationResult.success) {
@@ -20,23 +21,32 @@ export async function updateUser(formData: FormData) {
   }
 
   try {
-    // Handle avatar upload if present
-    const media = avatar ? await uploadAvatar(avatar, name) : undefined
-
-    // Authenticate and get user
     const user = await authenticateUser(headers)
+    let media: Media | undefined
 
-    // Update user profile
+    // Handle avatar removal
+    if (removeAvatar) {
+      if (isMediaRel(user.avatar)) {
+        await payload.delete({
+          collection: 'media',
+          id: user.avatar.id,
+        })
+      }
+      media = undefined
+    } else if (avatar) {
+      // Handle new avatar upload
+      media = await uploadAvatar(avatar, name, user)
+    }
+
     await updateUserProfile(user.id, name, media?.id)
-
     revalidatePath('/')
     return { success: true }
   } catch (error: any) {
-    return { success: false, error: error.message }
+    console.log('Error updating user:', error.message)
+    return { success: false, error: 'Failed to update user' }
   }
 }
 
-// Helper functions
 function extractFormData(formData: FormData) {
   return {
     name: formData.get('name') as string,
@@ -58,11 +68,19 @@ function validateUserData(name: string) {
   return parse
 }
 
-async function uploadAvatar(avatar: File, name: string): Promise<Media> {
-  const arrayBuffer = await avatar.arrayBuffer()
-  const avatarBuffer = Buffer.from(arrayBuffer)
-
+async function uploadAvatar(avatar: File, name: string, user: User): Promise<Media> {
   try {
+    const arrayBuffer = await avatar.arrayBuffer()
+    const avatarBuffer = Buffer.from(arrayBuffer)
+
+    const oldAvatarId = isMediaRel(user.avatar) ? user.avatar.id : undefined
+    if (oldAvatarId) {
+      await payload.delete({
+        collection: 'media',
+        id: oldAvatarId,
+      })
+    }
+
     return await payload.create({
       collection: 'media',
       data: { alt: name },
@@ -70,11 +88,12 @@ async function uploadAvatar(avatar: File, name: string): Promise<Media> {
         mimetype: avatar.type,
         data: avatarBuffer,
         size: avatarBuffer.byteLength,
-        name: `${name.toLowerCase().replace(/\s+/g, '-')}-avatar`,
+        name: `${avatar.name}-avatar`,
       },
     })
   } catch (error: any) {
-    throw new Error(error.message)
+    console.log('Error uploading avatar:', error.message)
+    throw new Error('Failed to upload avatar')
   }
 }
 
