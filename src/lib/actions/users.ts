@@ -88,7 +88,7 @@ async function uploadAvatar(avatar: File, name: string, user: User): Promise<Med
         mimetype: avatar.type,
         data: avatarBuffer,
         size: avatarBuffer.byteLength,
-        name: `${avatar.name}-avatar`,
+        name: `${avatar.name}`,
       },
     })
   } catch (error: any) {

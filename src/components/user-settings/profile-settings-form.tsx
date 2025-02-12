@@ -42,6 +42,8 @@ interface ProfileSettingsFormProps {
   user: User
 }
 
+const MAX_FILE_SIZE = 1024 * 1024 // 1MB
+
 export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
   const [isPending, setIsPending] = useState(false)
   const [avatar, setAvatar] = useState<File | null>(null)
@@ -99,6 +101,17 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
+      if (file.size > MAX_FILE_SIZE) {
+        toast({
+          title: 'File too large',
+          description: 'Please select an image under 1MB.',
+          variant: 'destructive',
+        })
+        // Reset the input
+        e.target.value = ''
+        return
+      }
+
       setAvatar(file)
       setAvatarPreview(URL.createObjectURL(file))
     }
@@ -214,6 +227,8 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
                       accept="image/*"
                       onChange={handleAvatarChange}
                       disabled={isPending}
+                      // Add max size to the accept attribute
+                      size={MAX_FILE_SIZE}
                     />
                     <Upload className="h-4 w-4" />
                     Choose File

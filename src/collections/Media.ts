@@ -29,23 +29,23 @@ export const Media: CollectionConfig = {
     },
   },
   hooks: {
-    // beforeChange: [
-    //   async ({ data }) => {
-    //     // Add the prefix (folder) to the filename
-    //     if (data.filename) {
-    //       data.filename = `images/${data.filename}` // 'images' is the folder name
-    //     }
-    //     return data
-    //   },
-    // ],
-    // beforeRead: [
-    //   async ({ doc }) => {
-    //     // Remove the prefix (folder) from the filename
-    //     if (doc.filename) {
-    //       doc.filename = doc.filename.replace('images/', '') // 'images' is the folder name
-    //     }
-    //     return doc
-    //   },
-    // ],
+    beforeChange: [
+      async ({ data }) => {
+        // Add the prefix (folder) to the filename
+        if (data.filename) {
+          data.filename = `images/${data.filename}` // 'images' is the folder name
+        }
+        return data
+      },
+    ],
+    beforeRead: [
+      async ({ doc }) => {
+        // Remove the prefix (folder) from the filename
+        if (doc.filename) {
+          doc.filename = doc.filename.replace('images/', '') // 'images' is the folder name
+        }
+        return doc
+      },
+    ],
   },
 }
