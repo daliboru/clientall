@@ -28,18 +28,4 @@ export const Media: CollectionConfig = {
       fit: 'inside',
     },
   },
-  hooks: {
-    beforeOperation: [
-      ({ req, operation }) => {
-        if ((operation === 'create' || operation === 'update') && req.file) {
-          req.file.name = `${req.user?.name?.toLowerCase().replace(/\s+/g, '-')}-avatar`
-        }
-      },
-    ],
-    beforeChange: [
-      ({ req, data }) => {
-        data.alt = req.user?.name
-      },
-    ],
-  },
 }

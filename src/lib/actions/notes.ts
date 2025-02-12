@@ -38,3 +38,16 @@ export async function createNote(content: string, spaceId: string) {
   revalidatePath(`/spaces/${spaceId}`)
   return { message: 'User updated successfully', success: true }
 }
+
+export async function deleteNote(noteId: number, spaceId: string) {
+  try {
+    await payload.delete({
+      collection: 'notes',
+      id: noteId,
+    })
+    revalidatePath(`/spaces/${spaceId}`)
+    return { message: 'Note deleted successfully', success: true }
+  } catch (error) {
+    return { message: 'Error deleting note', success: false }
+  }
+}

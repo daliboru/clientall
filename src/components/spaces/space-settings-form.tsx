@@ -5,8 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { toast } from '@/hooks/use-toast'
 import { updateSpace } from '@/lib/actions/spaces'
+import { toast } from '@/lib/use-toast'
 import { spaceSettingsSchema, type SpaceSettingsForm } from '@/lib/validations/space'
 import { Space } from '@/payload-types'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -23,8 +23,8 @@ export function SpaceSettingsForm({ space }: Props) {
   const form = useForm<SpaceSettingsForm>({
     resolver: zodResolver(spaceSettingsSchema),
     values: {
-      name: space?.name ?? '',
-      description: space?.description ?? '',
+      name: space.name,
+      description: space.description,
     },
   })
 

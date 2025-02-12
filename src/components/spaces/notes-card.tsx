@@ -1,13 +1,26 @@
 'use client'
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
-import { toast } from '@/hooks/use-toast'
+import { deleteNote } from '@/lib/actions/notes'
 import { isMediaRel, isRel } from '@/lib/payload-utils'
+import { toast } from '@/lib/use-toast'
 import { getInitials } from '@/lib/utils'
 import { Note } from '@/payload-types'
 import { formatDistanceToNow } from 'date-fns'
+import { Trash2 } from 'lucide-react'
 import { createNote } from '../../lib/actions/notes'
 import { AddNoteDialog } from './add-note-dialog'
 
@@ -29,7 +42,6 @@ export function NotesCard({ notes, spaceId }: NotesCardProps) {
     const result = await createNote(content, spaceId)
 
     if (result.success) {
-      // Refresh the data
       toast({
         title: 'Note created successfully',
         variant: 'success',
@@ -37,6 +49,23 @@ export function NotesCard({ notes, spaceId }: NotesCardProps) {
     } else {
       toast({
         title: 'Something went wrong while creating the note',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const handleDeleteNote = async (noteId: number) => {
+    const result = await deleteNote(noteId, spaceId)
+
+    if (result.success) {
+      toast({
+        title: 'Note deleted successfully',
+        variant: 'success',
+      })
+    } else {
+      toast({
+        title: 'Failed to delete note',
+        description: result.message,
         variant: 'destructive',
       })
     }
@@ -58,22 +87,55 @@ export function NotesCard({ notes, spaceId }: NotesCardProps) {
           notes.map((note) => {
             const author = getNoteAuthor(note)
             return (
-              <div key={note.id} className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-6 w-6">
-                    <AvatarImage
-                      src={isMediaRel(author.avatar) ? author.avatar.url : undefined}
-                      alt={author.name}
-                    />
-                    <AvatarFallback>{getInitials(author.name)}</AvatarFallback>
-                  </Avatar>
-                  <span className="text-sm font-medium">{author.name}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {formatDistanceToNow(new Date(note.createdAt), { addSuffix: true })}
-                  </span>
+              <div
+                key={note.id}
+                className="group rounded-lg border p-4 space-y-3 hover:bg-muted/50 transition-colors"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage
+                        src={isMediaRel(author.avatar) ? author.avatar.url : undefined}
+                        alt={author.name}
+                      />
+                      <AvatarFallback>{getInitials(author.name)}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium leading-none">{author.name}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {formatDistanceToNow(new Date(note.createdAt), { addSuffix: true })}
+                      </span>
+                    </div>
+                  </div>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Note</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete this note? This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDeleteNote(note.id)}>
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
-                <p className="text-sm">{note.content}</p>
-                <Separator />
+                <div className="pl-11">
+                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{note.content}</p>
+                </div>
               </div>
             )
           })
