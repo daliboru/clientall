@@ -1,4 +1,4 @@
-import { User } from '../../../payload-types'
+import { User } from '@/payload-types'
 import { AuthResponse, LoginCredentials } from './types'
 
 class AuthService {

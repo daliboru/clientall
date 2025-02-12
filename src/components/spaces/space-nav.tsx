@@ -1,18 +1,18 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { cn } from '@/lib/utils'
+import { User } from '@/payload-types'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 interface SpaceNavProps {
   spaceId: number | string
+  user?: User
 }
 
-export default function SpaceNav({ spaceId }: SpaceNavProps) {
+export default function SpaceNav({ spaceId, user }: SpaceNavProps) {
   const pathname = usePathname()
-  const { data: user } = useCurrentUser()
 
   const navItems = [
     {

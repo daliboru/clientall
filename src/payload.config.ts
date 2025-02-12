@@ -24,6 +24,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
+  csrf: [process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'],
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
   collections: [Users, Media, Spaces, Notes],
   editor: lexicalEditor(),
