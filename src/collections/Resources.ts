@@ -39,12 +39,13 @@ export const Resources: CollectionConfig = {
       admin: {
         condition: (data) => data.type === 'link',
       },
-      validate: (value, { data }) => {
-        if (data.type === 'link' && !value) {
-          return 'URL is required for link resources'
-        }
-        return true
-      },
+      // TODO:
+      // validate: (value, { data }) => {
+      //   if (data.type === 'link' && !value) {
+      //     return 'URL is required for link resources'
+      //   }
+      //   return true
+      // },
     },
     {
       name: 'space',
