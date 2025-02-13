@@ -53,3 +53,12 @@ export async function login(email: string, password: string) {
     }
   }
 }
+
+export async function logout() {
+  const res = await fetch('http://localhost:3000/api/[collection-slug]/logout', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
