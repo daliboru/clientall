@@ -2,6 +2,7 @@ import { AboutCard } from '@/components/spaces/about-card'
 import { NotesCard } from '@/components/spaces/notes-card'
 import { getNotes } from '@/lib/actions/notes'
 import { getSpace } from '@/lib/actions/spaces'
+import { ResourcesCard } from '@/components/spaces/resources-card'
 
 type Params = Promise<{ spaceId: string }>
 
@@ -21,9 +22,10 @@ export default async function SpacePage(props: { params: Params }) {
   }
 
   return (
-    <>
+    <div className="space-y-6">
       <AboutCard space={space} />
       <NotesCard notes={notes.docs} spaceId={spaceId} />
-    </>
+      <ResourcesCard spaceId={spaceId} />
+    </div>
   )
 }

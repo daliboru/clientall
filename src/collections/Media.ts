@@ -14,8 +14,8 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
+    adminThumbnail: 'thumbnail',
     staticDir: 'media',
-    mimeTypes: ['image/*'],
     formatOptions: {
       format: 'webp',
       options: {

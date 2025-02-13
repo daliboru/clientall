@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url'
 
 import { Media } from './collections/Media'
 import { Notes } from './collections/Notes'
+import { Resources } from './collections/Resources'
 import { Spaces } from './collections/Spaces'
 import { Users } from './collections/Users'
 
@@ -26,7 +27,7 @@ export default buildConfig({
   },
   csrf: [process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'],
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
-  collections: [Users, Media, Spaces, Notes],
+  collections: [Users, Media, Spaces, Notes, Resources],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

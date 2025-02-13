@@ -29,8 +29,8 @@ export function SpaceSettingsForm({ space }: Props) {
   })
 
   const onSubmit = async (data: SpaceSettingsForm) => {
+    setIsPending(true)
     try {
-      setIsPending(true)
       const result = await updateSpace(space.id.toString(), data)
 
       if (!result.success) {

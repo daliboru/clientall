@@ -29,6 +29,12 @@ export const Spaces: CollectionConfig = {
       collection: 'notes',
     },
     {
+      name: 'relatedResources',
+      type: 'join',
+      on: 'space',
+      collection: 'resources',
+    },
+    {
       name: 'administrators',
       type: 'relationship',
       relationTo: 'users',

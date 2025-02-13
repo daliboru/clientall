@@ -11,6 +11,8 @@ export async function generateMetadata({ params }: { params: Params }) {
   const { spaceId } = await params
 }
 
+import { Calendar } from 'lucide-react'
+
 export default async function Layout({
   children,
   params,
@@ -41,7 +43,13 @@ export default async function Layout({
 
       <div className="flex flex-col gap-6">
         <div>
-          <h1 className="text-3xl font-bold mb-4">{space.name}</h1>
+          <div className="w-full flex justify-between items-center mb-4">
+            <h1 className="text-3xl font-bold">{space.name}</h1>
+            <Button variant="outline" size="sm">
+              <Calendar className="h-4 w-4 mr-2" />
+              Schedule Call
+            </Button>
+          </div>
           <SpaceNav spaceId={space.id} user={user} />
         </div>
 

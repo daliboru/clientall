@@ -15,6 +15,7 @@ export interface Config {
     media: Media;
     spaces: Space;
     notes: Note;
+    resources: Resource;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -25,6 +26,7 @@ export interface Config {
     };
     spaces: {
       relatedNotes: 'notes';
+      relatedResources: 'resources';
     };
   };
   collectionsSelect: {
@@ -32,6 +34,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     spaces: SpacesSelect<false> | SpacesSelect<true>;
     notes: NotesSelect<false> | NotesSelect<true>;
+    resources: ResourcesSelect<false> | ResourcesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -123,6 +126,10 @@ export interface Space {
     docs?: (number | Note)[] | null;
     hasNextPage?: boolean | null;
   } | null;
+  relatedResources?: {
+    docs?: (number | Resource)[] | null;
+    hasNextPage?: boolean | null;
+  } | null;
   administrators: (number | User)[];
   updatedAt: string;
   createdAt: string;
@@ -136,6 +143,21 @@ export interface Note {
   content: string;
   space: number | Space;
   createdBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resources".
+ */
+export interface Resource {
+  id: number;
+  name: string;
+  type: 'file' | 'link';
+  file?: (number | null) | Media;
+  url?: string | null;
+  space: number | Space;
+  createdBy: number | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -161,6 +183,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'notes';
         value: number | Note;
+      } | null)
+    | ({
+        relationTo: 'resources';
+        value: number | Resource;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -249,6 +275,7 @@ export interface SpacesSelect<T extends boolean = true> {
   name?: T;
   description?: T;
   relatedNotes?: T;
+  relatedResources?: T;
   administrators?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -259,6 +286,20 @@ export interface SpacesSelect<T extends boolean = true> {
  */
 export interface NotesSelect<T extends boolean = true> {
   content?: T;
+  space?: T;
+  createdBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resources_select".
+ */
+export interface ResourcesSelect<T extends boolean = true> {
+  name?: T;
+  type?: T;
+  file?: T;
+  url?: T;
   space?: T;
   createdBy?: T;
   updatedAt?: T;

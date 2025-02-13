@@ -251,10 +251,12 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
               )}
             />
 
-            <Button type="submit" disabled={isPending}>
-              {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Save Changes
-            </Button>
+            <div className="flex justify-end">
+              <Button type="submit" disabled={isPending}>
+                {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Save Changes
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>

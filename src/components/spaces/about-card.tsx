@@ -19,7 +19,7 @@ export function AboutCard({ space }: AboutCardProps) {
       </CardHeader>
       <CardContent>
         <div>
-          <h3 className="text-sm font-medium mb-2">Administrators</h3>
+          <h3 className="text-sm font-medium mb-2">Members</h3>
           <div className="flex flex-wrap gap-2">
             {asManyRel<User>(space.administrators).map((user) => (
               <div

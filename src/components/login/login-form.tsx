@@ -1,37 +1,50 @@
+'use client'
+
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { authService } from '@/lib/services/auth/authService'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
+import { login } from '@/lib/actions/auth'
+import { UserLoginForm, userLoginSchema } from '@/lib/validations/space'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const [credentials, setCredentials] = useState({
-    email: '',
-    password: '',
+  const [isPending, setIsPending] = useState(false)
+  const [error, setError] = useState('')
+
+  const form = useForm<UserLoginForm>({
+    resolver: zodResolver(userLoginSchema),
+    values: {
+      email: '',
+      password: '',
+    },
   })
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const onSubmit = async (data: UserLoginForm) => {
+    setIsPending(true)
     setError('')
-    setLoading(true)
 
     try {
-      await authService.login(credentials)
+      const result = await login(data.email, data.password)
+
+      if (!result.success) {
+        setError(result.message)
+      }
+
       router.push('/dashboard')
     } catch (error: any) {
-      setError(error.message || 'Failed to login. Please try again.')
+      setError('Something went wrong. Please try again.')
     } finally {
-      setLoading(false)
+      setIsPending(false)
     }
   }
 
@@ -45,7 +58,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             {error && (
               <Alert variant="destructive" className="mb-6">
                 <AlertDescription>{error}</AlertDescription>
@@ -96,12 +109,11 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                   <Input
                     id="email"
                     type="email"
-                    value={credentials.email}
+                    {...form.register('email')}
                     placeholder="m@example.com"
                     required
-                    disabled={loading}
+                    disabled={isPending}
                     className="border-gray-200 focus-visible:ring-purple-500"
-                    onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -117,21 +129,20 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                     </Link>
                   </div>
                   <Input
-                    value={credentials.password}
+                    {...form.register('password')}
                     id="password"
                     type="password"
                     required
-                    disabled={loading}
+                    disabled={isPending}
                     className="border-gray-200 focus-visible:ring-purple-500"
-                    onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
                   />
                 </div>
                 <Button
                   type="submit"
                   className="w-full bg-purple-600 hover:bg-purple-700"
-                  disabled={loading}
+                  disabled={isPending}
                 >
-                  {loading ? (
+                  {isPending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Logging in...

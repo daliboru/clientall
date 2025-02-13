@@ -5,4 +5,10 @@ export const spaceSettingsSchema = z.object({
   description: z.string().max(500, 'Description is too long').optional(),
 })
 
+export const userLoginSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(1, 'Password is required'),
+})
+
 export type SpaceSettingsForm = z.infer<typeof spaceSettingsSchema>
+export type UserLoginForm = z.infer<typeof userLoginSchema>
