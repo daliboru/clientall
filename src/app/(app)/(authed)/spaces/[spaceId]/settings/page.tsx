@@ -1,5 +1,5 @@
+import { DeleteSpace } from '@/components/spaces/delete-space'
 import { SpaceSettingsForm } from '@/components/spaces/space-settings-form'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { getSpace } from '@/lib/actions/spaces'
 
@@ -14,9 +14,13 @@ export default async function SpaceSettingsPage(props: { params: Params }) {
   const { spaceId } = await props.params
   const space = await getSpace(spaceId)
 
+  if (!space) {
+    return null
+  }
+
   return (
     <>
-      <SpaceSettingsForm space={space!} />
+      <SpaceSettingsForm space={space} />
 
       <Card className="border-destructive">
         <CardHeader>
@@ -24,7 +28,7 @@ export default async function SpaceSettingsPage(props: { params: Params }) {
           <CardDescription>Irreversible and destructive actions</CardDescription>
         </CardHeader>
         <CardContent>
-          <Button variant="destructive">Delete Space</Button>
+          <DeleteSpace spaceId={spaceId} spaceName={space.name} />
         </CardContent>
       </Card>
     </>

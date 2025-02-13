@@ -4,6 +4,7 @@ import { spaceSettingsSchema, type SpaceSettingsForm } from '@/lib/validations/s
 import config from '@payload-config'
 import { revalidatePath } from 'next/cache'
 import { headers as nextHeaders } from 'next/headers'
+import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 
 const payload = await getPayload({ config })
@@ -73,5 +74,68 @@ export async function updateSpace(spaceId: string, data: SpaceSettingsForm) {
       success: false,
       error: error.message || 'Failed to update space',
     }
+  }
+}
+
+export async function createSpace(data: SpaceSettingsForm) {
+  try {
+    const parse = spaceSettingsSchema.safeParse(data)
+
+    if (!parse.success) {
+      return {
+        success: false,
+        error: 'Invalid form data',
+        errors: parse.error.flatten().fieldErrors,
+      }
+    }
+
+    const headers = await nextHeaders()
+    const auth = await payload.auth({ headers })
+
+    if (!auth.user) {
+      throw new Error('Not authenticated')
+    }
+
+    const { name, description } = parse.data
+
+    const result = await payload.create({
+      collection: 'spaces',
+      data: {
+        name,
+        description,
+        administrators: [auth.user.id],
+      },
+    })
+
+    revalidatePath('/dashboard')
+
+    return {
+      success: true,
+      message: 'Space created successfully',
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.message || 'Failed to create space',
+    }
+  }
+}
+
+export async function deleteSpace(spaceId: string) {
+  let path: string | undefined
+  try {
+    await payload.delete({
+      collection: 'spaces',
+      id: spaceId,
+    })
+    revalidatePath('/dashboard')
+    path = '/dashboard'
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.message || 'Failed to delete space',
+    }
+  } finally {
+    if (path) redirect(path)
   }
 }

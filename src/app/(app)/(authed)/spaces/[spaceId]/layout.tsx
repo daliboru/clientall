@@ -31,25 +31,23 @@ export default async function Layout({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 w-full justify-between">
           <Link href={'/dashboard'}>
             <Button variant="outline" size="sm">
               <ChevronLeft className="h-4 w-4 mr-2" />
               Back
             </Button>
           </Link>
+          <Button variant="outline" size="sm">
+            <Calendar className="h-4 w-4 mr-2" />
+            Schedule Call
+          </Button>
         </div>
       </div>
 
       <div className="flex flex-col gap-6">
         <div>
-          <div className="w-full flex justify-between items-center mb-4">
-            <h1 className="text-3xl font-bold">{space.name}</h1>
-            <Button variant="outline" size="sm">
-              <Calendar className="h-4 w-4 mr-2" />
-              Schedule Call
-            </Button>
-          </div>
+          <h1 className="text-3xl font-bold mb-4">{space.name}</h1>
           <SpaceNav spaceId={space.id} user={user} />
         </div>
 
