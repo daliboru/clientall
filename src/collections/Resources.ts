@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { asManyRel } from '../lib/payload-utils'
-import { User } from '../payload-types'
+import { Resource, User } from '../payload-types'
 
 export const Resources: CollectionConfig = {
   slug: 'resources',
@@ -23,11 +23,10 @@ export const Resources: CollectionConfig = {
       ],
     },
     {
-      name: 'file',
+      name: 'attachment',
+      label: 'Attachment',
       type: 'upload',
       relationTo: 'media',
-      required: false,
-      unique: true,
       admin: {
         condition: (data) => data.type === 'file',
       },
@@ -35,17 +34,29 @@ export const Resources: CollectionConfig = {
     {
       name: 'url',
       type: 'text',
-      required: false,
       admin: {
         condition: (data) => data.type === 'link',
+        description: 'e.g. https://google.com',
       },
-      // TODO:
-      // validate: (value, { data }) => {
-      //   if (data.type === 'link' && !value) {
-      //     return 'URL is required for link resources'
-      //   }
-      //   return true
-      // },
+      validate: (
+        value: string | undefined | null | string[],
+        { data }: { data: Partial<Resource> },
+      ) => {
+        if (data.type !== 'link') {
+          return true
+        }
+
+        if (!value || typeof value === 'object') {
+          return 'URL is required when type is link'
+        }
+
+        try {
+          new URL(value)
+          return true
+        } catch {
+          return 'Please enter a valid URL'
+        }
+      },
     },
     {
       name: 'space',

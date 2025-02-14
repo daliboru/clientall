@@ -19,30 +19,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { getResourceSize } from '@/lib/payload-utils'
+import { Resource } from '@/payload-types'
 import { formatDistanceToNow } from 'date-fns'
 import { FileText, Link as LinkIcon, MoreVertical, Trash2 } from 'lucide-react'
+import Link from 'next/link'
 
 interface ResourcesCardProps {
   spaceId: string
+  resources: Resource[]
 }
 
-export function ResourcesCard({ spaceId }: ResourcesCardProps) {
-  const mockResources = [
-    {
-      id: 1,
-      type: 'file',
-      name: 'Project Brief.pdf',
-      createdAt: new Date().toISOString(),
-      size: '2.4 MB',
-    },
-    {
-      id: 2,
-      type: 'link',
-      name: 'Design System',
-      url: 'https://figma.com/file/...',
-      createdAt: new Date().toISOString(),
-    },
-  ]
+export function ResourcesCard({ spaceId, resources }: ResourcesCardProps) {
+  console.log(resources)
 
   return (
     <Card>
@@ -64,10 +53,10 @@ export function ResourcesCard({ spaceId }: ResourcesCardProps) {
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          {mockResources.length === 0 ? (
+          {resources.length === 0 ? (
             <p className="text-sm text-muted-foreground">No resources yet</p>
           ) : (
-            mockResources.map((resource) => (
+            resources.map((resource) => (
               <div
                 key={resource.id}
                 className="group flex items-center justify-between rounded-lg border p-3 hover:bg-muted/50"
@@ -82,14 +71,25 @@ export function ResourcesCard({ spaceId }: ResourcesCardProps) {
                     <p className="font-medium">{resource.name}</p>
                     <p className="text-sm text-muted-foreground">
                       Added {formatDistanceToNow(new Date(resource.createdAt), { addSuffix: true })}
-                      {resource.type === 'file' && ` • ${resource.size}`}
+                      {resource.type === 'file' && ` • ${getResourceSize(resource)}`}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm">
-                    {resource.type === 'file' ? 'Download' : 'Open Link'}
-                  </Button>
+                  {resource.type === 'link' && (
+                    <Link href={resource.url!} target="_blank" rel="noopener noreferrer">
+                      <Button variant="ghost" size="sm">
+                        Open Link
+                      </Button>
+                    </Link>
+                  )}
+                  {resource.type === 'file' && (
+                    <Link href={`/spaces/${spaceId}/resources/${resource.id}/download`}>
+                      <Button variant="ghost" size="sm">
+                        Download
+                      </Button>
+                    </Link>
+                  )}
                   <AlertDialog>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

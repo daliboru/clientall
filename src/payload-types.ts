@@ -154,7 +154,10 @@ export interface Resource {
   id: number;
   name: string;
   type: 'file' | 'link';
-  file?: (number | null) | Media;
+  attachment?: (number | null) | Media;
+  /**
+   * e.g. https://google.com
+   */
   url?: string | null;
   space: number | Space;
   createdBy: number | User;
@@ -298,7 +301,7 @@ export interface NotesSelect<T extends boolean = true> {
 export interface ResourcesSelect<T extends boolean = true> {
   name?: T;
   type?: T;
-  file?: T;
+  attachment?: T;
   url?: T;
   space?: T;
   createdBy?: T;

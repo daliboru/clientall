@@ -1,4 +1,4 @@
-import { Media } from '../payload-types'
+import { Media, Resource } from '@/payload-types'
 
 export const isRel = <T>(objOrId?: T | number | null): objOrId is T => {
   if (!objOrId || typeof objOrId === 'number') return false
@@ -31,4 +31,29 @@ export const asManyRel = <T>(
 
 export const extractID = (objOrId: ({ id: number } & Record<string, unknown>) | number): number => {
   return typeof objOrId === 'number' ? objOrId : objOrId.id
+}
+
+export const isFileResource = (
+  resource?: Resource | null,
+): resource is Resource & { attachment: Media & { filesize: number } } => {
+  if (!resource) return false
+  return resource.type === 'file' && isMediaRel(resource.attachment)
+}
+
+export const getResourceSize = (resource?: Resource | null): string | null => {
+  if (!isFileResource(resource)) return null
+
+  const bytes = resource.attachment.filesize
+  if (!bytes) return null
+
+  const units = ['B', 'KB', 'MB', 'GB']
+  let size = bytes
+  let unitIndex = 0
+
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024
+    unitIndex++
+  }
+
+  return `${size.toFixed(1)} ${units[unitIndex]}`
 }

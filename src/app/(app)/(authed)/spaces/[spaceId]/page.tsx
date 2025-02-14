@@ -1,8 +1,9 @@
 import { AboutCard } from '@/components/spaces/about-card'
 import { NotesCard } from '@/components/spaces/notes-card'
-import { getNotes } from '@/lib/actions/notes'
-import { getSpace } from '@/lib/actions/spaces'
 import { ResourcesCard } from '@/components/spaces/resources-card'
+import { getNotes } from '@/lib/actions/notes'
+import { getResources } from '@/lib/actions/resources'
+import { getSpace } from '@/lib/actions/spaces'
 
 type Params = Promise<{ spaceId: string }>
 
@@ -16,8 +17,9 @@ export default async function SpacePage(props: { params: Params }) {
 
   const space = await getSpace(spaceId)
   const notes = await getNotes(spaceId)
+  const resources = await getResources(spaceId)
 
-  if (!space || !notes) {
+  if (!space || !notes || !resources) {
     return null
   }
 
@@ -25,7 +27,7 @@ export default async function SpacePage(props: { params: Params }) {
     <div className="space-y-6">
       <AboutCard space={space} />
       <NotesCard notes={notes.docs} spaceId={spaceId} />
-      <ResourcesCard spaceId={spaceId} />
+      <ResourcesCard resources={resources.docs} spaceId={spaceId} />
     </div>
   )
 }
