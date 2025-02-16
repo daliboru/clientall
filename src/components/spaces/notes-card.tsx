@@ -14,34 +14,55 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { deleteNote } from '@/lib/actions/notes'
-import { isMediaRel, isRel } from '@/lib/payload-utils'
+import { deleteNote, getNotes } from '@/lib/actions/notes'
+import { getNoteAuthor, isMediaRel } from '@/lib/payload-utils'
 import { toast } from '@/lib/use-toast'
 import { getInitials } from '@/lib/utils'
 import { Note } from '@/payload-types'
 import { formatDistanceToNow } from 'date-fns'
-import { Trash2 } from 'lucide-react'
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Loader2, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 import { createNote } from '../../lib/actions/notes'
 import { AddNoteDialog } from './add-note-dialog'
 
 interface NotesCardProps {
   notes: Note[]
   spaceId: string
+  totalPages: number
+  currentPage: number
 }
 
-const getNoteAuthor = (note: Note) => {
-  const author = isRel(note.createdBy) ? note.createdBy : null
-  return {
-    name: author?.name ?? 'Unknown User',
-    avatar: author?.avatar ?? null,
+export function NotesCard({
+  notes: initialNotes,
+  spaceId,
+  totalPages,
+  currentPage,
+}: NotesCardProps) {
+  const [notes, setNotes] = useState(initialNotes)
+  const [page, setPage] = useState(currentPage)
+  const [loading, setLoading] = useState(false)
+
+  const fetchNotes = async (pageNumber: number) => {
+    setLoading(true)
+    try {
+      const response = await getNotes(spaceId, pageNumber)
+      if (response?.docs) {
+        setNotes(response.docs)
+        setPage(pageNumber)
+      }
+    } finally {
+      setLoading(false)
+    }
   }
-}
 
-export function NotesCard({ notes, spaceId }: NotesCardProps) {
   const handleAddNote = async (content: string) => {
     const result = await createNote(content, spaceId)
 
     if (result.success) {
+      if (result.notes?.docs) {
+        setNotes(result.notes.docs)
+        setPage(1)
+      }
       toast({
         title: 'Note created successfully',
         variant: 'success',
@@ -55,9 +76,16 @@ export function NotesCard({ notes, spaceId }: NotesCardProps) {
   }
 
   const handleDeleteNote = async (noteId: number) => {
-    const result = await deleteNote(noteId, spaceId)
+    const result = await deleteNote(noteId, spaceId, page)
 
     if (result.success) {
+      if (result.notes?.docs) {
+        setNotes(result.notes.docs)
+        // If we're on a page with no notes after deletion, go to previous page
+        if (result.notes.docs.length === 0 && page > 1) {
+          fetchNotes(page - 1)
+        }
+      }
       toast({
         title: 'Note deleted successfully',
         variant: 'success',
@@ -69,6 +97,14 @@ export function NotesCard({ notes, spaceId }: NotesCardProps) {
         variant: 'destructive',
       })
     }
+  }
+
+  const [expandedNotes, setExpandedNotes] = useState<number[]>([])
+
+  const toggleNote = (noteId: number) => {
+    setExpandedNotes((prev) =>
+      prev.includes(noteId) ? prev.filter((id) => id !== noteId) : [...prev, noteId],
+    )
   }
 
   return (
@@ -86,6 +122,9 @@ export function NotesCard({ notes, spaceId }: NotesCardProps) {
         ) : (
           notes.map((note) => {
             const author = getNoteAuthor(note)
+            const isExpanded = expandedNotes.includes(note.id)
+            const shouldTruncate = note.content.length > 280
+
             return (
               <div
                 key={note.id}
@@ -134,12 +173,71 @@ export function NotesCard({ notes, spaceId }: NotesCardProps) {
                   </AlertDialog>
                 </div>
                 <div className="pl-11">
-                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{note.content}</p>
+                  <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                    {shouldTruncate && !isExpanded
+                      ? `${note.content.slice(0, 280)}...`
+                      : note.content}
+                  </p>
+                  {shouldTruncate && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="mt-2 h-auto p-0 text-muted-foreground hover:text-foreground"
+                      onClick={() => toggleNote(note.id)}
+                    >
+                      <span className="text-xs flex items-center gap-1">
+                        {isExpanded ? (
+                          <>
+                            Show less <ChevronUp className="h-3 w-3" />
+                          </>
+                        ) : (
+                          <>
+                            Show more <ChevronDown className="h-3 w-3" />
+                          </>
+                        )}
+                      </span>
+                    </Button>
+                  )}
                 </div>
               </div>
             )
           })
         )}
+        <div className="flex items-center justify-between pt-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => fetchNotes(page - 1)}
+            disabled={loading || page <= 1}
+          >
+            {loading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <>
+                <ChevronLeft className="h-4 w-4 mr-2" />
+                Previous
+              </>
+            )}
+          </Button>
+          <span className="text-sm text-muted-foreground">
+            Page {page} of {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => fetchNotes(page + 1)}
+            disabled={loading || page >= totalPages}
+          >
+            {loading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <>
+                Next
+                <ChevronRight className="h-4 w-4 ml-2" />
+              </>
+            )}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   )

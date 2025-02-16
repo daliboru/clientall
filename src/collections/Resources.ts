@@ -68,7 +68,6 @@ export const Resources: CollectionConfig = {
       name: 'createdBy',
       type: 'relationship',
       relationTo: 'users',
-      required: true,
       admin: {
         readOnly: true,
       },

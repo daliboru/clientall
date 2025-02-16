@@ -1,4 +1,4 @@
-import { Media, Resource } from '@/payload-types'
+import { Media, Note, Resource } from '@/payload-types'
 
 export const isRel = <T>(objOrId?: T | number | null): objOrId is T => {
   if (!objOrId || typeof objOrId === 'number') return false
@@ -40,6 +40,11 @@ export const isFileResource = (
   return resource.type === 'file' && isMediaRel(resource.attachment)
 }
 
+export const getFileResourceUrl = (resource?: Resource | null) => {
+  if (!isFileResource(resource)) return null
+  return resource.attachment.url || ''
+}
+
 export const getResourceSize = (resource?: Resource | null): string | null => {
   if (!isFileResource(resource)) return null
 
@@ -56,4 +61,12 @@ export const getResourceSize = (resource?: Resource | null): string | null => {
   }
 
   return `${size.toFixed(1)} ${units[unitIndex]}`
+}
+
+export const getNoteAuthor = (note: Note) => {
+  const author = isRel(note.createdBy) ? note.createdBy : null
+  return {
+    name: author?.name ?? 'Unknown User',
+    avatar: author?.avatar ?? null,
+  }
 }

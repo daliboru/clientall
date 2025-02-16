@@ -20,6 +20,10 @@ export default function SpaceNav({ spaceId, user }: SpaceNavProps) {
       path: `/spaces/${spaceId}`,
     },
     {
+      name: 'Resources',
+      path: `/spaces/${spaceId}/resources`,
+    },
+    {
       name: 'Members',
       path: `/spaces/${spaceId}/members`,
     },

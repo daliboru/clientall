@@ -160,7 +160,7 @@ export interface Resource {
    */
   url?: string | null;
   space: number | Space;
-  createdBy: number | User;
+  createdBy?: (number | null) | User;
   updatedAt: string;
   createdAt: string;
 }

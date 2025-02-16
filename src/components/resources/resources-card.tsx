@@ -19,7 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { getResourceSize } from '@/lib/payload-utils'
+import { getResourceSize, isFileResource } from '@/lib/payload-utils'
 import { Resource } from '@/payload-types'
 import { formatDistanceToNow } from 'date-fns'
 import { FileText, Link as LinkIcon, MoreVertical, Trash2 } from 'lucide-react'
@@ -30,7 +30,66 @@ interface ResourcesCardProps {
   resources: Resource[]
 }
 
+import { createFileResource, createLinkResource, deleteResource } from '@/lib/actions/resources'
+import { toast } from '@/lib/use-toast'
+import { AddFileDialog } from './add-file-dialog'
+import { AddLinkDialog } from './add-link-dialog'
+
 export function ResourcesCard({ spaceId, resources }: ResourcesCardProps) {
+  const handleAddLink = async (data: { name: string; url: string }) => {
+    try {
+      await createLinkResource({
+        ...data,
+        spaceId: Number(spaceId),
+      })
+      toast({
+        title: 'Link added successfully',
+        variant: 'success',
+      })
+    } catch (error) {
+      toast({
+        title: 'Failed to add link',
+        description: 'Something went wrong. Please try again.',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const handleAddFile = async (data: { name: string; file: File }) => {
+    try {
+      await createFileResource({
+        ...data,
+        spaceId: Number(spaceId),
+      })
+      toast({
+        title: 'File uploaded successfully',
+        variant: 'success',
+      })
+    } catch (error) {
+      toast({
+        title: 'Failed to upload file',
+        description: 'Something went wrong. Please try again.',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const handleDelete = async (resource: Resource) => {
+    try {
+      await deleteResource(resource.id, spaceId)
+      toast({
+        title: 'Resource deleted successfully',
+        variant: 'success',
+      })
+    } catch (error) {
+      toast({
+        title: 'Failed to delete resource',
+        description: 'Something went wrong. Please try again.',
+        variant: 'destructive',
+      })
+    }
+  }
+
   return (
     <Card>
       <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -39,14 +98,8 @@ export function ResourcesCard({ spaceId, resources }: ResourcesCardProps) {
           <CardDescription>Files and links shared in this space</CardDescription>
         </div>
         <div className="flex w-full sm:w-auto gap-2">
-          <Button variant="outline" size="sm" className="flex-1 sm:flex-none">
-            <FileText className="h-4 w-4 mr-2" />
-            Upload File
-          </Button>
-          <Button variant="outline" size="sm" className="flex-1 sm:flex-none">
-            <LinkIcon className="h-4 w-4 mr-2" />
-            Add Link
-          </Button>
+          <AddFileDialog onSubmit={handleAddFile} />
+          <AddLinkDialog onSubmit={handleAddLink} />
         </div>
       </CardHeader>
       <CardContent>
@@ -75,16 +128,26 @@ export function ResourcesCard({ spaceId, resources }: ResourcesCardProps) {
                 </div>
                 <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
                   {resource.type === 'link' && (
-                    <Link href={resource.url!} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none">
+                    <Link
+                      href={resource.url!}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 sm:flex-none"
+                    >
                       <Button variant="ghost" size="sm" className="w-full">
                         Open Link
                       </Button>
                     </Link>
                   )}
                   {resource.type === 'file' && (
-                    <Link href={`/spaces/${spaceId}/resources/${resource.id}/download`} className="flex-1 sm:flex-none">
+                    <Link
+                      href={isFileResource(resource) ? resource.attachment.url! : ''}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 sm:flex-none"
+                    >
                       <Button variant="ghost" size="sm" className="w-full">
-                        Download
+                        View
                       </Button>
                     </Link>
                   )}
@@ -115,10 +178,7 @@ export function ResourcesCard({ spaceId, resources }: ResourcesCardProps) {
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction
-                          onClick={() => {
-                            // TODO: Implement delete functionality
-                            console.log('Delete resource:', resource.id)
-                          }}
+                          onClick={() => handleDelete(resource)}
                           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
                           Delete
