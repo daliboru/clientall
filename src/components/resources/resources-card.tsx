@@ -19,29 +19,52 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+  createFileResource,
+  createLinkResource,
+  deleteResource,
+  getResources,
+} from '@/lib/actions/resources'
 import { getResourceSize, isFileResource } from '@/lib/payload-utils'
+import { toast } from '@/lib/use-toast'
 import { Resource } from '@/payload-types'
 import { formatDistanceToNow } from 'date-fns'
-import { FileText, Link as LinkIcon, MoreVertical, Trash2 } from 'lucide-react'
+import {
+  ChevronLeft,
+  ChevronRight,
+  FileText,
+  Link as LinkIcon,
+  Loader2,
+  MoreVertical,
+  Trash2,
+} from 'lucide-react'
 import Link from 'next/link'
-
-interface ResourcesCardProps {
-  spaceId: string
-  resources: Resource[]
-}
-
-import { createFileResource, createLinkResource, deleteResource } from '@/lib/actions/resources'
-import { toast } from '@/lib/use-toast'
+import { useState } from 'react'
 import { AddFileDialog } from './add-file-dialog'
 import { AddLinkDialog } from './add-link-dialog'
 
-export function ResourcesCard({ spaceId, resources }: ResourcesCardProps) {
+interface ResourcesCardProps {
+  resources: Resource[]
+  spaceId: string
+  totalPages: number
+  currentPage: number
+}
+
+export function ResourcesCard({ resources: initialResources, spaceId, totalPages, currentPage }: ResourcesCardProps) {
+  const [resources, setResources] = useState(initialResources)
+  const [page, setPage] = useState(currentPage)
+  const [loading, setLoading] = useState(false)
+
   const handleAddLink = async (data: { name: string; url: string }) => {
     try {
-      await createLinkResource({
+      const result = await createLinkResource({
         ...data,
         spaceId: Number(spaceId),
       })
+      if (result?.success && result.resources?.docs) {
+        setResources(result.resources.docs)
+        setPage(1)
+      }
       toast({
         title: 'Link added successfully',
         variant: 'success',
@@ -57,10 +80,14 @@ export function ResourcesCard({ spaceId, resources }: ResourcesCardProps) {
 
   const handleAddFile = async (data: { name: string; file: File }) => {
     try {
-      await createFileResource({
+      const result = await createFileResource({
         ...data,
         spaceId: Number(spaceId),
       })
+      if (result?.success && result.resources?.docs) {
+        setResources(result.resources.docs)
+        setPage(1)
+      }
       toast({
         title: 'File uploaded successfully',
         variant: 'success',
@@ -74,9 +101,28 @@ export function ResourcesCard({ spaceId, resources }: ResourcesCardProps) {
     }
   }
 
+  const fetchResources = async (pageNumber: number) => {
+    setLoading(true)
+    try {
+      const response = await getResources(spaceId, pageNumber)
+      if (response?.docs) {
+        setResources(response.docs)
+        setPage(pageNumber)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleDelete = async (resource: Resource) => {
     try {
-      await deleteResource(resource.id, spaceId)
+      const result = await deleteResource(resource.id, spaceId, page)
+      if (result.success && result.resources?.docs) {
+        setResources(result.resources.docs)
+        if (result.resources.docs.length === 0 && page > 1) {
+          fetchResources(page - 1)
+        }
+      }
       toast({
         title: 'Resource deleted successfully',
         variant: 'success',
@@ -189,6 +235,43 @@ export function ResourcesCard({ spaceId, resources }: ResourcesCardProps) {
                 </div>
               </div>
             ))
+          )}
+          {resources.length > 0 && (
+            <div className="flex items-center justify-between pt-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => fetchResources(page - 1)}
+                disabled={loading || page <= 1}
+              >
+                {loading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    <ChevronLeft className="h-4 w-4 mr-2" />
+                    Previous
+                  </>
+                )}
+              </Button>
+              <span className="text-sm text-muted-foreground">
+                Page {page} of {totalPages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => fetchResources(page + 1)}
+                disabled={loading || page >= totalPages}
+              >
+                {loading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    Next
+                    <ChevronRight className="h-4 w-4 ml-2" />
+                  </>
+                )}
+              </Button>
+            </div>
           )}
         </div>
       </CardContent>

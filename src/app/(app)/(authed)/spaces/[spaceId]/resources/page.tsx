@@ -10,7 +10,7 @@ export async function generateMetadata(props: { params: Params }) {
 
 export default async function ResourcesPage(props: { params: Params }) {
   const { spaceId } = await props.params
-  const resources = await getResources(spaceId)
+  const resources = await getResources(spaceId, 1, 3)
 
   if (!resources) {
     return null
@@ -18,7 +18,12 @@ export default async function ResourcesPage(props: { params: Params }) {
 
   return (
     <div className="space-y-6">
-      <ResourcesCard resources={resources.docs} spaceId={spaceId} />
+      <ResourcesCard 
+        resources={resources.docs} 
+        spaceId={spaceId}
+        totalPages={resources.totalPages}
+        currentPage={resources.page!}
+      />
     </div>
   )
 }

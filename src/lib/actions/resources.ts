@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { getPayload } from 'payload'
 
 const payload = await getPayload({ config })
-export async function getResources(spaceId?: number | string) {
+export async function getResources(spaceId?: number | string, page: number = 1, limit: number = 3) {
   if (!spaceId) return
   try {
     const resources = await payload.find({
@@ -15,6 +15,9 @@ export async function getResources(spaceId?: number | string) {
           equals: spaceId,
         },
       },
+      page,
+      limit,
+      sort: '-createdAt',
     })
     return resources
   } catch (error) {
@@ -24,9 +27,8 @@ export async function getResources(spaceId?: number | string) {
 
 export async function createLinkResource(data: { name: string; url: string; spaceId: number }) {
   try {
-    const newResource = await payload.create({
+    await payload.create({
       collection: 'resources',
-
       data: {
         name: data.name,
         url: data.url,
@@ -35,10 +37,15 @@ export async function createLinkResource(data: { name: string; url: string; spac
       },
     })
 
+    const updatedResources = await getResources(data.spaceId, 1)
     revalidatePath(`/spaces/${data.spaceId}/resources`)
-    return newResource
+    return { 
+      success: true, 
+      resources: updatedResources 
+    }
   } catch (error) {
     console.error(error)
+    return { success: false }
   }
 }
 
@@ -69,23 +76,35 @@ export async function createFileResource(data: { name: string; file: File; space
         attachment: file.id,
       },
     })
+
+    const updatedResources = await getResources(data.spaceId, 1)
     revalidatePath(`/spaces/${data.spaceId}/resources`)
-    return
+    return { 
+      success: true, 
+      resources: updatedResources 
+    }
   } catch (error) {
     console.error(error)
+    return { success: false }
   }
 }
 
-export async function deleteResource(id: number, spaceId: string) {
+export async function deleteResource(id: number, spaceId: string, currentPage: number = 1) {
   try {
-    const deletedResource = await payload.delete({
+    await payload.delete({
       collection: 'resources',
       id,
     })
 
+    const updatedResources = await getResources(spaceId, currentPage)
     revalidatePath(`/spaces/${spaceId}/resources`)
-    return deletedResource
+    return { 
+      message: 'Resource deleted successfully', 
+      success: true,
+      resources: updatedResources
+    }
   } catch (error) {
     console.error(error)
+    return { message: 'Error deleting resource', success: false }
   }
 }
