@@ -14,13 +14,14 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Pagination } from '@/components/ui/pagination'
 import { deleteNote, getNotes } from '@/lib/actions/notes'
 import { getNoteAuthor, isMediaRel } from '@/lib/payload-utils'
 import { toast } from '@/lib/use-toast'
 import { getInitials } from '@/lib/utils'
 import { Note } from '@/payload-types'
 import { formatDistanceToNow } from 'date-fns'
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Loader2, Trash2 } from 'lucide-react'
+import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { createNote } from '../../lib/actions/notes'
 import { AddNoteDialog } from './add-note-dialog'
@@ -203,41 +204,14 @@ export function NotesCard({
             )
           })
         )}
-        <div className="flex items-center justify-between pt-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => fetchNotes(page - 1)}
-            disabled={loading || page <= 1}
-          >
-            {loading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <>
-                <ChevronLeft className="h-4 w-4 mr-2" />
-                Previous
-              </>
-            )}
-          </Button>
-          <span className="text-sm text-muted-foreground">
-            Page {page} of {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => fetchNotes(page + 1)}
-            disabled={loading || page >= totalPages}
-          >
-            {loading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <>
-                Next
-                <ChevronRight className="h-4 w-4 ml-2" />
-              </>
-            )}
-          </Button>
-        </div>
+        {notes.length > 0 && (
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            loading={loading}
+            onPageChange={fetchNotes}
+          />
+        )}
       </CardContent>
     </Card>
   )

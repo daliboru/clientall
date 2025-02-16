@@ -19,6 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Pagination } from '@/components/ui/pagination'
 import {
   createFileResource,
   createLinkResource,
@@ -29,15 +30,7 @@ import { getResourceSize, isFileResource } from '@/lib/payload-utils'
 import { toast } from '@/lib/use-toast'
 import { Resource } from '@/payload-types'
 import { formatDistanceToNow } from 'date-fns'
-import {
-  ChevronLeft,
-  ChevronRight,
-  FileText,
-  Link as LinkIcon,
-  Loader2,
-  MoreVertical,
-  Trash2,
-} from 'lucide-react'
+import { FileText, Link as LinkIcon, MoreVertical, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { AddFileDialog } from './add-file-dialog'
@@ -50,7 +43,12 @@ interface ResourcesCardProps {
   currentPage: number
 }
 
-export function ResourcesCard({ resources: initialResources, spaceId, totalPages, currentPage }: ResourcesCardProps) {
+export function ResourcesCard({
+  resources: initialResources,
+  spaceId,
+  totalPages,
+  currentPage,
+}: ResourcesCardProps) {
   const [resources, setResources] = useState(initialResources)
   const [page, setPage] = useState(currentPage)
   const [loading, setLoading] = useState(false)
@@ -237,41 +235,12 @@ export function ResourcesCard({ resources: initialResources, spaceId, totalPages
             ))
           )}
           {resources.length > 0 && (
-            <div className="flex items-center justify-between pt-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => fetchResources(page - 1)}
-                disabled={loading || page <= 1}
-              >
-                {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <>
-                    <ChevronLeft className="h-4 w-4 mr-2" />
-                    Previous
-                  </>
-                )}
-              </Button>
-              <span className="text-sm text-muted-foreground">
-                Page {page} of {totalPages}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => fetchResources(page + 1)}
-                disabled={loading || page >= totalPages}
-              >
-                {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <>
-                    Next
-                    <ChevronRight className="h-4 w-4 ml-2" />
-                  </>
-                )}
-              </Button>
-            </div>
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              loading={loading}
+              onPageChange={fetchResources}
+            />
           )}
         </div>
       </CardContent>
