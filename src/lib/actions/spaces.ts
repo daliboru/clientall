@@ -98,7 +98,7 @@ export async function createSpace(data: SpaceSettingsForm) {
 
     const { name, description } = parse.data
 
-    const result = await payload.create({
+    await payload.create({
       collection: 'spaces',
       data: {
         name,
