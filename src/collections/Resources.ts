@@ -98,6 +98,10 @@ export const Resources: CollectionConfig = {
         user.relatedSpaces?.docs?.map((space) => (typeof space === 'object' ? space.id : space)) ||
         []
 
+      if (!spaceIds.length) {
+        return false
+      }
+
       return {
         space: {
           in: spaceIds,
