@@ -1,8 +1,10 @@
 import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
 // import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import nodemailer from 'nodemailer'
 import path from 'path'
 import { buildConfig } from 'payload'
 import sharp from 'sharp'
@@ -39,10 +41,19 @@ export default buildConfig({
     },
   }),
   sharp,
-  // email: nodemailerAdapter({
-  //   defaultFromName: 'Clientall App',
-  //   defaultFromAddress: 'info@clientallapp.com',
-  // }),
+  email: nodemailerAdapter({
+    defaultFromName: 'Clientall App',
+    defaultFromAddress: 'dalibor@tiszacode.com',
+    transport: await nodemailer.createTransport({
+      host: process.env.MAILER_HOST,
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.MAILER_USER,
+        pass: process.env.MAILER_PASS,
+      },
+    }),
+  }),
   plugins: [
     payloadCloudPlugin(),
     // storage-adapter-placeholder

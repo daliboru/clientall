@@ -90,7 +90,7 @@ importers:
         specifier: 15.1.0
         version: 15.1.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(sass@1.77.4)
       nodemailer:
-        specifier: ^6.9.16
+        specifier: ^6.10.0
         version: 6.10.0
       payload:
         specifier: latest
@@ -123,6 +123,9 @@ importers:
       '@types/node':
         specifier: ^22.5.4
         version: 22.13.1
+      '@types/nodemailer':
+        specifier: ^6.4.17
+        version: 6.4.17
       '@types/react':
         specifier: 19.0.1
         version: 19.0.1
@@ -2025,6 +2028,9 @@ packages:
 
   '@types/node@22.13.1':
     resolution: {integrity: sha512-jK8uzQlrvXqEU91UxiK5J7pKHyzgnI1Qnl0QDHIgVGuolJhRb9EEl28Cj9b3rGR8B2lhFCtvIm5os8lFnO/1Ew==}
+
+  '@types/nodemailer@6.4.17':
+    resolution: {integrity: sha512-I9CCaIp6DTldEg7vyUTZi8+9Vo0hi1/T8gv3C89yk1rSAAzoKQ8H8ki/jBYJSFoH/BisgLP8tkZMlQ91CIquww==}
 
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
@@ -7071,6 +7077,10 @@ snapshots:
   '@types/node@22.13.1':
     dependencies:
       undici-types: 6.20.0
+
+  '@types/nodemailer@6.4.17':
+    dependencies:
+      '@types/node': 22.13.1
 
   '@types/parse-json@4.0.2': {}
 
