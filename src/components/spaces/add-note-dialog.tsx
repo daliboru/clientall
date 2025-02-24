@@ -33,7 +33,11 @@ export function AddNoteDialog({ onSubmit, isSubmitting }: AddNoteDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="h-8 w-full sm:w-auto active:scale-95 transition-transform"
+        >
           <PlusCircle className="h-4 w-4 mr-2" />
           Add Note
         </Button>
