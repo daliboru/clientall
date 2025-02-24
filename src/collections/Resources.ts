@@ -132,7 +132,10 @@ export const Resources: CollectionConfig = {
 
       if (!space) return false
 
-      return asManyRel<User>(space.administrators).some((admin) => admin.id === req.user?.id)
+      return (
+        space.owner === req.user.id ||
+        asManyRel<User>(space.members).some((member) => member.id === req.user?.id)
+      )
     },
     delete: async ({ req, id }) => {
       if (!req.user) return false
@@ -154,7 +157,10 @@ export const Resources: CollectionConfig = {
 
       if (!space) return false
 
-      return asManyRel<User>(space.administrators).some((admin) => admin.id === req.user?.id)
+      return (
+        space.owner === req.user.id ||
+        asManyRel<User>(space.members).some((member) => member.id === req.user?.id)
+      )
     },
   },
 }

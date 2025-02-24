@@ -32,7 +32,7 @@ export const Notes: CollectionConfig = {
               depth: 0,
             })
 
-            if (!space.administrators.includes(req.user.id)) {
+            if (!space.members.includes(req.user.id)) {
               throw new Error('You do not have access to this space')
             }
 

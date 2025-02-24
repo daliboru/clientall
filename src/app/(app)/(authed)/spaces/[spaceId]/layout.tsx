@@ -2,7 +2,9 @@ import SpaceNav from '@/components/spaces/space-nav'
 import { Button } from '@/components/ui/button'
 import { getCurrentUser } from '@/lib/actions/auth'
 import { getSpace } from '@/lib/actions/spaces'
-import { ChevronLeft } from 'lucide-react'
+import { isMediaRel, isRel } from '@/lib/payload-utils'
+import { Calendar, ChevronLeft, ImageIcon } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 
 type Params = Promise<{ spaceId: string }>
@@ -10,8 +12,6 @@ type Params = Promise<{ spaceId: string }>
 export async function generateMetadata({ params }: { params: Params }) {
   const { spaceId } = await params
 }
-
-import { Calendar } from 'lucide-react'
 
 export default async function Layout({
   children,
@@ -24,9 +24,11 @@ export default async function Layout({
   const space = await getSpace(spaceId)
   const user = await getCurrentUser()
 
-  if (!space) {
+  if (!space || !user) {
     return null
   }
+
+  const isOwner = isRel(space.owner) && space.owner.id === user.id
 
   return (
     <div className="space-y-6">
@@ -47,8 +49,26 @@ export default async function Layout({
 
       <div className="flex flex-col gap-6">
         <div>
-          <h1 className="text-3xl font-bold mb-4">{space.name}</h1>
-          <SpaceNav spaceId={space.id} user={user} />
+          <div className="flex items-center gap-4 mb-4">
+            <div className="h-16 w-16 rounded-lg border flex items-center justify-center bg-muted shrink-0">
+              {isMediaRel(space.logo) ? (
+                <Image
+                  src={space.logo.url}
+                  alt={space.logo.alt}
+                  className="h-full w-full object-cover rounded-lg"
+                  width={64}
+                  height={64}
+                />
+              ) : (
+                <ImageIcon className="h-8 w-8 text-muted-foreground" />
+              )}
+            </div>
+            <div className="space-y-1">
+              <h1 className="text-3xl font-bold">{space.name}</h1>
+              <p className="text-muted-foreground">{space.description}</p>
+            </div>
+          </div>
+          <SpaceNav spaceId={space.id} isOwner={isOwner} />
         </div>
 
         {children}

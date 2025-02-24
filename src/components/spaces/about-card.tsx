@@ -21,7 +21,7 @@ export function AboutCard({ space }: AboutCardProps) {
         <div>
           <h3 className="text-sm font-medium mb-2">Members</h3>
           <div className="flex flex-wrap gap-2">
-            {asManyRel<User>(space.administrators).map((user) => (
+            {asManyRel<User>(space.members).map((user) => (
               <div
                 key={user.id}
                 className="flex items-center gap-2 bg-muted px-3 py-1 rounded-full"

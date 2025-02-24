@@ -1,6 +1,4 @@
 import type { CollectionConfig } from 'payload'
-import { asManyRel } from '../lib/payload-utils'
-import { User } from '../payload-types'
 
 export const Spaces: CollectionConfig = {
   slug: 'spaces',
@@ -29,36 +27,41 @@ export const Spaces: CollectionConfig = {
       collection: 'notes',
     },
     {
+      name: 'logo',
+      label: 'Logo',
+      type: 'upload',
+      relationTo: 'media',
+    },
+    {
       name: 'relatedResources',
       type: 'join',
       on: 'space',
       collection: 'resources',
     },
     {
-      name: 'administrators',
+      name: 'owner',
+      type: 'relationship',
+      relationTo: 'users',
+      required: true,
+      hasMany: false,
+      defaultValue: ({ user }) => user?.id,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'members',
       type: 'relationship',
       relationTo: 'users',
       hasMany: true,
       required: true,
       maxDepth: 2,
+      defaultValue: ({ user }) => user?.id,
       access: {
         update: async ({ req: { user }, doc }) => {
           if (!user) return false
-
-          // Admin can update any space
           if (user.role === 'admin') return true
-
-          if (doc && Array.isArray(doc.administrators)) {
-            return asManyRel<User>(doc.administrators)
-              .filter((user) => user.role === 'customer')
-              .some((admin) => admin.id === user.id)
-          }
-
-          return false
-        },
-        create: async ({ req: { user } }) => {
-          if (!user) return false
-          return user.role === 'admin' || user.role === 'customer'
+          return doc?.owner === user.id
         },
       },
     },
@@ -66,17 +69,34 @@ export const Spaces: CollectionConfig = {
   access: {
     read: async ({ req }) => {
       if (!req.user) return false
-
       if (req.user.role === 'admin') return true
 
       return {
-        administrators: {
+        members: {
           contains: req.user.id,
         },
       }
     },
-    create: ({ req: { user } }) => user?.role === 'admin' || user?.role === 'customer',
-    update: ({ req: { user } }) => user?.role === 'admin' || user?.role === 'customer',
-    delete: ({ req: { user } }) => user?.role === 'admin' || user?.role === 'customer',
+    create: ({ req: { user } }) => Boolean(user),
+    update: ({ req: { user }, data }) => {
+      if (!user) return false
+      if (user.role === 'admin') return true
+
+      return {
+        owner: {
+          equals: user.id,
+        },
+      }
+    },
+    delete: ({ req: { user } }) => {
+      if (!user) return false
+      if (user.role === 'admin') return true
+
+      return {
+        owner: {
+          equals: user.id,
+        },
+      }
+    },
   },
 }

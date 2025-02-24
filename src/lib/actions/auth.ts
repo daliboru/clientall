@@ -13,7 +13,9 @@ export async function getCurrentUser() {
     const result = await payload.auth({ headers })
     const user = result.user
     if (!user) {
-      throw new Error('User not found')
+      const cookies = await getCookies()
+      cookies.delete('payload-token')
+      revalidatePath('/')
     }
     return user
   } catch (error) {
@@ -38,6 +40,7 @@ export async function login(email: string, password: string) {
         httpOnly: true,
         secure: true,
         path: '/',
+        expires: new Date(Date.now() + 2 * 60 * 60 * 1000), // 2 hours
       })
     }
 
@@ -54,11 +57,65 @@ export async function login(email: string, password: string) {
   }
 }
 
-export async function logout() {
-  await fetch('http://localhost:3000/api/[collection-slug]/logout', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+interface SignUpData {
+  email: string
+  name: string
+  password: string
+  confirmPassword: string
+}
+
+export async function signup(data: SignUpData) {
+  try {
+    const res = await payload.create({
+      collection: 'users',
+
+      data: {
+        role: 'client',
+        ...data,
+      },
+    })
+  } catch (error) {}
+}
+
+interface CompleteProfileData {
+  token: string
+  password: string
+  name: string
+}
+
+export async function completeProfile(data: CompleteProfileData) {
+  try {
+    const headers = await nextHeaders()
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/complete-profile`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: headers.get('cookie') || '',
+        },
+        body: JSON.stringify(data),
+      },
+    )
+
+    const result = await response.json()
+
+    if (result.success) {
+      revalidatePath('/')
+      return {
+        success: true,
+      }
+    }
+
+    return {
+      success: false,
+      error: result.error || 'Failed to complete profile',
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: 'Something went wrong',
+    }
+  }
 }

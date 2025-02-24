@@ -1,4 +1,5 @@
-import type { CollectionConfig } from 'payload'
+import crypto from 'crypto'
+import { CollectionConfig, addDataAndFileToRequest } from 'payload'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -14,10 +15,8 @@ export const Users: CollectionConfig = {
       type: 'text',
       required: true,
       defaultValue: '',
-      admin: {
-        position: 'sidebar',
-      },
     },
+
     {
       name: 'role',
       label: 'Role',
@@ -32,10 +31,6 @@ export const Users: CollectionConfig = {
           label: 'Admin',
           value: 'admin',
         },
-        {
-          label: 'Customer',
-          value: 'customer',
-        },
       ],
       admin: {
         position: 'sidebar',
@@ -43,6 +38,15 @@ export const Users: CollectionConfig = {
       access: {
         create: ({ req: { user } }) => user?.role === 'admin',
         update: ({ req: { user } }) => user?.role === 'admin',
+      },
+    },
+    {
+      name: 'profileComplete',
+      label: 'Profile Complete',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
       },
     },
     {
@@ -55,7 +59,7 @@ export const Users: CollectionConfig = {
       name: 'relatedSpaces',
       type: 'join',
       collection: 'spaces',
-      on: 'administrators',
+      on: 'members',
       maxDepth: 2,
       hasMany: true,
     },
@@ -66,14 +70,14 @@ export const Users: CollectionConfig = {
         return false
       }
 
-      if (req.user.role.includes('admin')) {
+      if (req.user.role === 'admin') {
         return true
       }
 
-      const administratorIds = req.user.relatedSpaces?.docs
+      const memberIds = req.user.relatedSpaces?.docs
         ?.flatMap((value) => {
-          if (typeof value === 'object' && 'administrators' in value) {
-            return value.administrators
+          if (typeof value === 'object' && 'members' in value) {
+            return value.members
           }
           return []
         })
@@ -84,7 +88,7 @@ export const Users: CollectionConfig = {
           return value
         })
 
-      if (!administratorIds?.length) {
+      if (!memberIds?.length) {
         return {
           id: {
             equals: req.user.id,
@@ -94,7 +98,7 @@ export const Users: CollectionConfig = {
 
       return {
         id: {
-          in: administratorIds,
+          in: memberIds,
         },
       }
     },
@@ -140,4 +144,149 @@ export const Users: CollectionConfig = {
       }
     },
   },
+  hooks: {
+    beforeLogin: [
+      ({ user }) => {
+        if (!user.profileComplete) {
+          throw new Error('Complete your profile to login')
+        }
+        return user
+      },
+    ],
+  },
+  endpoints: [
+    {
+      path: '/complete-profile',
+      method: 'post',
+      handler: async (req) => {
+        await addDataAndFileToRequest(req)
+        if (req.user) {
+          const cookies = req.headers.get('cookie')
+          if (cookies?.includes('payload-token')) {
+            const cookieHeader = cookies
+              .split(';')
+              .find((cookie) => cookie.trim().startsWith('payload-token='))
+            if (cookieHeader) {
+              const newCookies = cookies
+                .split(';')
+                .filter((cookie) => !cookie.trim().startsWith('payload-token='))
+                .join(';')
+              req.headers.set('cookie', newCookies)
+            }
+          }
+        }
+
+        const { token, password, name } = req.data as {
+          token: string
+          password: string
+          name: string
+        }
+
+        const { docs } = await req.payload.find({
+          collection: 'users',
+          where: {
+            resetPasswordToken: { equals: token },
+            resetPasswordExpiration: { greater_than: new Date().toISOString() },
+          },
+        })
+
+        if (!docs.length) {
+          return Response.json({ error: 'Invalid token' }, { status: 400 })
+        }
+
+        await req.payload.update({
+          collection: 'users',
+          id: docs[0].id,
+          data: {
+            password,
+            name,
+            profileComplete: true,
+            resetPasswordToken: null,
+            resetPasswordExpiration: null,
+          },
+        })
+
+        return Response.json({ success: true })
+      },
+    },
+    {
+      path: '/invite-user',
+      method: 'post',
+      handler: async (req) => {
+        await addDataAndFileToRequest(req)
+
+        if (!req.user) {
+          return Response.json({ error: 'Forbidden' }, { status: 403 })
+        }
+
+        const { email, spaceId } = req.data as {
+          email: string
+          spaceId: number
+        }
+
+        const { totalDocs, docs } = await req.payload.find({
+          collection: 'users',
+          where: { email: { equals: email } },
+        })
+
+        const space = await req.payload.findByID({
+          collection: 'spaces',
+          id: spaceId,
+        })
+
+        if (totalDocs > 0) {
+          const existingMembers = space.members || []
+          const newMemberId = docs[0].id
+          await req.payload.update({
+            collection: 'spaces',
+            id: spaceId,
+            data: {
+              members: [...existingMembers, newMemberId],
+            },
+          })
+
+          return Response.json({ success: true })
+        }
+
+        const tempPassword = crypto.randomBytes(16).toString('hex')
+        const user = await req.payload.create({
+          collection: 'users',
+          data: {
+            email,
+            role: 'client',
+            password: tempPassword,
+            name: 'Invited User',
+          },
+        })
+
+        const token = crypto.randomBytes(20).toString('hex')
+        const expiration = new Date(Date.now() + 3600000).toISOString() // 1 hour
+
+        await req.payload.update({
+          collection: 'users',
+          id: user.id,
+          data: {
+            resetPasswordToken: token,
+            resetPasswordExpiration: expiration,
+          },
+        })
+
+        await req.payload.update({
+          collection: 'spaces',
+          id: spaceId,
+          data: {
+            members: [...space.members, user.id],
+          },
+        })
+
+        await req.payload.sendEmail({
+          to: email,
+          subject: 'Complete Your Profile',
+          html: `<a href="${process.env.NEXT_PUBLIC_SERVER_URL}/complete-profile?token=${token}">Complete Profile</a>`,
+        })
+
+        return Response.json({ success: true })
+      },
+    },
+  ],
 }

@@ -20,7 +20,7 @@ export async function getSpaces() {
     const spaces = await payload.find({
       collection: 'spaces',
       where: {
-        administrators: {
+        members: {
           equals: user.id,
         },
       },
@@ -103,7 +103,8 @@ export async function createSpace(data: SpaceSettingsForm) {
       data: {
         name,
         description,
-        administrators: [auth.user.id],
+        owner: auth.user.id,
+        members: [auth.user.id],
       },
     })
 
