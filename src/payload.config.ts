@@ -42,7 +42,7 @@ export default buildConfig({
   sharp,
   email: nodemailerAdapter({
     defaultFromName: 'Clientall App',
-    defaultFromAddress: 'MS_bN2Cff@trial-jy7zpl92n6p45vx6.mlsender.net',
+    defaultFromAddress: String(process.env.SMTP_USER),
     transport: nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
