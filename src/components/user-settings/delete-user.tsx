@@ -16,6 +16,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { deleteUser } from '@/lib/actions/users'
 import { toast } from '@/lib/use-toast'
 import { Loader2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 interface Props {
@@ -23,6 +24,7 @@ interface Props {
 }
 
 export function DeleteUser({ userId }: Props) {
+  const router = useRouter()
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDeleteUser = async () => {
@@ -36,6 +38,7 @@ export function DeleteUser({ userId }: Props) {
           description: 'Your account has been deleted.',
           variant: 'destructive',
         })
+        router.push('/login')
       } else {
         toast({
           title: 'Failed to delete account',

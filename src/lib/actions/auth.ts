@@ -66,15 +66,23 @@ interface SignUpData {
 
 export async function signup(data: SignUpData) {
   try {
-    const res = await payload.create({
+    await payload.create({
       collection: 'users',
-
       data: {
         role: 'client',
         ...data,
       },
     })
-  } catch (error) {}
+
+    return {
+      success: true,
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.message || 'Failed to create account',
+    }
+  }
 }
 
 interface CompleteProfileData {

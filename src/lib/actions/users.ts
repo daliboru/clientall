@@ -7,6 +7,7 @@ import { revalidatePath } from 'next/cache'
 import { headers as nextHeaders } from 'next/headers'
 import { getPayload } from 'payload'
 import { isMediaRel } from '../payload-utils'
+import { cookies as getCookies } from 'next/headers'
 
 const payload = await getPayload({ config })
 
@@ -122,6 +123,11 @@ export async function deleteUser(userId: number) {
       collection: 'users',
       id: userId,
     })
+
+    const cookies = await getCookies()
+    cookies.delete('payload-token')
+    
+    revalidatePath('/')
     return { success: true }
   } catch (error: any) {
     return { success: false, message: error.message }
