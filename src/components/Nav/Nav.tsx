@@ -13,14 +13,15 @@ import { getInitials } from '@/lib/utils'
 import { User } from '@/payload-types'
 import { Bell } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
-import { logoutAction } from './action'
 
 type Props = {
   user: User
 }
 
 const Nav: React.FC<Props> = ({ user }) => {
+  const router = useRouter()
   const [notifications] = useState([
     {
       id: 1,
@@ -35,6 +36,20 @@ const Nav: React.FC<Props> = ({ user }) => {
       time: '5 hours ago',
     },
   ])
+
+  const onLogout = async () => {
+    try {
+      await fetch('/api/users/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      router.replace('/login')
+    } catch (error) {
+      console.error('Error logging out:', error)
+    }
+  }
 
   return (
     <nav className="w-full flex justify-center py-4 bg-purple-600">
@@ -82,7 +97,7 @@ const Nav: React.FC<Props> = ({ user }) => {
           <Button
             variant="ghost"
             className="text-white hover:text-white hover:bg-purple-700/50"
-            onClick={logoutAction}
+            onClick={onLogout}
           >
             Logout
           </Button>

@@ -1,4 +1,4 @@
-import Nav from '@/components/Nav'
+import Nav from '@/components/Nav/Nav'
 import { Toaster } from '@/components/ui/toaster'
 import { getCurrentUser } from '@/lib/actions/auth'
 import { cn } from '@/lib/utils'
