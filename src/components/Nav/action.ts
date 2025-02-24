@@ -1,6 +1,6 @@
 export async function logoutAction() {
   try {
-    await fetch('/api/users/logout', {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/logout`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
