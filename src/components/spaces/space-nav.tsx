@@ -57,7 +57,7 @@ export default function SpaceNav({ spaceId, isOwner }: SpaceNavProps) {
           </Link>
         ))}
       </nav>
-      <ScrollBar orientation="horizontal" />
+      <ScrollBar orientation="horizontal" className="hidden sm:flex" />
     </ScrollArea>
   )
 }
