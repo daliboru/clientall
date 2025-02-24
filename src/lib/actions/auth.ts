@@ -44,7 +44,6 @@ export async function login(email: string, password: string) {
         expires: new Date(Date.now() + 2 * 60 * 60 * 1000), // 2 hours
       })
 
-      // Ensure path is revalidated before redirect
       revalidatePath('/', 'layout')
     }
 
