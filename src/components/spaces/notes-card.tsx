@@ -110,14 +110,18 @@ export function NotesCard({
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>Notes</CardTitle>
-          <CardDescription>All notes in this space</CardDescription>
+      <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-purple-600">Notes</CardTitle>
+          <CardDescription className="text-base text-muted-foreground">
+            Share important updates, announcements, and insights with your team. Keep everyone informed and aligned on project progress and key decisions.
+          </CardDescription>
         </div>
-        <AddNoteDialog onSubmit={handleAddNote} />
+        <div className="flex w-full sm:w-auto">
+          <AddNoteDialog onSubmit={handleAddNote} />
+        </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent>
         {notes.length === 0 ? (
           <p className="text-sm text-muted-foreground">No notes yet</p>
         ) : (

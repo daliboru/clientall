@@ -51,7 +51,7 @@ export function CompleteProfileForm({ token }: CompleteProfileFormProps) {
           title: 'Profile completed',
           description: 'You can now log in with your email and password',
         })
-        router.push('/login')
+        router.replace('/login')
       } else {
         toast({
           title: 'Error',

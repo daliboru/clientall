@@ -245,7 +245,7 @@ export const Users: CollectionConfig = {
             },
           })
 
-          return Response.json({ success: true })
+          return Response.json({ success: true, existingUser: true })
         }
 
         const tempPassword = crypto.randomBytes(16).toString('hex')
@@ -285,7 +285,7 @@ export const Users: CollectionConfig = {
           html: `<a href="${process.env.NEXT_PUBLIC_SERVER_URL}/complete-profile?token=${token}">Complete Profile</a>`,
         })
 
-        return Response.json({ success: true })
+        return Response.json({ success: true, existingUser: false })
       },
     },
   ],

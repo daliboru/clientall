@@ -8,13 +8,13 @@ import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { useState } from 'react'
-
 import { login } from '@/lib/actions/auth'
 import { UserLoginForm, userLoginSchema } from '@/lib/validations/space'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
+import { toast } from '@/lib/use-toast'
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const router = useRouter()
@@ -38,9 +38,18 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 
       if (!result.success) {
         setError(result.message)
+        return
       }
 
-      router.push('/dashboard')
+      // Immediate visual feedback
+      toast({
+        title: 'Welcome back!',
+        description: 'Redirecting to dashboard...',
+        variant: 'success',
+      })
+
+      // Use replace instead of push for smoother transition
+      router.replace('/dashboard')
     } catch (error: any) {
       setError('Something went wrong. Please try again.')
     } finally {

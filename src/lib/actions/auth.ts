@@ -40,11 +40,14 @@ export async function login(email: string, password: string) {
         httpOnly: true,
         secure: true,
         path: '/',
+        sameSite: 'lax',
         expires: new Date(Date.now() + 2 * 60 * 60 * 1000), // 2 hours
       })
+
+      // Ensure path is revalidated before redirect
+      revalidatePath('/', 'layout')
     }
 
-    revalidatePath('/')
     return {
       success: true,
       message: 'Login successful',

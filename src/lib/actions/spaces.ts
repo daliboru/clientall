@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache'
 import { headers as nextHeaders } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
+import { isMediaRel } from '../payload-utils'
 
 const payload = await getPayload({ config })
 
@@ -44,36 +45,78 @@ export async function getSpace(spaceId: string) {
   }
 }
 
-export async function updateSpace(spaceId: string, data: SpaceSettingsForm) {
+export async function updateSpace(spaceId: string, formData: FormData) {
   try {
-    const parse = spaceSettingsSchema.safeParse(data)
+    const name = formData.get('name') as string
+    const description = formData.get('description') as string
+    const logo = formData.get('logo') as File | null
+    const removeLogo = formData.get('removeLogo') === 'true'
 
-    if (!parse.success) {
+    const validationResult = spaceSettingsSchema.safeParse({ name, description })
+    if (!validationResult.success) {
       return {
         success: false,
         error: 'Invalid form data',
-        errors: parse.error.flatten().fieldErrors,
+        errors: validationResult.error.flatten().fieldErrors,
       }
     }
 
-    const validatedData = parse.data
-
-    const result = await payload.update({
+    const space = await payload.findByID({
       collection: 'spaces',
       id: spaceId,
-      data: validatedData,
+      depth: 1,
+    })
+
+    let logoId: number | undefined | null = undefined
+
+    if (removeLogo) {
+      if (isMediaRel(space.logo)) {
+        await payload.delete({
+          collection: 'media',
+          id: space.logo.id,
+        })
+      }
+      logoId = null
+    } else if (logo) {
+      const arrayBuffer = await logo.arrayBuffer()
+      const logoBuffer = Buffer.from(arrayBuffer)
+
+      if (isMediaRel(space.logo)) {
+        await payload.delete({
+          collection: 'media',
+          id: space.logo.id,
+        })
+      }
+
+      const media = await payload.create({
+        collection: 'media',
+        data: { alt: name },
+        file: {
+          mimetype: logo.type,
+          data: logoBuffer,
+          size: logoBuffer.byteLength,
+          name: logo.name,
+        },
+      })
+
+      logoId = media.id
+    }
+
+    await payload.update({
+      collection: 'spaces',
+      id: spaceId,
+      data: {
+        name,
+        description,
+        ...(logoId !== undefined && { logo: logoId }),
+      },
     })
 
     revalidatePath(`/spaces/${spaceId}`)
-    return {
-      success: true,
-      data: result,
-    }
+    return { success: true }
   } catch (error: any) {
-    return {
-      success: false,
-      error: error.message || 'Failed to update space',
-    }
+    console.error('Error updating space:', error)
+    return { success: false, error: error.message }
   }
 }
 

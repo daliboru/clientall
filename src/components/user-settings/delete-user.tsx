@@ -38,7 +38,7 @@ export function DeleteUser({ userId }: Props) {
           description: 'Your account has been deleted.',
           variant: 'destructive',
         })
-        router.push('/login')
+        router.replace('/login')
       } else {
         toast({
           title: 'Failed to delete account',
