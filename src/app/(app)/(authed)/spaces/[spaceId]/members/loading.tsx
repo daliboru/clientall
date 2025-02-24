@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -6,16 +6,12 @@ import { Skeleton } from '@/components/ui/skeleton'
 export default function MembersLoading() {
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>
-            <Skeleton className="h-5 w-[120px]" />
-          </CardTitle>
-          <CardDescription>
-            <Skeleton className="h-4 w-[200px] mt-1" />
-          </CardDescription>
+      <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <Skeleton className="h-8 w-[150px]" />
+          <Skeleton className="h-5 w-[300px]" />
         </div>
-        <Skeleton className="h-9 w-[120px]" />
+        <Skeleton className="h-10 w-full sm:w-[120px]" />
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[400px] pr-4">
