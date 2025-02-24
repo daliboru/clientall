@@ -42,6 +42,7 @@ export function NotesCard({
   const [notes, setNotes] = useState(initialNotes)
   const [page, setPage] = useState(currentPage)
   const [loading, setLoading] = useState(false)
+  const [expandedNotes, setExpandedNotes] = useState<number[]>([])
 
   const fetchNotes = async (pageNumber: number) => {
     setLoading(true)
@@ -56,24 +57,9 @@ export function NotesCard({
     }
   }
 
-  const handleAddNote = async (content: string) => {
-    const result = await createNote(content, spaceId)
-
-    if (result.success) {
-      if (result.notes?.docs) {
-        setNotes(result.notes.docs)
-        setPage(1)
-      }
-      toast({
-        title: 'Note created successfully',
-        variant: 'success',
-      })
-    } else {
-      toast({
-        title: 'Something went wrong while creating the note',
-        variant: 'destructive',
-      })
-    }
+  const handleNotesUpdate = (updatedNotes: Note[]) => {
+    setNotes(updatedNotes)
+    setPage(1)
   }
 
   const handleDeleteNote = async (noteId: number) => {
@@ -100,8 +86,6 @@ export function NotesCard({
     }
   }
 
-  const [expandedNotes, setExpandedNotes] = useState<number[]>([])
-
   const toggleNote = (noteId: number) => {
     setExpandedNotes((prev) =>
       prev.includes(noteId) ? prev.filter((id) => id !== noteId) : [...prev, noteId],
@@ -118,7 +102,7 @@ export function NotesCard({
           </CardDescription>
         </div>
         <div className="flex w-full sm:w-auto">
-          <AddNoteDialog onSubmit={handleAddNote} />
+          <AddNoteDialog spaceId={spaceId} onSuccess={handleNotesUpdate} />
         </div>
       </CardHeader>
       <CardContent>

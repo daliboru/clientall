@@ -13,21 +13,47 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { PlusCircle } from 'lucide-react'
 import { useState } from 'react'
+import { createNote } from '@/lib/actions/notes'
+import { toast } from '@/lib/use-toast'
+import { Note } from '@/payload-types'
 
 interface AddNoteDialogProps {
-  onSubmit: (content: string) => Promise<void>
-  isSubmitting?: boolean
+  spaceId: string
+  onSuccess: (notes: Note[]) => void
 }
 
-export function AddNoteDialog({ onSubmit, isSubmitting }: AddNoteDialogProps) {
+export function AddNoteDialog({ spaceId, onSuccess }: AddNoteDialogProps) {
   const [content, setContent] = useState('')
   const [open, setOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async () => {
-    if (!content.trim()) return
-    await onSubmit(content)
-    setContent('')
-    setOpen(false)
+    setIsSubmitting(true)
+    try {
+      const result = await createNote(content, spaceId)
+
+      if (result.success && result.notes?.docs) {
+        onSuccess(result.notes.docs)
+        setContent('')
+        setOpen(false)
+        toast({
+          title: 'Note created successfully',
+          variant: 'success',
+        })
+      } else {
+        toast({
+          title: 'Failed to create note',
+          variant: 'destructive',
+        })
+      }
+    } catch (error) {
+      toast({
+        title: 'Something went wrong',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -37,9 +63,19 @@ export function AddNoteDialog({ onSubmit, isSubmitting }: AddNoteDialogProps) {
           variant="outline" 
           size="sm" 
           className="h-8 w-full sm:w-auto active:scale-95 transition-transform"
+          disabled={isSubmitting}
         >
-          <PlusCircle className="h-4 w-4 mr-2" />
-          Add Note
+          {isSubmitting ? (
+            <>
+              <span className="h-4 w-4 mr-2 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              Adding...
+            </>
+          ) : (
+            <>
+              <PlusCircle className="h-4 w-4 mr-2" />
+              Add Note
+            </>
+          )}
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -52,13 +88,24 @@ export function AddNoteDialog({ onSubmit, isSubmitting }: AddNoteDialogProps) {
           onChange={(e) => setContent(e.target.value)}
           placeholder="Write your note here..."
           className="min-h-[200px]"
+          disabled={isSubmitting}
         />
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>
+          <Button variant="outline" onClick={() => setOpen(false)} disabled={isSubmitting}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit} disabled={isSubmitting || !content.trim()}>
-            {isSubmitting ? 'Adding...' : 'Add Note'}
+          <Button 
+            onClick={handleSubmit} 
+            disabled={isSubmitting || !content.trim()}
+          >
+            {isSubmitting ? (
+              <>
+                <span className="h-4 w-4 mr-2 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                Adding...
+              </>
+            ) : (
+              'Add Note'
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
