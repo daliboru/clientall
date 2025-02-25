@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { asManyRel, isMediaRel } from '@/lib/payload-utils'
+import { getInitials } from '@/lib/utils'
 import { Space, User } from '@/payload-types'
 import { ImageIcon, Badge as LucideBadge } from 'lucide-react'
 import Image from 'next/image'
@@ -15,14 +16,6 @@ interface SpaceCardProps {
 }
 
 export function SpaceCard({ space, isOwner }: SpaceCardProps) {
-  const getInitials = (name: string) => {
-    const names = name.split(' ')
-    if (names.length >= 2) {
-      return `${names[0][0]}${names[1][0]}`.toUpperCase()
-    }
-    return name.slice(0, 2).toUpperCase()
-  }
-
   return (
     <Link href={`/spaces/${space.id}`}>
       <Card>

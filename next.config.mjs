@@ -4,17 +4,16 @@ import { withPayload } from '@payloadcms/next/withPayload'
 const nextConfig = {
   images: {
     remotePatterns: [
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '3000',
-        pathname: '/api/media/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'clientall.vercel.app',
-        pathname: '/api/media/**',
-      },
+      ...[process.env.NEXT_PUBLIC_SERVER_URL].map((item) => {
+        const url = new URL(item)
+
+        return {
+          hostname: url.hostname,
+          protocol: url.protocol.replace(':', ''),
+          port: url.port,
+          pathname: '/api/media/**',
+        }
+      }),
     ],
   },
 }
