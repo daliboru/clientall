@@ -1,24 +1,20 @@
-import { cn } from '@/lib/utils'
+import { NotFound } from '@/components/ui/not-found'
 import { Inter as FontSans } from 'next/font/google'
-import { ReactNode } from 'react'
-import './global.css'
+import { cn } from '@/lib/utils'
 
-type LayoutProps = {
-  children: ReactNode
-}
 const fontSans = FontSans({
   subsets: ['latin'],
   variable: '--font-sans',
 })
 
-const Layout = ({ children }: LayoutProps) => {
+export default function NotFoundPage() {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
-        {children}
+        <div className="flex flex-col items-center justify-center min-h-screen p-4">
+          <NotFound />
+        </div>
       </body>
     </html>
   )
 }
-
-export default Layout

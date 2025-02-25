@@ -1,8 +1,10 @@
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { getSpace } from '@/lib/actions/spaces'
 import { isRel } from '@/lib/payload-utils'
 import { formatDistanceToNow } from 'date-fns'
-import { Calendar, Users } from 'lucide-react'
+import { Calendar, Home, Users } from 'lucide-react'
+import Link from 'next/link'
 
 type Params = Promise<{ spaceId: string }>
 
@@ -18,7 +20,26 @@ export default async function SpacePage(props: { params: Params }) {
   const space = await getSpace(spaceId)
 
   if (!space) {
-    return null
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-center text-destructive">Space Not Found</CardTitle>
+            <CardDescription className="text-center">
+              {`The space you're looking for doesn't exist or you don't have permission to access it.`}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex justify-center">
+            <Link href="/dashboard">
+              <Button>
+                <Home className="mr-2 h-4 w-4" />
+                Return to Dashboard
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   // Dummy meetings data

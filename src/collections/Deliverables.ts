@@ -117,40 +117,30 @@ export const Deliverables: CollectionConfig = {
   hooks: {
     beforeChange: [
       ({ data }) => {
+        // Handle file/link type changes
         if (data.type === 'file' && data.url) {
           data.url = undefined
         }
         if (data.type === 'link' && data.file) {
           data.file = undefined
         }
-        return data
-      },
-    ],
-    afterRead: [
-      async ({ req, doc }) => {
-        if (req.user && doc) {
-          // Add view if user hasn't viewed this deliverable before
-          const existingView = asManyRel<{ user: number | User; viewedAt: string }>(
-            doc.views,
-          )?.find((view) => isRel(view.user) && view.user.id === req.user?.id)
 
-          if (!existingView) {
-            await req.payload.update({
-              collection: 'deliverables',
-              id: doc.id,
-              data: {
-                views: [
-                  ...(doc.views || []),
-                  {
-                    user: req.user.id,
-                    viewedAt: new Date().toISOString(),
-                  },
-                ],
-              },
-            })
-          }
+        if (data.views?.length > 0) {
+          const seenUsers = new Set()
+          data.views = asManyRel<{
+            user: User | number
+            viewedAt: Date
+          }>(data.views).filter((view) => {
+            const userId = isRel(view.user) ? view.user.id : view.user
+            if (seenUsers.has(userId)) {
+              return false
+            }
+            seenUsers.add(userId)
+            return true
+          })
         }
-        return doc
+
+        return data
       },
     ],
   },
@@ -187,13 +177,17 @@ export const Deliverables: CollectionConfig = {
       const doc = await req.payload.findByID({
         collection: 'resources',
         id,
+        overrideAccess: false,
+        user: req.user,
       })
 
       if (!doc) return false
 
       const space = await req.payload.findByID({
         collection: 'spaces',
-        id: typeof doc.space === 'object' ? doc.space.id : doc.space,
+        id: isRel(doc.space) ? doc.space.id : doc.space,
+        overrideAccess: false,
+        user: req.user,
       })
 
       if (!space) return false
@@ -212,6 +206,8 @@ export const Deliverables: CollectionConfig = {
       const doc = await req.payload.findByID({
         collection: 'resources',
         id,
+        overrideAccess: false,
+        user: req.user,
       })
 
       if (!doc) return false
@@ -219,6 +215,8 @@ export const Deliverables: CollectionConfig = {
       const space = await req.payload.findByID({
         collection: 'spaces',
         id: typeof doc.space === 'object' ? doc.space.id : doc.space,
+        overrideAccess: false,
+        user: req.user,
       })
 
       if (!space) return false

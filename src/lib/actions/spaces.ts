@@ -7,24 +7,21 @@ import { headers as nextHeaders } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import { isMediaRel } from '../payload-utils'
+import { getCurrentUser } from './auth'
 
 const payload = await getPayload({ config })
 
 export async function getSpaces() {
   try {
-    const headers = await nextHeaders()
-    const result = await payload.auth({ headers })
-    const user = result.user
+    const user = await getCurrentUser()
     if (!user) {
       throw new Error('User not found')
     }
+
     const spaces = await payload.find({
       collection: 'spaces',
-      where: {
-        members: {
-          equals: user.id,
-        },
-      },
+      overrideAccess: false,
+      user,
     })
     return spaces.docs
   } catch (error) {
@@ -35,9 +32,16 @@ export async function getSpaces() {
 
 export async function getSpace(spaceId: string) {
   try {
+    const user = await getCurrentUser()
+    if (!user) {
+      throw new Error('User not found')
+    }
+
     const space = await payload.findByID({
       collection: 'spaces',
       id: spaceId,
+      user,
+      overrideAccess: false,
     })
     return space
   } catch (error) {
@@ -47,6 +51,12 @@ export async function getSpace(spaceId: string) {
 
 export async function updateSpace(spaceId: string, formData: FormData) {
   try {
+    const user = await getCurrentUser()
+
+    if (!user) {
+      throw new Error('User not found')
+    }
+
     const name = formData.get('name') as string
     const description = formData.get('description') as string
     const logo = formData.get('logo') as File | null
@@ -65,6 +75,8 @@ export async function updateSpace(spaceId: string, formData: FormData) {
       collection: 'spaces',
       id: spaceId,
       depth: 1,
+      overrideAccess: false,
+      user,
     })
 
     let logoId: number | undefined | null = undefined

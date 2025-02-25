@@ -6,6 +6,7 @@ import { isMediaRel, isRel } from '@/lib/payload-utils'
 import { Calendar, ChevronLeft, ImageIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { NotFound } from '@/components/ui/not-found'
 
 type Params = Promise<{ spaceId: string }>
 
@@ -24,8 +25,23 @@ export default async function Layout({
   const space = await getSpace(spaceId)
   const user = await getCurrentUser()
 
-  if (!space || !user) {
-    return null
+  if (!user) {
+    return (
+      <NotFound 
+        title="Authentication Required"
+        description="Please sign in to access this space."
+        showBack={false}
+      />
+    )
+  }
+
+  if (!space) {
+    return (
+      <NotFound 
+        title="Space Not Found"
+        description="This space doesn't exist or you don't have permission to access it."
+      />
+    )
   }
 
   const isOwner = isRel(space.owner) && space.owner.id === user.id

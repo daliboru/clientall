@@ -3,6 +3,7 @@
 import config from '@payload-config'
 import { revalidatePath } from 'next/cache'
 import { getPayload } from 'payload'
+import { asManyRel, isRel } from '../payload-utils'
 import { getCurrentUser } from './auth'
 
 const payload = await getPayload({ config })
@@ -14,16 +15,15 @@ export async function getDeliverables(
 ) {
   if (!spaceId) return
   try {
+    const user = await getCurrentUser()
+    if (!user) return
     const deliverables = await payload.find({
       collection: 'deliverables',
-      where: {
-        space: {
-          equals: spaceId,
-        },
-      },
+      user,
       page,
       limit,
       sort: '-createdAt',
+      overrideAccess: false,
     })
     return deliverables
   } catch (error) {
@@ -121,6 +121,9 @@ export async function updateDeliverableStatus(
   statusComment?: string,
 ) {
   try {
+    const user = await getCurrentUser()
+    if (!user) return { success: false }
+
     await payload.update({
       collection: 'deliverables',
       id,
@@ -133,6 +136,8 @@ export async function updateDeliverableStatus(
     const deliverable = await payload.findByID({
       collection: 'deliverables',
       id,
+      overrideAccess: false,
+      user,
     })
 
     const spaceId = typeof deliverable.space === 'object' ? deliverable.space.id : deliverable.space
@@ -174,29 +179,39 @@ export async function deleteDeliverable(id: number, spaceId: string, currentPage
 export async function trackDeliverableView(id: number) {
   try {
     const user = await getCurrentUser()
-    if (!user) return
+    if (!user || user.role === 'admin') return
 
     const deliverable = await payload.findByID({
       collection: 'deliverables',
       id,
+      overrideAccess: false,
+      user,
     })
 
     if (!deliverable) return
 
-    await payload.update({
-      collection: 'deliverables',
-      id,
-      data: {
-        views: [
-          ...(deliverable.views || []),
-          {
-            user: user.id,
-            viewedAt: new Date().toISOString(),
-          },
-        ],
-      },
-    })
-    revalidatePath(`/spaces/${deliverable.space}/deliverables`)
+    // Check if user has already viewed this deliverable
+    const hasViewed = asManyRel(deliverable.views).some(
+      (view) => (isRel(view.user) ? view.user.id : view.user) === user.id,
+    )
+
+    // Only add view if user hasn't viewed it before
+    if (!hasViewed) {
+      await payload.update({
+        collection: 'deliverables',
+        id,
+        data: {
+          views: [
+            ...(deliverable.views || []),
+            {
+              user: user.id,
+              viewedAt: new Date().toISOString(),
+            },
+          ],
+        },
+      })
+      revalidatePath(`/spaces/${deliverable.space}/deliverables`)
+    }
   } catch (error) {
     console.error('Failed to track view:', error)
   }

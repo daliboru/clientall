@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { asManyRel } from '../lib/payload-utils'
+import { asManyRel, isRel } from '../lib/payload-utils'
 import { Resource, User } from '../payload-types'
 
 export const Resources: CollectionConfig = {
@@ -122,13 +122,17 @@ export const Resources: CollectionConfig = {
       const doc = await req.payload.findByID({
         collection: 'resources',
         id,
+        overrideAccess: false,
+        user: req.user,
       })
 
       if (!doc) return false
 
       const space = await req.payload.findByID({
         collection: 'spaces',
-        id: typeof doc.space === 'object' ? doc.space.id : doc.space,
+        id: isRel(doc.space) ? doc.space.id : doc.space,
+        overrideAccess: false,
+        user: req.user,
       })
 
       if (!space) return false
@@ -147,13 +151,17 @@ export const Resources: CollectionConfig = {
       const doc = await req.payload.findByID({
         collection: 'resources',
         id,
+        overrideAccess: false,
+        user: req.user,
       })
 
       if (!doc) return false
 
       const space = await req.payload.findByID({
         collection: 'spaces',
-        id: typeof doc.space === 'object' ? doc.space.id : doc.space,
+        id: isRel(doc.space) ? doc.space.id : doc.space,
+        overrideAccess: false,
+        user: req.user,
       })
 
       if (!space) return false

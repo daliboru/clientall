@@ -30,6 +30,8 @@ export const Notes: CollectionConfig = {
               collection: 'spaces',
               id: value,
               depth: 0,
+              overrideAccess: false,
+              user: req.user,
             })
 
             if (!space.members.includes(req.user.id)) {

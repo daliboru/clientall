@@ -4,21 +4,21 @@ import config from '@payload-config'
 import { revalidatePath } from 'next/cache'
 import { headers as nextHeaders } from 'next/headers'
 import { getPayload } from 'payload'
+import { getCurrentUser } from './auth'
 
 const payload = await getPayload({ config })
 
 export async function getNotes(spaceId?: number | string, page: number = 1, limit: number = 3) {
+  const user = await getCurrentUser()
+
   if (!spaceId) return
   const notes = await payload.find({
     collection: 'notes',
-    where: {
-      space: {
-        equals: spaceId,
-      },
-    },
     page,
+    user,
     limit,
     sort: '-createdAt',
+    overrideAccess: false,
   })
   return notes
 }
@@ -41,10 +41,10 @@ export async function createNote(content: string, spaceId: string) {
 
   const updatedNotes = await getNotes(spaceId, 1, 3) // Set limit to 3
   revalidatePath(`/spaces/${spaceId}`)
-  return { 
-    message: 'Note created successfully', 
+  return {
+    message: 'Note created successfully',
     success: true,
-    notes: updatedNotes 
+    notes: updatedNotes,
   }
 }
 
@@ -54,14 +54,14 @@ export async function deleteNote(noteId: number, spaceId: string, currentPage: n
       collection: 'notes',
       id: noteId,
     })
-    
+
     const updatedNotes = await getNotes(spaceId, currentPage)
     revalidatePath(`/spaces/${spaceId}`)
-    
-    return { 
-      message: 'Note deleted successfully', 
+
+    return {
+      message: 'Note deleted successfully',
       success: true,
-      notes: updatedNotes
+      notes: updatedNotes,
     }
   } catch (error) {
     return { message: 'Error deleting note', success: false }

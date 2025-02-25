@@ -9,16 +9,15 @@ const payload = await getPayload({ config })
 export async function getResources(spaceId?: number | string, page: number = 1, limit: number = 3) {
   if (!spaceId) return
   try {
+    const user = await getCurrentUser()
+
     const resources = await payload.find({
       collection: 'resources',
-      where: {
-        space: {
-          equals: spaceId,
-        },
-      },
+      user,
       page,
       limit,
       sort: '-createdAt',
+      overrideAccess: false,
     })
     return resources
   } catch (error) {

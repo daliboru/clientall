@@ -7,6 +7,7 @@ import config from '@payload-config'
 import { revalidatePath } from 'next/cache'
 import { headers as nextHeaders } from 'next/headers'
 import { getPayload } from 'payload'
+import { getCurrentUser } from './auth'
 
 const payload = await getPayload({ config })
 
@@ -54,9 +55,13 @@ export async function addMember(email: string, spaceId: string) {
 
 export async function removeMember(memberId: number, spaceId: number) {
   try {
+    const user = await getCurrentUser()
+
     const space = await payload.findByID({
       collection: 'spaces',
       id: spaceId,
+      overrideAccess: false,
+      user,
     })
     const existingMembers = space.members || []
     const newMemberId = memberId

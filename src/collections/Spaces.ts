@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { isRel } from '../lib/payload-utils'
 
 export const Spaces: CollectionConfig = {
   slug: 'spaces',
@@ -73,7 +74,7 @@ export const Spaces: CollectionConfig = {
 
       return {
         members: {
-          contains: req.user.id,
+          contains: isRel(req.user) ? req.user.id : req.user,
         },
       }
     },
@@ -98,5 +99,55 @@ export const Spaces: CollectionConfig = {
         },
       }
     },
+  },
+  hooks: {
+    beforeDelete: [
+      async ({ req }) => {
+        // Delete all related notes
+        const notes = await req.payload.find({
+          collection: 'notes',
+          overrideAccess: false,
+          user: req.user,
+        })
+
+        for (const note of notes.docs) {
+          await req.payload.delete({
+            collection: 'notes',
+            id: note.id,
+            user: req.user,
+          })
+        }
+
+        // Delete all related resources
+        const resources = await req.payload.find({
+          collection: 'resources',
+          overrideAccess: false,
+          user: req.user,
+        })
+
+        for (const resource of resources.docs) {
+          await req.payload.delete({
+            collection: 'resources',
+            id: resource.id,
+            user: req.user,
+          })
+        }
+
+        // Delete all related deliverables
+        const deliverables = await req.payload.find({
+          collection: 'deliverables',
+          overrideAccess: false,
+          user: req.user,
+        })
+
+        for (const deliverable of deliverables.docs) {
+          await req.payload.delete({
+            collection: 'deliverables',
+            id: deliverable.id,
+            user: req.user,
+          })
+        }
+      },
+    ],
   },
 }
