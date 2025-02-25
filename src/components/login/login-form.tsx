@@ -5,16 +5,15 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { toast } from '@/lib/use-toast'
 import { cn } from '@/lib/utils'
-import Link from 'next/link'
-import { useState } from 'react'
-import { login } from '@/lib/actions/auth'
 import { UserLoginForm, userLoginSchema } from '@/lib/validations/space'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from '@/lib/use-toast'
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const router = useRouter()
@@ -34,25 +33,36 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
     setError('')
 
     try {
-      const result = await login(data.email, data.password)
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/external-login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      })
 
-      if (!result.success) {
-        setError(result.message)
+      const result = await res.json()
+
+      if (result.errors) {
+        setError(result.errors[0]?.message)
+        setIsPending(false)
         return
       }
 
-      // Immediate visual feedback
       toast({
-        title: 'Welcome back!',
+        title: `Welcome back ${result.user.name}!`,
         description: 'Redirecting to dashboard...',
         variant: 'success',
       })
 
-      // Use replace instead of push for smoother transition
+      // Ensure state updates before navigation
+      setIsPending(false)
       router.replace('/dashboard')
     } catch (error: any) {
       setError('Something went wrong. Please try again.')
-    } finally {
       setIsPending(false)
     }
   }

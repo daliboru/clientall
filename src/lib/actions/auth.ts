@@ -24,41 +24,6 @@ export async function getCurrentUser() {
   }
 }
 
-export async function login(email: string, password: string) {
-  try {
-    const result = await payload.login({
-      collection: 'users',
-      data: {
-        email,
-        password,
-      },
-    })
-
-    if (result.token) {
-      const cookies = await getCookies()
-      cookies.set('payload-token', result.token, {
-        httpOnly: true,
-        secure: true,
-        path: '/',
-        sameSite: 'lax',
-        expires: new Date(Date.now() + 2 * 60 * 60 * 1000), // 2 hours
-      })
-
-      revalidatePath('/', 'layout')
-    }
-
-    return {
-      success: true,
-      message: 'Login successful',
-    }
-  } catch (error: any) {
-    return {
-      success: false,
-      message: error.message,
-    }
-  }
-}
-
 interface SignUpData {
   email: string
   name: string
