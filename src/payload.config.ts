@@ -9,6 +9,7 @@ import { buildConfig } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
+import { Deliverables } from './collections/Deliverables'
 import { Media } from './collections/Media'
 import { Notes } from './collections/Notes'
 import { Resources } from './collections/Resources'
@@ -29,7 +30,7 @@ export default buildConfig({
   cors: [String(process.env.NEXT_PUBLIC_SERVER_URL)],
   csrf: [String(process.env.NEXT_PUBLIC_SERVER_URL)],
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL,
-  collections: [Users, Media, Spaces, Notes, Resources],
+  collections: [Users, Media, Spaces, Notes, Resources, Deliverables],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

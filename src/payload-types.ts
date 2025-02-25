@@ -71,6 +71,7 @@ export interface Config {
     spaces: Space;
     notes: Note;
     resources: Resource;
+    deliverables: Deliverable;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -90,6 +91,7 @@ export interface Config {
     spaces: SpacesSelect<false> | SpacesSelect<true>;
     notes: NotesSelect<false> | NotesSelect<true>;
     resources: ResourcesSelect<false> | ResourcesSelect<true>;
+    deliverables: DeliverablesSelect<false> | DeliverablesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -218,7 +220,34 @@ export interface Resource {
    */
   url?: string | null;
   space: number | Space;
-  createdBy?: (number | null) | User;
+  createdBy: number | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "deliverables".
+ */
+export interface Deliverable {
+  id: number;
+  name: string;
+  type: 'file' | 'link';
+  attachment?: (number | null) | Media;
+  /**
+   * e.g. https://google.com
+   */
+  url?: string | null;
+  space: number | Space;
+  createdBy: number | User;
+  status: 'pending' | 'approved' | 'correction';
+  statusComment?: string | null;
+  views?:
+    | {
+        user: number | User;
+        viewedAt: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -248,6 +277,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'resources';
         value: number | Resource;
+      } | null)
+    | ({
+        relationTo: 'deliverables';
+        value: number | Deliverable;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -366,6 +399,29 @@ export interface ResourcesSelect<T extends boolean = true> {
   url?: T;
   space?: T;
   createdBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "deliverables_select".
+ */
+export interface DeliverablesSelect<T extends boolean = true> {
+  name?: T;
+  type?: T;
+  attachment?: T;
+  url?: T;
+  space?: T;
+  createdBy?: T;
+  status?: T;
+  statusComment?: T;
+  views?:
+    | T
+    | {
+        user?: T;
+        viewedAt?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

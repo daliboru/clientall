@@ -1,9 +1,9 @@
+import { asManyRel, isRel } from '@/lib/payload-utils'
+import { Resource, User } from '@/payload-types'
 import type { CollectionConfig } from 'payload'
-import { asManyRel } from '../lib/payload-utils'
-import { Resource, User } from '../payload-types'
 
-export const Resources: CollectionConfig = {
-  slug: 'resources',
+export const Deliverables: CollectionConfig = {
+  slug: 'deliverables',
   admin: {
     useAsTitle: 'name',
   },
@@ -68,12 +68,50 @@ export const Resources: CollectionConfig = {
       name: 'createdBy',
       type: 'relationship',
       relationTo: 'users',
+      required: true,
       admin: {
         readOnly: true,
       },
-      required: true,
       defaultValue: ({ user }) => user?.id,
       maxDepth: 2,
+    },
+    {
+      name: 'status',
+      type: 'select',
+      required: true,
+      defaultValue: 'pending',
+      options: [
+        { label: 'Pending', value: 'pending' },
+        { label: 'Approved', value: 'approved' },
+        { label: 'Needs Correction', value: 'correction' },
+      ],
+    },
+    {
+      name: 'statusComment',
+      type: 'textarea',
+      admin: {
+        condition: (data) => data.status === 'correction',
+      },
+    },
+    {
+      name: 'views',
+      type: 'array',
+      admin: {
+        readOnly: true,
+      },
+      fields: [
+        {
+          name: 'user',
+          type: 'relationship',
+          relationTo: 'users',
+          required: true,
+        },
+        {
+          name: 'viewedAt',
+          type: 'date',
+          required: true,
+        },
+      ],
     },
   ],
   hooks: {
@@ -86,6 +124,33 @@ export const Resources: CollectionConfig = {
           data.file = undefined
         }
         return data
+      },
+    ],
+    afterRead: [
+      async ({ req, doc }) => {
+        if (req.user && doc) {
+          // Add view if user hasn't viewed this deliverable before
+          const existingView = asManyRel<{ user: number | User; viewedAt: string }>(
+            doc.views,
+          )?.find((view) => isRel(view.user) && view.user.id === req.user?.id)
+
+          if (!existingView) {
+            await req.payload.update({
+              collection: 'deliverables',
+              id: doc.id,
+              data: {
+                views: [
+                  ...(doc.views || []),
+                  {
+                    user: req.user.id,
+                    viewedAt: new Date().toISOString(),
+                  },
+                ],
+              },
+            })
+          }
+        }
+        return doc
       },
     ],
   },

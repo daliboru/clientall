@@ -28,6 +28,10 @@ export default function SpaceNav({ spaceId, isOwner }: SpaceNavProps) {
       path: `/spaces/${spaceId}/resources`,
     },
     {
+      name: 'Deliverables',
+      path: `/spaces/${spaceId}/deliverables`,
+    },
+    {
       name: 'Members',
       path: `/spaces/${spaceId}/members`,
     },

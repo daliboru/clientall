@@ -3,6 +3,7 @@
 import config from '@payload-config'
 import { revalidatePath } from 'next/cache'
 import { getPayload } from 'payload'
+import { getCurrentUser } from './auth'
 
 const payload = await getPayload({ config })
 export async function getResources(spaceId?: number | string, page: number = 1, limit: number = 3) {
@@ -27,6 +28,9 @@ export async function getResources(spaceId?: number | string, page: number = 1, 
 
 export async function createLinkResource(data: { name: string; url: string; spaceId: number }) {
   try {
+    const user = await getCurrentUser()
+    if (!user) return { success: false }
+
     await payload.create({
       collection: 'resources',
       data: {
@@ -34,14 +38,15 @@ export async function createLinkResource(data: { name: string; url: string; spac
         url: data.url,
         type: 'link',
         space: data.spaceId,
+        createdBy: user.id,
       },
     })
 
     const updatedResources = await getResources(data.spaceId, 1)
     revalidatePath(`/spaces/${data.spaceId}/resources`)
-    return { 
-      success: true, 
-      resources: updatedResources 
+    return {
+      success: true,
+      resources: updatedResources,
     }
   } catch (error) {
     console.error(error)
@@ -51,6 +56,9 @@ export async function createLinkResource(data: { name: string; url: string; spac
 
 export async function createFileResource(data: { name: string; file: File; spaceId: number }) {
   try {
+    const user = await getCurrentUser()
+    if (!user) return { success: false }
+
     const arrayBuffer = await data.file.arrayBuffer()
     const fileBuffer = Buffer.from(arrayBuffer)
 
@@ -74,14 +82,15 @@ export async function createFileResource(data: { name: string; file: File; space
         type: 'file',
         space: data.spaceId,
         attachment: file.id,
+        createdBy: user.id,
       },
     })
 
     const updatedResources = await getResources(data.spaceId, 1)
     revalidatePath(`/spaces/${data.spaceId}/resources`)
-    return { 
-      success: true, 
-      resources: updatedResources 
+    return {
+      success: true,
+      resources: updatedResources,
     }
   } catch (error) {
     console.error(error)
@@ -98,10 +107,10 @@ export async function deleteResource(id: number, spaceId: string, currentPage: n
 
     const updatedResources = await getResources(spaceId, currentPage)
     revalidatePath(`/spaces/${spaceId}/resources`)
-    return { 
-      message: 'Resource deleted successfully', 
+    return {
+      message: 'Resource deleted successfully',
       success: true,
-      resources: updatedResources
+      resources: updatedResources,
     }
   } catch (error) {
     console.error(error)
