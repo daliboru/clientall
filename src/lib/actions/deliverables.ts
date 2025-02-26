@@ -21,6 +21,11 @@ export async function getDeliverables(
       collection: 'deliverables',
       user,
       page,
+      where: {
+        space: {
+          equals: spaceId,
+        },
+      },
       limit,
       sort: '-createdAt',
       overrideAccess: false,

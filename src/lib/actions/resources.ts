@@ -15,6 +15,11 @@ export async function getResources(spaceId?: number | string, page: number = 1, 
       collection: 'resources',
       user,
       page,
+      where: {
+        space: {
+          equals: spaceId,
+        },
+      },
       limit,
       sort: '-createdAt',
       overrideAccess: false,

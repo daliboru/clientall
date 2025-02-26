@@ -13,7 +13,9 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { deleteSpace } from '@/lib/actions/spaces'
+import { toast } from '@/lib/use-toast'
 import { Loader2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 interface DeleteSpaceProps {
@@ -22,14 +24,24 @@ interface DeleteSpaceProps {
 }
 
 export function DeleteSpace({ spaceId, spaceName }: DeleteSpaceProps) {
+  const router = useRouter()
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDelete = async () => {
     setIsDeleting(true)
     try {
-      await deleteSpace(spaceId)
+      const res = await deleteSpace(spaceId)
+      router.replace('/dashboard')
+      if (res?.success) {
+        toast({
+          title: 'Space deleted successfully',
+          description: `The space ${spaceName} has been deleted successfully.`,
+        })
+      }
     } catch (error) {
       console.error('Error deleting space:', error)
+      setIsDeleting(false)
+    } finally {
       setIsDeleting(false)
     }
   }

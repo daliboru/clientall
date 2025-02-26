@@ -4,7 +4,6 @@ import { spaceSettingsSchema, type SpaceSettingsForm } from '@/lib/validations/s
 import config from '@payload-config'
 import { revalidatePath } from 'next/cache'
 import { headers as nextHeaders } from 'next/headers'
-import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import { isMediaRel } from '../payload-utils'
 import { getCurrentUser } from './auth'
@@ -178,20 +177,20 @@ export async function createSpace(data: SpaceSettingsForm) {
 }
 
 export async function deleteSpace(spaceId: string) {
-  let path: string | undefined
   try {
+    const user = await getCurrentUser()
     await payload.delete({
       collection: 'spaces',
       id: spaceId,
+      user,
+      overrideAccess: false,
     })
     revalidatePath('/dashboard')
-    path = '/dashboard'
-  } catch (error: any) {
     return {
-      success: false,
-      error: error.message || 'Failed to delete space',
+      success: true,
+      message: 'Space deleted successfully',
     }
-  } finally {
-    if (path) redirect(path)
+  } catch (error: any) {
+    console.log(error)
   }
 }

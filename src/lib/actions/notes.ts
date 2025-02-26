@@ -16,6 +16,11 @@ export async function getNotes(spaceId?: number | string, page: number = 1, limi
     collection: 'notes',
     page,
     user,
+    where: {
+      space: {
+        equals: spaceId,
+      },
+    },
     limit,
     sort: '-createdAt',
     overrideAccess: false,

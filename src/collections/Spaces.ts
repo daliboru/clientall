@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import { type CollectionConfig } from 'payload'
 import { isRel } from '../lib/payload-utils'
 
 export const Spaces: CollectionConfig = {
@@ -102,51 +102,35 @@ export const Spaces: CollectionConfig = {
   },
   hooks: {
     beforeDelete: [
-      async ({ req }) => {
-        // Delete all related notes
-        const notes = await req.payload.find({
+      async ({ req, id }) => {
+        if (!req.user) return false
+
+        const { payload } = req
+
+        await payload.delete({
           collection: 'notes',
-          overrideAccess: false,
-          user: req.user,
+          where: {
+            space: {
+              equals: id,
+            },
+          },
         })
-
-        for (const note of notes.docs) {
-          await req.payload.delete({
-            collection: 'notes',
-            id: note.id,
-            user: req.user,
-          })
-        }
-
-        // Delete all related resources
-        const resources = await req.payload.find({
+        await payload.delete({
           collection: 'resources',
-          overrideAccess: false,
-          user: req.user,
+          where: {
+            space: {
+              equals: id,
+            },
+          },
         })
-
-        for (const resource of resources.docs) {
-          await req.payload.delete({
-            collection: 'resources',
-            id: resource.id,
-            user: req.user,
-          })
-        }
-
-        // Delete all related deliverables
-        const deliverables = await req.payload.find({
+        await payload.delete({
           collection: 'deliverables',
-          overrideAccess: false,
-          user: req.user,
+          where: {
+            space: {
+              equals: id,
+            },
+          },
         })
-
-        for (const deliverable of deliverables.docs) {
-          await req.payload.delete({
-            collection: 'deliverables',
-            id: deliverable.id,
-            user: req.user,
-          })
-        }
       },
     ],
   },
