@@ -8,7 +8,10 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
   },
-  auth: true,
+  auth: {
+    verify: true,
+    tokenExpiration: 28800, // 8 hours
+  },
   fields: [
     // Email added by default
     {
@@ -148,9 +151,16 @@ export const Users: CollectionConfig = {
   },
   hooks: {
     beforeLogin: [
-      ({ user }) => {
+      ({ user, req }) => {
+        console.log('beforeLogin', user)
+        console.log(req)
+
         if (!user.profileComplete) {
           throw new Error('Complete your profile to login')
+        }
+
+        if (!user._verified) {
+          throw new Error('Verify your email to login')
         }
         return user
       },

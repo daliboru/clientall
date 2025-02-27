@@ -107,7 +107,7 @@ export const Spaces: CollectionConfig = {
 
         const { payload } = req
 
-        await payload.delete({
+        const deleteNotes = payload.delete({
           collection: 'notes',
           where: {
             space: {
@@ -115,7 +115,7 @@ export const Spaces: CollectionConfig = {
             },
           },
         })
-        await payload.delete({
+        const deleteResources = payload.delete({
           collection: 'resources',
           where: {
             space: {
@@ -123,7 +123,7 @@ export const Spaces: CollectionConfig = {
             },
           },
         })
-        await payload.delete({
+        const deleteDeliverables = payload.delete({
           collection: 'deliverables',
           where: {
             space: {
@@ -131,6 +131,8 @@ export const Spaces: CollectionConfig = {
             },
           },
         })
+
+        await Promise.all([deleteNotes, deleteResources, deleteDeliverables])
       },
     ],
   },

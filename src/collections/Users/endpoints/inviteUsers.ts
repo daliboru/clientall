@@ -49,6 +49,7 @@ export const inviteUsers: Endpoint = {
         password: tempPassword,
         name: 'Invited User',
       },
+      disableVerificationEmail: true,
     })
 
     const token = crypto.randomBytes(20).toString('hex')

@@ -45,6 +45,7 @@ export const completeUsersProfile: Endpoint = {
       data: {
         password,
         name,
+        _verified: true,
         profileComplete: true,
         resetPasswordToken: null,
         resetPasswordExpiration: null,
