@@ -1,70 +1,86 @@
+import { ArrowRight, Building2, Users2, Zap } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 
 const Page: React.FC = () => {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-b from-white to-purple-50">
       {/* Navigation */}
-      <nav className="px-6 py-4 flex justify-between items-center">
+      <nav className="px-6 py-4 flex justify-between items-center max-w-7xl mx-auto">
         <div className="flex items-center">
-          <span className="text-2xl font-bold text-purple-600">ClientAll</span>
+          <span className="text-2xl font-bold text-purple-600">Tiny Portals</span>
         </div>
-        <div className="space-x-4">
-          <Link href="#" className="text-gray-700 hover:text-purple-600">
+        <div className="space-x-6">
+          <Link href="#features" className="text-gray-600 hover:text-purple-600">
             Features
           </Link>
-          <Link href="#" className="text-gray-700 hover:text-purple-600">
+          <Link href="#pricing" className="text-gray-600 hover:text-purple-600">
             Pricing
           </Link>
           <Link
             href="/login"
-            className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700"
+            className="bg-purple-600 text-white px-5 py-2.5 rounded-lg hover:bg-purple-700 transition-colors"
           >
-            Login
+            Sign In
           </Link>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <main className="container mx-auto px-6 py-16 text-center">
-        <h1 className="text-5xl font-extrabold text-gray-900 mb-6">
-          Simplify Your Workflow <br /> With Our SaaS Solution
+      <main className="max-w-7xl mx-auto px-6 py-24 flex flex-col items-center">
+        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 text-center leading-tight mb-6">
+          Manage Your Clients <br />
+          <span className="text-purple-600">With Confidence</span>
         </h1>
-        <p className="text-xl text-gray-600 mb-8">
-          Boost productivity, streamline processes, and drive growth with our powerful platform.
+        <p className="text-xl text-gray-600 text-center max-w-2xl mb-12">
+          The all-in-one platform for consultants to organize client information, track
+          deliverables, and streamline communication.
         </p>
-        <div className="flex justify-center space-x-4">
-          <button className="bg-purple-600 text-white px-6 py-3 rounded-md hover:bg-purple-700 flex items-center">
-            Get Started
-          </button>
-          <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-100">
-            Watch Demo
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link
+            href="/signup"
+            className="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2 text-lg font-medium"
+          >
+            Get Started <ArrowRight className="h-5 w-5" />
+          </Link>
+          <button className="border border-purple-200 bg-white text-purple-600 px-8 py-3 rounded-lg hover:bg-purple-50 transition-colors text-lg font-medium">
+            Book a Demo
           </button>
         </div>
       </main>
 
       {/* Features Section */}
-      <section className="bg-gray-50 py-16">
-        <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-12">Key Features</h2>
-          <div className="grid md:grid-cols-3 gap-8">
+      <section id="features" className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-3xl font-bold text-center mb-16">Everything You Need</h2>
+          <div className="grid md:grid-cols-3 gap-12">
             {[
               {
-                title: 'Seamless Integration',
-                description: 'Connect with your existing tools effortlessly.',
+                icon: <Users2 className="h-8 w-8 text-purple-600" />,
+                title: 'Client Management',
+                description:
+                  'Organize client information, documents, and communication history in one place.',
               },
               {
-                title: 'Real-time Analytics',
-                description: 'Gain insights instantly with our comprehensive dashboards.',
+                icon: <Building2 className="h-8 w-8 text-purple-600" />,
+                title: 'Workspace Organization',
+                description:
+                  'Create dedicated spaces for each client with customizable access and permissions.',
               },
               {
-                title: 'Scalable Infrastructure',
-                description: 'Grow your business without worrying about technical limitations.',
+                icon: <Zap className="h-8 w-8 text-purple-600" />,
+                title: 'Efficient Workflows',
+                description:
+                  'Streamline your processes with automated tasks and deliverable tracking.',
               },
             ].map((feature, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-md text-center">
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
+              <div
+                key={index}
+                className="bg-white p-8 rounded-2xl border border-purple-100 hover:border-purple-200 transition-colors"
+              >
+                <div className="mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -72,9 +88,11 @@ const Page: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8">
-        <div className="container mx-auto px-6 text-center">
-          <p>&copy; 2025 ClientAll. All rights reserved.</p>
+      <footer className="bg-gray-50 py-12 border-t border-purple-100">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <p className="text-gray-600">
+            &copy; {new Date().getFullYear()} ClientAll. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>
