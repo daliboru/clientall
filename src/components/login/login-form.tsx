@@ -58,11 +58,10 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         variant: 'success',
       })
 
-      // Ensure state updates before navigation
-      setIsPending(false)
       router.replace('/dashboard')
     } catch (error: any) {
       setError('Something went wrong. Please try again.')
+    } finally {
       setIsPending(false)
     }
   }

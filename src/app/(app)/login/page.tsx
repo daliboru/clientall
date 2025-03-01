@@ -1,5 +1,3 @@
-'use client'
-
 import { LoginForm } from '@/components/login/login-form'
 import Link from 'next/link'
 
