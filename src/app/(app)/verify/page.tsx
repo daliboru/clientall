@@ -6,7 +6,7 @@ import NotFoundPage from '../not-found'
 export default async function VerifyUserPage({
   searchParams,
 }: {
-  searchParams: { id: string; token: string }
+  searchParams: Promise<{ id: string; token: string }>
 }) {
   const { token, id } = await searchParams
 

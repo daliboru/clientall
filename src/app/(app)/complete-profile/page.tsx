@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 export default async function CompleteProfilePage({
   searchParams,
 }: {
-  searchParams: { token: string }
+  searchParams: Promise<{ token: string }>
 }) {
   const { token } = await searchParams
 

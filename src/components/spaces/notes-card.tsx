@@ -23,7 +23,6 @@ import { Note } from '@/payload-types'
 import { formatDistanceToNow } from 'date-fns'
 import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
 import { useState } from 'react'
-import { createNote } from '../../lib/actions/notes'
 import { AddNoteDialog } from './add-note-dialog'
 
 interface NotesCardProps {
@@ -98,7 +97,8 @@ export function NotesCard({
         <div className="space-y-1">
           <CardTitle className="text-2xl font-bold text-purple-600">Notes</CardTitle>
           <CardDescription className="text-base text-muted-foreground">
-            Share important updates, announcements, and insights with your team. Keep everyone informed and aligned on project progress and key decisions.
+            Share important updates, announcements, and insights with your team. Keep everyone
+            informed and aligned on project progress and key decisions.
           </CardDescription>
         </div>
         <div className="flex w-full sm:w-auto">
