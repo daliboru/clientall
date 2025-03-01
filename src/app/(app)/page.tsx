@@ -91,7 +91,7 @@ const Page: React.FC = () => {
       <footer className="bg-gray-50 py-12 border-t border-purple-100">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <p className="text-gray-600">
-            &copy; {new Date().getFullYear()} ClientAll. All rights reserved.
+            &copy; {new Date().getFullYear()} Tiny Portals. All rights reserved.
           </p>
         </div>
       </footer>

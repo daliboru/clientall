@@ -4,10 +4,9 @@ import { profileSettingsSchema } from '@/lib/validations/user-settings'
 import { Media, User } from '@/payload-types'
 import config from '@payload-config'
 import { revalidatePath } from 'next/cache'
-import { headers as nextHeaders } from 'next/headers'
+import { cookies as getCookies, headers as nextHeaders } from 'next/headers'
 import { getPayload } from 'payload'
 import { isMediaRel } from '../payload-utils'
-import { cookies as getCookies } from 'next/headers'
 
 const payload = await getPayload({ config })
 
@@ -43,7 +42,6 @@ export async function updateUser(formData: FormData) {
     revalidatePath('/')
     return { success: true }
   } catch (error: any) {
-    console.log('Error updating user:', error.message)
     return { success: false, error: 'Failed to update user' }
   }
 }
@@ -93,7 +91,6 @@ async function uploadAvatar(avatar: File, name: string, user: User): Promise<Med
       },
     })
   } catch (error: any) {
-    console.log('Error uploading avatar:', error.message)
     throw new Error('Failed to upload avatar')
   }
 }
@@ -126,7 +123,7 @@ export async function deleteUser(userId: number) {
 
     const cookies = await getCookies()
     cookies.delete('payload-token')
-    
+
     revalidatePath('/')
     return { success: true }
   } catch (error: any) {

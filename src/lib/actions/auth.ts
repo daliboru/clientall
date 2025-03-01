@@ -12,6 +12,7 @@ export async function getCurrentUser() {
     const headers = await nextHeaders()
     const result = await payload.auth({ headers })
     const user = result.user
+
     if (!user) {
       const cookies = await getCookies()
       cookies.delete('payload-token')
@@ -33,12 +34,37 @@ interface SignUpData {
 
 export async function signup(data: SignUpData) {
   try {
-    await payload.create({
+    const user = await payload.create({
       collection: 'users',
       data: {
         role: 'client',
         ...data,
       },
+      disableVerificationEmail: true,
+      showHiddenFields: true,
+    })
+
+    await payload.sendEmail({
+      to: data.email,
+      subject: 'Welcome to Tiny Portals - Verify Your Email',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h1 style="color: #6d28d9; text-align: center;">Welcome to Tiny Portals</h1>
+          <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">
+            Hi ${data.name},<br><br>
+            Thank you for signing up! To start using Tiny Portals, please verify your email address by clicking the button below.
+          </p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${process.env.NEXT_PUBLIC_SERVER_URL}/verify?token=${user._verificationToken}&id=${user.id}"
+               style="background-color: #6d28d9; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+              Verify Email Address
+            </a>
+          </div>
+          <p style="color: #6b7280; font-size: 14px; text-align: center;">
+            If you didn't create an account with Tiny Portals, you can safely ignore this email.
+          </p>
+        </div>
+      `,
     })
 
     return {

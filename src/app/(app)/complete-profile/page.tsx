@@ -1,15 +1,12 @@
 import { CompleteProfileForm } from '@/components/auth/complete-profile-form'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
-type Params = Promise<{ token: string }>
-
-export async function generateMetadata(props: { params: Params }) {
-  const params = await props.params
-  const token = params.token
-}
-
-export default async function CompleteProfilePage(props: { params: Params }) {
-  const { token } = await props.params
+export default async function CompleteProfilePage({
+  searchParams,
+}: {
+  searchParams: { token: string }
+}) {
+  const { token } = await searchParams
 
   if (!token) {
     return (

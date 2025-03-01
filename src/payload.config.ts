@@ -19,6 +19,10 @@ import { Users } from './collections/Users'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+if (process.env.NODE_ENV === 'development') {
+  process.setMaxListeners(20)
+}
+
 export default buildConfig({
   debug: process.env.NODE_ENV === 'development',
   admin: {
@@ -43,7 +47,7 @@ export default buildConfig({
   }),
   sharp,
   email: nodemailerAdapter({
-    defaultFromName: 'Clientall App',
+    defaultFromName: 'Tiny Portals',
     defaultFromAddress: String(process.env.SMTP_USER),
     transport: nodemailer.createTransport({
       host: process.env.SMTP_HOST,

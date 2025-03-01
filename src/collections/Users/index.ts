@@ -2,6 +2,7 @@ import { CollectionConfig } from 'payload'
 import { completeUsersProfile } from './endpoints/completeUsersProfile'
 import { externalUsersLogin } from './endpoints/externalUsersLogin'
 import { inviteUsers } from './endpoints/inviteUsers'
+import { verifyUsersProfile } from './endpoints/verifyUsersProfile'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -151,10 +152,7 @@ export const Users: CollectionConfig = {
   },
   hooks: {
     beforeLogin: [
-      ({ user, req }) => {
-        console.log('beforeLogin', user)
-        console.log(req)
-
+      ({ user }) => {
         if (!user.profileComplete) {
           throw new Error('Complete your profile to login')
         }
@@ -166,5 +164,5 @@ export const Users: CollectionConfig = {
       },
     ],
   },
-  endpoints: [completeUsersProfile, inviteUsers, externalUsersLogin],
+  endpoints: [completeUsersProfile, inviteUsers, externalUsersLogin, verifyUsersProfile],
 }
