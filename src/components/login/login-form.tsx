@@ -61,7 +61,6 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
       router.replace('/dashboard')
     } catch (error: any) {
       setError('Something went wrong. Please try again.')
-    } finally {
       setIsPending(false)
     }
   }
