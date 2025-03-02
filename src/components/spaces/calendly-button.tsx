@@ -56,6 +56,7 @@ export function CalendlyButton({ url, isOwner, name, email }: CalendlyButtonProp
       url={url}
       prefill={{ name, email }}
       rootElement={document.getElementById('root') || document.body}
+      // @ts-expect-error This works
       text={
         <div className="flex items-center">
           <Calendar className="h-4 w-4 mr-2" />
