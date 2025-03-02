@@ -1,12 +1,14 @@
+import { CalendlyButton } from '@/components/spaces/calendly-button'
 import SpaceNav from '@/components/spaces/space-nav'
 import { Button } from '@/components/ui/button'
+import { NotFound } from '@/components/ui/not-found'
 import { getCurrentUser } from '@/lib/actions/auth'
 import { getSpace } from '@/lib/actions/spaces'
+import { getUserById } from '@/lib/actions/users'
 import { isMediaRel, isRel } from '@/lib/payload-utils'
-import { Calendar, ChevronLeft, ImageIcon } from 'lucide-react'
+import { ChevronLeft, ImageIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { NotFound } from '@/components/ui/not-found'
 
 type Params = Promise<{ spaceId: string }>
 
@@ -27,7 +29,7 @@ export default async function Layout({
 
   if (!user) {
     return (
-      <NotFound 
+      <NotFound
         title="Authentication Required"
         description="Please sign in to access this space."
         showBack={false}
@@ -37,7 +39,7 @@ export default async function Layout({
 
   if (!space) {
     return (
-      <NotFound 
+      <NotFound
         title="Space Not Found"
         description="This space doesn't exist or you don't have permission to access it."
       />
@@ -45,6 +47,8 @@ export default async function Layout({
   }
 
   const isOwner = isRel(space.owner) && space.owner.id === user.id
+  const ownerId = isRel(space.owner) ? space.owner.id : null
+  const owner = isOwner ? user : ownerId ? await getUserById(ownerId) : null
 
   return (
     <div className="space-y-6">
@@ -56,10 +60,12 @@ export default async function Layout({
               Back
             </Button>
           </Link>
-          <Button variant="outline" size="sm">
-            <Calendar className="h-4 w-4 mr-2" />
-            Schedule Call
-          </Button>
+          <CalendlyButton
+            url={owner?.calendly_url}
+            isOwner={isOwner}
+            name={user.name}
+            email={user.email}
+          />
         </div>
       </div>
 

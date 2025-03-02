@@ -142,6 +142,7 @@ export interface User {
     docs?: (number | Space)[] | null;
     hasNextPage?: boolean | null;
   } | null;
+  calendly_url?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -336,6 +337,7 @@ export interface UsersSelect<T extends boolean = true> {
   profileComplete?: T;
   avatar?: T;
   relatedSpaces?: T;
+  calendly_url?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

@@ -69,6 +69,15 @@ export const Users: CollectionConfig = {
       maxDepth: 2,
       hasMany: true,
     },
+    {
+      name: 'calendly_url',
+      label: 'Calendly URL',
+      type: 'text',
+      required: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
   ],
   access: {
     read: async ({ req }) => {

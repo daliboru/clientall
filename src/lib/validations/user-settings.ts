@@ -2,7 +2,7 @@ import * as z from 'zod'
 
 export const profileSettingsSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
-  // emailNotifications: z.boolean().default(true),
+  calendly_url: z.string().url('Please enter a valid URL').or(z.literal('')),
 })
 
 export const passwordSettingsSchema = z

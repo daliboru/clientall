@@ -49,10 +49,12 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState('')
 
+  // Update the form initialization
   const form = useForm<ProfileSettingsFormValues>({
     resolver: zodResolver(profileSettingsSchema),
     defaultValues: {
       name: user.name,
+      calendly_url: user.calendly_url || '',
     },
   })
 
@@ -62,6 +64,9 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
       const formData = new FormData()
       if (values.name) {
         formData.append('name', values.name)
+      }
+      if (values.calendly_url !== undefined) {
+        formData.append('calendly_url', values.calendly_url)
       }
       if (avatar) {
         formData.append('avatar', avatar)
@@ -151,8 +156,10 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Profile Settings</CardTitle>
-        <CardDescription>Manage your account settings and profile information.</CardDescription>
+        <CardTitle className="text-2xl font-bold text-purple-600">Profile Settings</CardTitle>
+        <CardDescription className="text-base text-muted-foreground">
+          Manage your account settings and profile information.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -255,6 +262,27 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
                     <FormControl>
                       <Input {...field} disabled={isPending} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="calendly_url"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Calendly URL</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isPending}
+                        placeholder="https://calendly.com/your-link"
+                      />
+                    </FormControl>
+                    <CardDescription>
+                      Add your Calendly URL to enable scheduling in your spaces
+                    </CardDescription>
                     <FormMessage />
                   </FormItem>
                 )}

@@ -54,7 +54,7 @@ const Nav: React.FC<Props> = ({ user }) => {
   return (
     <nav className="w-full flex justify-center py-4 bg-purple-600">
       <div className="w-full max-w-7xl flex justify-between px-4 items-center">
-        <div className="text-white/90 capitalize font-medium">{`${user?.role || 'User'} view`}</div>
+        <div className="text-white/90 capitalize font-bold">Tiny Portals</div>
         <ul className="flex gap-2 items-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
