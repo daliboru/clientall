@@ -8,7 +8,7 @@ const Page: React.FC = () => {
       {/* Navigation */}
       <nav className="px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0 max-w-7xl mx-auto">
         <div className="flex items-center justify-center sm:justify-start">
-          <span className="text-2xl font-bold text-purple-600">ClientAll</span>
+          <span className="text-2xl font-bold text-purple-600">Tiny Portals</span>
         </div>
         <div className="flex justify-center items-center sm:justify-end space-x-4 sm:space-x-6">
           <Link href="#features" className="text-gray-600 hover:text-purple-600">
@@ -95,7 +95,7 @@ const Page: React.FC = () => {
       <footer className="bg-gray-50 py-8 sm:py-12 border-t border-purple-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-gray-600 text-sm sm:text-base">
-            &copy; {new Date().getFullYear()} ClientAll. All rights reserved.
+            &copy; {new Date().getFullYear()} Tiny Portals. All rights reserved.
           </p>
         </div>
       </footer>
