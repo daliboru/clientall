@@ -51,6 +51,29 @@ export function CalendlyButton({ url, isOwner, name, email }: CalendlyButtonProp
       </TooltipProvider>
     )
   }
+  
+  // Different UI for owners vs members when URL is available
+  if (isOwner) {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div>
+              <Button variant="outline" size="sm" className="border-green-200 bg-green-50">
+                <Calendar className="h-4 w-4 mr-2 text-green-600" />
+                Scheduling Enabled
+              </Button>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Members can schedule calls with you using your Calendly link</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+  }
+  
+  // Regular button for non-owners
   return (
     <PopupButton
       url={url}
