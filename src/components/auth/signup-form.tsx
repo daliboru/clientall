@@ -23,6 +23,7 @@ import { useForm } from 'react-hook-form'
 export function SignUpForm() {
   const router = useRouter()
   const [error, setError] = useState('')
+  const [isPending, setIsPending] = useState(false)
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
@@ -34,24 +35,28 @@ export function SignUpForm() {
     },
   })
 
-  const isPending = form.formState.isSubmitting
-
   const onSubmit = async (data: SignUpFormValues) => {
+    setIsPending(true)
+    setError('')
     try {
-      setError('')
       const result = await signup(data)
 
-      if (result?.success) {
-        toast({
-          title: 'Account created',
-          description: 'Please check your email to verify your account',
-        })
-        router.push('/login')
-      } else {
-        setError(result?.error || 'Something went wrong')
+      if (result.error) {
+        setError(result?.error)
+        setIsPending(false)
+        return
       }
+
+      toast({
+        title: 'Account created',
+        description: 'Please check your email to verify your account',
+        variant: 'success',
+      })
+
+      router.push('/login')
     } catch (error) {
       setError('Something went wrong')
+      setIsPending(false)
     }
   }
 

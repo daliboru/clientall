@@ -5,11 +5,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { createSpace } from '@/lib/actions/spaces'
+import { toast } from '@/lib/use-toast'
 import { spaceSettingsSchema, type SpaceSettingsForm } from '@/lib/validations/space'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { toast } from '@/lib/use-toast'
 
 interface SpaceFormProps {
   onSuccess?: () => void
@@ -25,6 +25,8 @@ export function SpaceForm({ onSuccess, submitLabel = 'Create Space' }: SpaceForm
     },
   })
 
+  const nameLength = form.watch('name')?.length || 0
+  const descriptionLength = form.watch('description')?.length || 0
   const isPending = form.formState.isSubmitting
 
   const onSubmit = async (data: SpaceSettingsForm) => {
@@ -53,7 +55,10 @@ export function SpaceForm({ onSuccess, submitLabel = 'Create Space' }: SpaceForm
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="name">Space Name</Label>
+        <div className="flex justify-between items-center">
+          <Label htmlFor="name">Space Name*</Label>
+          <span className="text-sm text-muted-foreground">{nameLength}/100</span>
+        </div>
         <Input
           id="name"
           placeholder="Enter space name"
@@ -64,8 +69,12 @@ export function SpaceForm({ onSuccess, submitLabel = 'Create Space' }: SpaceForm
           <p className="text-sm text-destructive">{form.formState.errors.name.message}</p>
         )}
       </div>
+
       <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
+        <div className="flex justify-between items-center">
+          <Label htmlFor="description">Description*</Label>
+          <span className="text-sm text-muted-foreground">{descriptionLength}/500</span>
+        </div>
         <Textarea
           id="description"
           placeholder="Enter space description"
@@ -76,6 +85,7 @@ export function SpaceForm({ onSuccess, submitLabel = 'Create Space' }: SpaceForm
           <p className="text-sm text-destructive">{form.formState.errors.description.message}</p>
         )}
       </div>
+
       <div className="flex justify-end">
         <Button type="submit" disabled={isPending}>
           {isPending ? (
