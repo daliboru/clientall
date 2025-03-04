@@ -39,9 +39,7 @@ export function AddMemberDialog({ spaceId }: { spaceId: string }) {
         setOpen(false)
         setEmail('')
       } else {
-        setError(
-          result.error || 'Failed to add member. Please check the email address and try again.',
-        )
+        setError(result.errors[0].message || 'Something went wrong. Please try again.')
       }
     } catch (error) {
       setError('Something went wrong. Please try again.')

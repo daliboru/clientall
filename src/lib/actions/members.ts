@@ -43,13 +43,10 @@ export async function addMember(email: string, spaceId: string) {
 
     return {
       success: false,
-      error: result.error || 'Failed to add member',
+      errors: result.errors,
     }
   } catch (error) {
-    return {
-      success: false,
-      error: 'Something went wrong',
-    }
+    return { success: false }
   }
 }
 

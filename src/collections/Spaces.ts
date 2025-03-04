@@ -65,6 +65,18 @@ export const Spaces: CollectionConfig = {
           return doc?.owner === user.id
         },
       },
+      hooks: {
+        beforeChange: [
+          async ({ previousValue, value }) => {
+            const newMember = value[value.length - 1]
+            const isDuplicate = previousValue?.some((member: number) => member === newMember)
+
+            if (isDuplicate) {
+              throw new Error('Duplicate members not allowed')
+            }
+          },
+        ],
+      },
     },
   ],
   access: {
