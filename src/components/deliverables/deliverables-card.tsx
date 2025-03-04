@@ -253,7 +253,7 @@ export function DeliverablesCard({
                   )}
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <p className="font-medium truncate">{deliverable.name}</p>
+                      <p className="font-medium truncate max-w-sm">{deliverable.name}</p>
                       {getStatusBadge(deliverable.status)}
                     </div>
                     <p className="text-sm text-muted-foreground">

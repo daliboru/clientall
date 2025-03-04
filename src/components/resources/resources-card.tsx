@@ -166,7 +166,7 @@ export function ResourcesCard({
                     <LinkIcon className="h-5 w-5 text-green-500 shrink-0" />
                   )}
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium truncate">{resource.name}</p>
+                    <p className="font-medium truncate max-w-sm">{resource.name}</p>
                     <p className="text-sm text-muted-foreground">
                       Added {formatDistanceToNow(new Date(resource.createdAt), { addSuffix: true })}
                       {resource.type === 'file' && ` • ${getResourceSize(resource)}`}
