@@ -18,7 +18,7 @@ interface SpaceCardProps {
 export function SpaceCard({ space, isOwner }: SpaceCardProps) {
   return (
     <Link href={`/spaces/${space.id}`}>
-      <Card>
+      <Card className="h-full">
         <CardHeader>
           <div className="flex items-start gap-4">
             <div className="h-12 w-12 rounded-lg border flex items-center justify-center bg-muted">
@@ -36,7 +36,7 @@ export function SpaceCard({ space, isOwner }: SpaceCardProps) {
             </div>
             <div className="flex-1">
               <CardTitle className="flex items-center justify-between">
-                {space.name}
+                <span className="line-clamp-1 max-w-[200px]">{space.name}</span>
                 <div className="flex gap-2">
                   {isOwner && (
                     <Badge variant="secondary">
@@ -46,7 +46,9 @@ export function SpaceCard({ space, isOwner }: SpaceCardProps) {
                   )}
                 </div>
               </CardTitle>
-              <CardDescription className="mt-1.5">{space.description}</CardDescription>
+              <CardDescription className="mt-1.5 line-clamp-2 h-10">
+                {space.description}
+              </CardDescription>
             </div>
           </div>
         </CardHeader>

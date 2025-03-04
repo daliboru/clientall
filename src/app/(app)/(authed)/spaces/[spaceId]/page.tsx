@@ -115,7 +115,7 @@ export default async function SpacePage(props: { params: Params }) {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Owner</span>
-                <span>{owner?.name}</span>
+                <span className="line-clamp-1 max-w-[120px]">{owner?.name}</span>
               </div>
             </div>
           </CardContent>
