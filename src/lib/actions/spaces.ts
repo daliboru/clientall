@@ -3,7 +3,6 @@
 import { spaceSettingsSchema, type SpaceSettingsForm } from '@/lib/validations/space'
 import config from '@payload-config'
 import { revalidatePath } from 'next/cache'
-import { headers as nextHeaders } from 'next/headers'
 import { getPayload } from 'payload'
 import { isMediaRel } from '../payload-utils'
 import { getCurrentUser } from './auth'
@@ -132,22 +131,22 @@ export async function updateSpace(spaceId: string, formData: FormData) {
 }
 
 export async function createSpace(data: SpaceSettingsForm) {
-  try {
-    const parse = spaceSettingsSchema.safeParse(data)
+  const parse = spaceSettingsSchema.safeParse(data)
 
-    if (!parse.success) {
+  if (!parse.success) {
+    return {
+      success: false,
+      error: 'Invalid form data',
+      errors: parse.error.flatten().fieldErrors,
+    }
+  }
+  try {
+    const user = await getCurrentUser()
+    if (!user) {
       return {
         success: false,
-        error: 'Invalid form data',
-        errors: parse.error.flatten().fieldErrors,
+        error: 'User not found',
       }
-    }
-
-    const headers = await nextHeaders()
-    const auth = await payload.auth({ headers })
-
-    if (!auth.user) {
-      throw new Error('Not authenticated')
     }
 
     const { name, description } = parse.data
@@ -157,8 +156,8 @@ export async function createSpace(data: SpaceSettingsForm) {
       data: {
         name,
         description,
-        owner: auth.user.id,
-        members: [auth.user.id],
+        owner: user.id,
+        members: [user.id],
       },
     })
 

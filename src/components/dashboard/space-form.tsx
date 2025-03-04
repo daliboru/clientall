@@ -1,8 +1,15 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { createSpace } from '@/lib/actions/spaces'
 import { toast } from '@/lib/use-toast'
@@ -53,51 +60,55 @@ export function SpaceForm({ onSuccess, submitLabel = 'Create Space' }: SpaceForm
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <div className="flex justify-between items-center">
-          <Label htmlFor="name">Space Name*</Label>
-          <span className="text-sm text-muted-foreground">{nameLength}/50</span>
-        </div>
-        <Input
-          id="name"
-          placeholder="Enter space name"
-          {...form.register('name')}
-          disabled={isPending}
-        />
-        {form.formState.errors.name && (
-          <p className="text-sm text-destructive">{form.formState.errors.name.message}</p>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <div className="flex justify-between items-center">
-          <Label htmlFor="description">Description*</Label>
-          <span className="text-sm text-muted-foreground">{descriptionLength}/200</span>
-        </div>
-        <Textarea
-          id="description"
-          placeholder="Enter space description"
-          {...form.register('description')}
-          disabled={isPending}
-        />
-        {form.formState.errors.description && (
-          <p className="text-sm text-destructive">{form.formState.errors.description.message}</p>
-        )}
-      </div>
-
-      <div className="flex justify-end">
-        <Button type="submit" disabled={isPending}>
-          {isPending ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Creating...
-            </>
-          ) : (
-            submitLabel
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <div className="flex justify-between items-center">
+                <FormLabel>Space Name*</FormLabel>
+                <span className="text-sm text-muted-foreground">{nameLength}/50</span>
+              </div>
+              <FormControl>
+                <Input placeholder="Enter space name" {...field} disabled={isPending} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
-        </Button>
-      </div>
-    </form>
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <div className="flex justify-between items-center">
+                <FormLabel>Description*</FormLabel>
+                <span className="text-sm text-muted-foreground">{descriptionLength}/200</span>
+              </div>
+              <FormControl>
+                <Textarea placeholder="Enter space description" {...field} disabled={isPending} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="flex justify-end">
+          <Button type="submit" disabled={isPending}>
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              submitLabel
+            )}
+          </Button>
+        </div>
+      </form>
+    </Form>
   )
 }
