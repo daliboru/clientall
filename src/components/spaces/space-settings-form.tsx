@@ -33,6 +33,7 @@ import { Loader2, Trash2, Upload } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 
 interface Props {
   space: Space
@@ -144,6 +145,19 @@ export function SpaceSettingsForm({ space }: Props) {
     }
   }
 
+  // Add character count state
+  const [nameCharCount, setNameCharCount] = useState(space.name.length)
+  const [descriptionCharCount, setDescriptionCharCount] = useState(space.description.length)
+
+  // Watch form values to update character counts
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      setNameCharCount(value.name?.length || 0)
+      setDescriptionCharCount(value.description?.length || 0)
+    })
+    return () => subscription.unsubscribe()
+  }, [form, form.watch])
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -247,9 +261,14 @@ export function SpaceSettingsForm({ space }: Props) {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Space Name</FormLabel>
+                    <div className="flex items-center justify-between">
+                      <FormLabel>Space Name</FormLabel>
+                      <span className="text-sm text-muted-foreground">
+                        {nameCharCount}/50
+                      </span>
+                    </div>
                     <FormControl>
-                      <Input {...field} disabled={isPending} />
+                      <Input {...field} disabled={isPending} maxLength={50} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -263,9 +282,14 @@ export function SpaceSettingsForm({ space }: Props) {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <div className="flex items-center justify-between">
+                      <FormLabel>Description</FormLabel>
+                      <span className="text-sm text-muted-foreground">
+                        {descriptionCharCount}/200
+                      </span>
+                    </div>
                     <FormControl>
-                      <Textarea {...field} disabled={isPending} />
+                      <Textarea {...field} disabled={isPending} maxLength={200} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

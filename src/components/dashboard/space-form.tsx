@@ -57,7 +57,7 @@ export function SpaceForm({ onSuccess, submitLabel = 'Create Space' }: SpaceForm
       <div className="space-y-2">
         <div className="flex justify-between items-center">
           <Label htmlFor="name">Space Name*</Label>
-          <span className="text-sm text-muted-foreground">{nameLength}/100</span>
+          <span className="text-sm text-muted-foreground">{nameLength}/50</span>
         </div>
         <Input
           id="name"
@@ -73,7 +73,7 @@ export function SpaceForm({ onSuccess, submitLabel = 'Create Space' }: SpaceForm
       <div className="space-y-2">
         <div className="flex justify-between items-center">
           <Label htmlFor="description">Description*</Label>
-          <span className="text-sm text-muted-foreground">{descriptionLength}/500</span>
+          <span className="text-sm text-muted-foreground">{descriptionLength}/200</span>
         </div>
         <Textarea
           id="description"
