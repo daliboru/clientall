@@ -1,3 +1,4 @@
+import { Toaster } from '@/components/ui/toaster'
 import { cn } from '@/lib/utils'
 import { Inter as FontSans } from 'next/font/google'
 import { ReactNode } from 'react'
@@ -13,9 +14,12 @@ const fontSans = FontSans({
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <div className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
-      {children}
-    </div>
+    <html suppressHydrationWarning>
+      <body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
+        {children}
+        <Toaster />
+      </body>
+    </html>
   )
 }
 
