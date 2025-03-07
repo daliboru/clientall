@@ -13,8 +13,6 @@ export async function generateMetadata(props: { params: Params }) {
   const spaceId = params.spaceId
 }
 
-// Remove the ResourcesCard import and getResources import
-
 export default async function SpacePage(props: { params: Params }) {
   const { spaceId } = await props.params
   const space = await getSpace(spaceId)

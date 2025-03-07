@@ -1,26 +1,20 @@
 import { SpaceCard } from '@/components/dashboard/SpaceCard'
+import { SpaceCardListSkeleton } from '@/components/dashboard/SpaceCardSkeleton'
 import { CreateSpaceDialog } from '@/components/dashboard/create-space-dialog'
 import { CreateSpaceForm } from '@/components/dashboard/create-space-form'
 import { getCurrentUser } from '@/lib/actions/auth'
 import { getSpaces } from '@/lib/actions/spaces'
 import { isRel } from '@/lib/payload-utils'
-import React from 'react'
+import React, { Suspense } from 'react'
 
-const Dashboard: React.FC = async () => {
+async function SpacesContent() {
   const user = await getCurrentUser()
   const spaces = await getSpaces()
 
-  if (!user) {
-    return null
-  }
+  if (!user) return null
 
   return (
     <>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Your Spaces</h1>
-        <CreateSpaceDialog />
-      </div>
-
       {spaces && spaces.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {spaces.map((space) => (
@@ -38,6 +32,21 @@ const Dashboard: React.FC = async () => {
       ) : (
         <CreateSpaceForm />
       )}
+    </>
+  )
+}
+
+const Dashboard: React.FC = () => {
+  return (
+    <>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold">Your Spaces</h1>
+        <CreateSpaceDialog />
+      </div>
+
+      <Suspense fallback={<SpaceCardListSkeleton />}>
+        <SpacesContent />
+      </Suspense>
     </>
   )
 }

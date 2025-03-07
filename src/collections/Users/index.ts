@@ -12,6 +12,7 @@ export const Users: CollectionConfig = {
   auth: {
     verify: true,
     tokenExpiration: 28800, // 8 hours
+    useAPIKey: true,
   },
   fields: [
     // Email added by default

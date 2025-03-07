@@ -24,8 +24,7 @@ export default async function Layout({
   params: Params
 }) {
   const { spaceId } = await params
-  const space = await getSpace(spaceId)
-  const user = await getCurrentUser()
+  const [space, user] = await Promise.all([getSpace(spaceId), getCurrentUser()])
 
   if (!user) {
     return (
