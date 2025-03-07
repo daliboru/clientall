@@ -15,6 +15,7 @@ import { Bell } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
+import { useAuth } from '../../_providers/Auth'
 
 type Props = {
   user: User
@@ -22,6 +23,7 @@ type Props = {
 
 const Nav: React.FC<Props> = ({ user }) => {
   const router = useRouter()
+  const { logout } = useAuth()
   const [notifications] = useState([
     {
       id: 1,
@@ -39,12 +41,7 @@ const Nav: React.FC<Props> = ({ user }) => {
 
   const onLogout = async () => {
     try {
-      await fetch('/api/users/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      await logout()
       router.replace('/login')
     } catch (error) {
       console.error('Error logging out:', error)

@@ -6,9 +6,21 @@ import {
   CardHeader,
   CardTitle,
 } from '@/app/(app)/_components/ui/card'
+import config from '@/payload.config'
+import { headers as getHeaders } from 'next/headers'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { getPayload } from 'payload'
 
-export default function SignUpPage() {
+export default async function SignUpPage() {
+  const headers = await getHeaders()
+  const payload = await getPayload({ config })
+  const { user } = await payload.auth({ headers })
+
+  if (user) {
+    redirect(`/dashboard`)
+  }
+
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">

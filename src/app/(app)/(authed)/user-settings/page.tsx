@@ -1,11 +1,16 @@
-import { DeleteUser } from '@/app/(app)/_components/user-settings/delete-user'
-import { GoBackButton } from '@/app/(app)/_components/user-settings/go-back-button'
-import { PasswordSettingsForm } from '@/app/(app)/_components/user-settings/password-settings-form'
-import { ProfileSettingsForm } from '@/app/(app)/_components/user-settings/profile-settings-form'
-import { getCurrentUser } from '@/lib/actions/auth'
+import config from '@/payload.config'
+import { headers as getHeaders } from 'next/headers'
+import { getPayload } from 'payload'
+
+import { DeleteUser } from '../../_components/user-settings/delete-user'
+import { GoBackButton } from '../../_components/user-settings/go-back-button'
+import { PasswordSettingsForm } from '../../_components/user-settings/password-settings-form'
+import { ProfileSettingsForm } from '../../_components/user-settings/profile-settings-form'
 
 export default async function UserSettingsPage() {
-  const user = await getCurrentUser()
+  const headers = await getHeaders()
+  const payload = await getPayload({ config })
+  const { permissions, user } = await payload.auth({ headers })
 
   if (!user) {
     return null

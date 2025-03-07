@@ -11,20 +11,25 @@ import {
 } from '@/app/(app)/_components/ui/card'
 import { Input } from '@/app/(app)/_components/ui/input'
 import { Label } from '@/app/(app)/_components/ui/label'
+import { useAuth } from '@/app/(app)/_providers/Auth'
 import { toast } from '@/lib/use-toast'
 import { cn } from '@/lib/utils'
 import { UserLoginForm, userLoginSchema } from '@/lib/validations/space'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
+  const searchParams = useSearchParams()
+  const allParams = searchParams.toString() ? `?${searchParams.toString()}` : ''
+  const redirect = useRef(searchParams.get('redirect'))
   const router = useRouter()
   const [isPending, setIsPending] = useState(false)
   const [error, setError] = useState('')
+  const { login } = useAuth()
 
   const form = useForm<UserLoginForm>({
     resolver: zodResolver(userLoginSchema),
@@ -39,34 +44,20 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
     setError('')
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/external-login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
-      })
-
-      const result = await res.json()
-
-      if (result.errors) {
-        setError(result.errors[0]?.message)
-        setIsPending(false)
-        return
-      }
+      const user = await login(data.email, data.password)
 
       toast({
-        title: `Welcome back ${result.user.name}!`,
+        title: `Welcome back ${user?.name}!`,
         description: 'Redirecting to dashboard...',
         variant: 'success',
       })
-
-      router.replace('/dashboard')
+      if (redirect?.current) {
+        router.push(redirect.current)
+      } else {
+        router.push('/dashboard')
+      }
     } catch (error: any) {
-      setError('Something went wrong. Please try again.')
+      setError('There was an error with the credentials provided. Please try again.')
       setIsPending(false)
     }
   }
