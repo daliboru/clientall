@@ -1,5 +1,11 @@
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/app/(app)/_components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/app/(app)/_components/ui/card'
 import { getSpace } from '@/lib/actions/spaces'
 import { isRel } from '@/lib/payload-utils'
 import { formatDistanceToNow } from 'date-fns'

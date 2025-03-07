@@ -1,4 +1,4 @@
-import { DeliverablesCard } from '@/components/deliverables/deliverables-card'
+import { DeliverablesCard } from '@/app/(app)/_components/deliverables/deliverables-card'
 import { getDeliverables } from '@/lib/actions/deliverables'
 import { getSpace } from '@/lib/actions/spaces'
 import { isRel } from '@/lib/payload-utils'

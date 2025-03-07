@@ -1,6 +1,12 @@
-import { DeleteSpace } from '@/components/spaces/delete-space'
-import { SpaceSettingsForm } from '@/components/spaces/space-settings-form'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { DeleteSpace } from '@/app/(app)/_components/spaces/delete-space'
+import { SpaceSettingsForm } from '@/app/(app)/_components/spaces/space-settings-form'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/app/(app)/_components/ui/card'
 import { getSpace } from '@/lib/actions/spaces'
 
 type Params = Promise<{ spaceId: string }>

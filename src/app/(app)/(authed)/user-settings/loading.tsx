@@ -1,6 +1,12 @@
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/app/(app)/_components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/app/(app)/_components/ui/card'
+import { Skeleton } from '@/app/(app)/_components/ui/skeleton'
 import { ChevronLeft } from 'lucide-react'
 
 export default function UserSettingsLoading() {

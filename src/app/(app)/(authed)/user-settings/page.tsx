@@ -1,7 +1,7 @@
-import { DeleteUser } from '@/components/user-settings/delete-user'
-import { GoBackButton } from '@/components/user-settings/go-back-button'
-import { PasswordSettingsForm } from '@/components/user-settings/password-settings-form'
-import { ProfileSettingsForm } from '@/components/user-settings/profile-settings-form'
+import { DeleteUser } from '@/app/(app)/_components/user-settings/delete-user'
+import { GoBackButton } from '@/app/(app)/_components/user-settings/go-back-button'
+import { PasswordSettingsForm } from '@/app/(app)/_components/user-settings/password-settings-form'
+import { ProfileSettingsForm } from '@/app/(app)/_components/user-settings/profile-settings-form'
 import { getCurrentUser } from '@/lib/actions/auth'
 
 export default async function UserSettingsPage() {

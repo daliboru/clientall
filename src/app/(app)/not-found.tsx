@@ -1,6 +1,6 @@
-import { NotFound } from '@/components/ui/not-found'
-import { Inter as FontSans } from 'next/font/google'
+import { NotFound } from '@/app/(app)/_components/ui/not-found'
 import { cn } from '@/lib/utils'
+import { Inter as FontSans } from 'next/font/google'
 
 const fontSans = FontSans({
   subsets: ['latin'],

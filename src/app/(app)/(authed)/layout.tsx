@@ -1,4 +1,4 @@
-import Nav from '@/components/Nav/Nav'
+import Nav from '@/app/(app)/_components/Nav/Nav'
 import { getCurrentUser } from '@/lib/actions/auth'
 import { ReactNode } from 'react'
 

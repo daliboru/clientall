@@ -1,4 +1,4 @@
-import { Toaster } from '@/components/ui/toaster'
+import { Toaster } from '@/app/(app)/_components/ui/toaster'
 import { cn } from '@/lib/utils'
 import { Inter as FontSans } from 'next/font/google'
 import { ReactNode } from 'react'

@@ -1,6 +1,12 @@
-import { AddMemberDialog } from '@/components/spaces/add-member-dialog'
-import { MemberList } from '@/components/spaces/member-list'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { AddMemberDialog } from '@/app/(app)/_components/spaces/add-member-dialog'
+import { MemberList } from '@/app/(app)/_components/spaces/member-list'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/app/(app)/_components/ui/card'
 import { getCurrentUser } from '@/lib/actions/auth'
 import { getSpace } from '@/lib/actions/spaces'
 import { asManyRel, isRel } from '@/lib/payload-utils'

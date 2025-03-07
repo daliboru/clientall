@@ -1,4 +1,4 @@
-import { ResourcesCard } from '@/components/resources/resources-card'
+import { ResourcesCard } from '@/app/(app)/_components/resources/resources-card'
 import { getResources } from '@/lib/actions/resources'
 
 type Params = Promise<{ spaceId: string }>
@@ -18,8 +18,8 @@ export default async function ResourcesPage(props: { params: Params }) {
 
   return (
     <div className="space-y-6">
-      <ResourcesCard 
-        resources={resources.docs} 
+      <ResourcesCard
+        resources={resources.docs}
         spaceId={spaceId}
         totalPages={resources.totalPages}
         currentPage={resources.page!}

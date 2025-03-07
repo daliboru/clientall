@@ -1,5 +1,11 @@
-import { CompleteProfileForm } from '@/components/auth/complete-profile-form'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { CompleteProfileForm } from '@/app/(app)/_components/auth/complete-profile-form'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/app/(app)/_components/ui/card'
 
 export default async function CompleteProfilePage({
   searchParams,
