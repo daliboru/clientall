@@ -10,7 +10,6 @@ import {
   FormMessage,
 } from '@/app/(app)/_components/ui/form'
 import { Input } from '@/app/(app)/_components/ui/input'
-import { completeProfile } from '@/lib/actions/auth'
 import { toast } from '@/lib/use-toast'
 import {
   CompleteProfileFormValues,
@@ -20,6 +19,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
+import { completeProfile } from '../../../../lib/actions/users'
 
 interface CompleteProfileFormProps {
   token: string

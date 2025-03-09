@@ -11,7 +11,6 @@ import {
   FormMessage,
 } from '@/app/(app)/_components/ui/form'
 import { Input } from '@/app/(app)/_components/ui/input'
-import { signup } from '@/lib/actions/auth'
 import { toast } from '@/lib/use-toast'
 import { SignUpFormValues, signUpSchema } from '@/lib/validations/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -19,6 +18,7 @@ import { Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { signup } from '../../../../lib/actions/users'
 
 export function SignUpForm() {
   const router = useRouter()

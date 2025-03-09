@@ -26,12 +26,7 @@ import {
   DropdownMenuTrigger,
 } from '@/app/(app)/_components/ui/dropdown-menu'
 import { Pagination } from '@/app/(app)/_components/ui/pagination'
-import {
-  createFileResource,
-  createLinkResource,
-  deleteResource,
-  getResources,
-} from '@/lib/actions/resources'
+import { createFileResource, createLinkResource, deleteResource } from '@/lib/actions/resources'
 import { getResourceSize, isFileResource } from '@/lib/payload-utils'
 import { toast } from '@/lib/use-toast'
 import { Resource } from '@/payload-types'
@@ -39,6 +34,7 @@ import { formatDistanceToNow } from 'date-fns'
 import { FileText, Link as LinkIcon, MoreVertical, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
+import { getResources } from '../../../../lib/get/resources'
 import { AddFileDialog } from './add-resource-file-dialog'
 import { AddLinkDialog } from './add-resource-link-dialog'
 
