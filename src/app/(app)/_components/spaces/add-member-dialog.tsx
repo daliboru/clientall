@@ -10,10 +10,10 @@ import {
   DialogTrigger,
 } from '@/app/(app)/_components/ui/dialog'
 import { Input } from '@/app/(app)/_components/ui/input'
-import { addMember } from '@/lib/actions/members'
 import { toast } from '@/lib/use-toast'
 import { PlusCircle } from 'lucide-react'
 import { useState } from 'react'
+import { addMember } from '../../../../lib/actions/users'
 
 export function AddMemberDialog({ spaceId }: { spaceId: number }) {
   const [email, setEmail] = useState('')
