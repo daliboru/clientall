@@ -21,7 +21,6 @@ import {
   CardTitle,
 } from '@/app/(app)/_components/ui/card'
 import { Pagination } from '@/app/(app)/_components/ui/pagination'
-import { deleteNote, getNotes } from '@/lib/actions/notes'
 import { getNoteAuthor, isMediaRel } from '@/lib/payload-utils'
 import { toast } from '@/lib/use-toast'
 import { getInitials } from '@/lib/utils'
@@ -29,6 +28,8 @@ import { Note } from '@/payload-types'
 import { formatDistanceToNow } from 'date-fns'
 import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { deleteNote } from '../../../../lib/actions/notes'
+import { getNotes } from '../../../../lib/get/notes'
 import { AddNoteDialog } from './add-note-dialog'
 
 interface NotesCardProps {

@@ -16,12 +16,12 @@ import { Badge } from '@/app/(app)/_components/ui/badge'
 import { Button } from '@/app/(app)/_components/ui/button'
 import { ScrollArea } from '@/app/(app)/_components/ui/scroll-area'
 import { Separator } from '@/app/(app)/_components/ui/separator'
-import { removeMember } from '@/lib/actions/members'
 import { isMediaRel, isRel } from '@/lib/payload-utils'
 import { toast } from '@/lib/use-toast'
 import { getInitials } from '@/lib/utils'
 import { Space, User } from '@/payload-types'
 import { useState } from 'react'
+import { removeMember } from '../../../../lib/actions/users'
 
 interface MemberListProps {
   members: User[]
