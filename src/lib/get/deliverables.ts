@@ -1,3 +1,5 @@
+'use server'
+
 import { getServerAuth } from '../getServerAuth'
 
 export async function getDeliverables(
@@ -7,12 +9,11 @@ export async function getDeliverables(
 ) {
   if (!spaceId) return
   try {
-    const { payload, user } = await getServerAuth()
-    if (!user) return
+    const { user, payload } = await getServerAuth()
     const deliverables = await payload.find({
       collection: 'deliverables',
-      user,
       page,
+      user,
       where: {
         space: {
           equals: spaceId,
