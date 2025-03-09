@@ -1,38 +1,12 @@
 'use server'
 
-import config from '@payload-config'
 import { revalidatePath } from 'next/cache'
-import { getPayload } from 'payload'
-import { getCurrentUser } from './auth'
-
-const payload = await getPayload({ config })
-export async function getResources(spaceId?: number | string, page: number = 1, limit: number = 3) {
-  if (!spaceId) return
-  try {
-    const user = await getCurrentUser()
-
-    const resources = await payload.find({
-      collection: 'resources',
-      user,
-      page,
-      where: {
-        space: {
-          equals: spaceId,
-        },
-      },
-      limit,
-      sort: '-createdAt',
-      overrideAccess: false,
-    })
-    return resources
-  } catch (error) {
-    console.error(error)
-  }
-}
+import { getResources } from '../get/resources'
+import { getServerAuth } from '../getServerAuth'
 
 export async function createLinkResource(data: { name: string; url: string; spaceId: number }) {
   try {
-    const user = await getCurrentUser()
+    const { user, payload } = await getServerAuth()
     if (!user) return { success: false }
 
     await payload.create({
@@ -60,7 +34,7 @@ export async function createLinkResource(data: { name: string; url: string; spac
 
 export async function createFileResource(data: { name: string; file: File; spaceId: number }) {
   try {
-    const user = await getCurrentUser()
+    const { user, payload } = await getServerAuth()
     if (!user) return { success: false }
 
     const arrayBuffer = await data.file.arrayBuffer()
@@ -104,6 +78,8 @@ export async function createFileResource(data: { name: string; file: File; space
 
 export async function deleteResource(id: number, spaceId: string, currentPage: number = 1) {
   try {
+    const { payload } = await getServerAuth()
+
     await payload.delete({
       collection: 'resources',
       id,

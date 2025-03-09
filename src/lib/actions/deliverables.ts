@@ -1,40 +1,9 @@
 'use server'
 
-import config from '@payload-config'
 import { revalidatePath } from 'next/cache'
-import { getPayload } from 'payload'
+import { getDeliverables } from '../get/deliverables'
+import { getServerAuth } from '../getServerAuth'
 import { asManyRel, isRel } from '../payload-utils'
-import { getCurrentUser } from './auth'
-
-const payload = await getPayload({ config })
-
-export async function getDeliverables(
-  spaceId?: number | string,
-  page: number = 1,
-  limit: number = 3,
-) {
-  if (!spaceId) return
-  try {
-    const user = await getCurrentUser()
-    if (!user) return
-    const deliverables = await payload.find({
-      collection: 'deliverables',
-      user,
-      page,
-      where: {
-        space: {
-          equals: spaceId,
-        },
-      },
-      limit,
-      sort: '-createdAt',
-      overrideAccess: false,
-    })
-    return deliverables
-  } catch (error) {
-    console.error(error)
-  }
-}
 
 export async function createLinkDeliverable(data: {
   name: string
@@ -43,7 +12,7 @@ export async function createLinkDeliverable(data: {
   status?: 'pending' | 'approved' | 'correction'
 }) {
   try {
-    const user = await getCurrentUser()
+    const { payload, user } = await getServerAuth()
     if (!user) return { success: false }
 
     await payload.create({
@@ -77,7 +46,7 @@ export async function createFileDeliverable(data: {
   status?: 'pending' | 'approved' | 'correction'
 }) {
   try {
-    const user = await getCurrentUser()
+    const { payload, user } = await getServerAuth()
     if (!user) return { success: false }
 
     const arrayBuffer = await data.file.arrayBuffer()
@@ -126,7 +95,7 @@ export async function updateDeliverableStatus(
   statusComment?: string,
 ) {
   try {
-    const user = await getCurrentUser()
+    const { payload, user } = await getServerAuth()
     if (!user) return { success: false }
 
     await payload.update({
@@ -163,6 +132,8 @@ export async function updateDeliverableStatus(
 
 export async function deleteDeliverable(id: number, spaceId: string, currentPage: number = 1) {
   try {
+    const { payload } = await getServerAuth()
+
     await payload.delete({
       collection: 'deliverables',
       id,
@@ -183,7 +154,7 @@ export async function deleteDeliverable(id: number, spaceId: string, currentPage
 
 export async function trackDeliverableView(id: number) {
   try {
-    const user = await getCurrentUser()
+    const { payload, user } = await getServerAuth()
     if (!user || user.role === 'admin') return
 
     const deliverable = await payload.findByID({

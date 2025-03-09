@@ -1,5 +1,5 @@
 import { ResourcesCard } from '@/app/(app)/_components/resources/resources-card'
-import { getResources } from '@/lib/actions/resources'
+import { getResources } from '../../../../../../lib/get/resources'
 
 type Params = Promise<{ spaceId: string }>
 

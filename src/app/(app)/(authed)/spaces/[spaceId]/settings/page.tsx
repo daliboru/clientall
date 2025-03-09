@@ -1,13 +1,13 @@
-import { DeleteSpace } from '@/app/(app)/_components/spaces/delete-space'
-import { SpaceSettingsForm } from '@/app/(app)/_components/spaces/space-settings-form'
+import { getSpace } from '../../../../../../lib/get/spaces'
+import { DeleteSpace } from '../../../../_components/spaces/delete-space'
+import { SpaceSettingsForm } from '../../../../_components/spaces/space-settings-form'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/app/(app)/_components/ui/card'
-import { getSpace } from '@/lib/actions/spaces'
+} from '../../../../_components/ui/card'
 import { NotFound } from '../../../../_components/ui/not-found'
 
 type Params = Promise<{ spaceId: string }>

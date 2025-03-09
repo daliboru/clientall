@@ -1,6 +1,6 @@
 import { DeliverablesCard } from '@/app/(app)/_components/deliverables/deliverables-card'
-import { getDeliverables } from '@/lib/actions/deliverables'
-import { getSpace } from '@/lib/actions/spaces'
+import { getDeliverables } from '../../../../../../lib/get/deliverables'
+import { getSpace } from '../../../../../../lib/get/spaces'
 
 type Params = Promise<{ spaceId: string }>
 

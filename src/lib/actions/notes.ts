@@ -1,37 +1,11 @@
 'use server'
 
-import config from '@payload-config'
 import { revalidatePath } from 'next/cache'
-import { headers as nextHeaders } from 'next/headers'
-import { getPayload } from 'payload'
-import { getCurrentUser } from './auth'
-
-const payload = await getPayload({ config })
-
-export async function getNotes(spaceId?: number | string, page: number = 1, limit: number = 3) {
-  const user = await getCurrentUser()
-
-  if (!spaceId) return
-  const notes = await payload.find({
-    collection: 'notes',
-    page,
-    user,
-    where: {
-      space: {
-        equals: spaceId,
-      },
-    },
-    limit,
-    sort: '-createdAt',
-    overrideAccess: false,
-  })
-  return notes
-}
+import { getNotes } from '../get/notes'
+import { getServerAuth } from '../getServerAuth'
 
 export async function createNote(content: string, spaceId: string) {
-  const headers = await nextHeaders()
-  const result = await payload.auth({ headers })
-  const user = result.user
+  const { user, payload } = await getServerAuth()
 
   await payload.create({
     collection: 'notes',
@@ -42,6 +16,7 @@ export async function createNote(content: string, spaceId: string) {
     req: {
       user,
     },
+    overrideAccess: false,
   })
 
   const updatedNotes = await getNotes(spaceId, 1, 3) // Set limit to 3
@@ -55,9 +30,13 @@ export async function createNote(content: string, spaceId: string) {
 
 export async function deleteNote(noteId: number, spaceId: string, currentPage: number = 1) {
   try {
+    const { payload, user } = await getServerAuth()
+
     await payload.delete({
       collection: 'notes',
       id: noteId,
+      overrideAccess: false,
+      user,
     })
 
     const updatedNotes = await getNotes(spaceId, currentPage)

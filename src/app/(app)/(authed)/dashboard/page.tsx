@@ -1,29 +1,16 @@
 import { SpaceCard } from '@/app/(app)/_components/dashboard/SpaceCard'
-import { SpaceCardListSkeleton } from '@/app/(app)/_components/dashboard/SpaceCardSkeleton'
 import { CreateSpaceDialog } from '@/app/(app)/_components/dashboard/create-space-dialog'
 import { CreateSpaceForm } from '@/app/(app)/_components/dashboard/create-space-form'
-import { getSpaces } from '@/lib/actions/spaces'
-import { Space } from '@/payload-types'
-import { Suspense } from 'react'
-
-async function SpacesContent({ spaces }: { spaces?: Space[] }) {
-  return (
-    <>
-      {spaces && spaces.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {spaces.map((space) => (
-            <SpaceCard key={space.id} space={space} />
-          ))}
-        </div>
-      ) : (
-        <CreateSpaceForm />
-      )}
-    </>
-  )
-}
+import { getServerAuth } from '../../../../lib/getServerAuth'
 
 export default async function Dashboard() {
-  const spaces = await getSpaces()
+  const { payload, user } = await getServerAuth()
+
+  const spaces = await payload.find({
+    collection: 'spaces',
+    overrideAccess: false,
+    user,
+  })
 
   return (
     <>
@@ -32,9 +19,15 @@ export default async function Dashboard() {
         <CreateSpaceDialog />
       </div>
 
-      <Suspense fallback={<SpaceCardListSkeleton />}>
-        <SpacesContent spaces={spaces} />
-      </Suspense>
+      {spaces.docs && spaces.docs.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {spaces.docs.map((space) => (
+            <SpaceCard key={space.id} space={space} />
+          ))}
+        </div>
+      ) : (
+        <CreateSpaceForm />
+      )}
     </>
   )
 }

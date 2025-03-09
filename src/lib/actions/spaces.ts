@@ -1,59 +1,13 @@
 'use server'
 
 import { spaceSettingsSchema, type SpaceSettingsForm } from '@/lib/validations/space'
-import config from '@payload-config'
 import { revalidatePath } from 'next/cache'
-import { getPayload } from 'payload'
+import { getServerAuth } from '../getServerAuth'
 import { isMediaRel } from '../payload-utils'
-import { getCurrentUser } from './auth'
-
-const payload = await getPayload({ config })
-
-export async function getSpaces() {
-  try {
-    const user = await getCurrentUser()
-    if (!user) {
-      throw new Error('User not found')
-    }
-
-    const spaces = await payload.find({
-      collection: 'spaces',
-      overrideAccess: false,
-      user,
-    })
-    return spaces.docs
-  } catch (error) {
-    console.error('Error fetching spaces:', error)
-    return
-  }
-}
-
-export async function getSpace(spaceId: string) {
-  try {
-    const user = await getCurrentUser()
-    if (!user) {
-      throw new Error('User not found')
-    }
-
-    const space = await payload.findByID({
-      collection: 'spaces',
-      id: spaceId,
-      user,
-      overrideAccess: false,
-    })
-    return space
-  } catch (error) {
-    console.error('Error fetching space:', error)
-  }
-}
 
 export async function updateSpace(spaceId: string, formData: FormData) {
   try {
-    const user = await getCurrentUser()
-
-    if (!user) {
-      throw new Error('User not found')
-    }
+    const { user, payload } = await getServerAuth()
 
     const name = formData.get('name') as string
     const description = formData.get('description') as string
@@ -131,6 +85,8 @@ export async function updateSpace(spaceId: string, formData: FormData) {
 }
 
 export async function createSpace(data: SpaceSettingsForm) {
+  const { user, payload } = await getServerAuth()
+
   const parse = spaceSettingsSchema.safeParse(data)
 
   if (!parse.success) {
@@ -141,7 +97,6 @@ export async function createSpace(data: SpaceSettingsForm) {
     }
   }
   try {
-    const user = await getCurrentUser()
     if (!user) {
       return {
         success: false,
@@ -177,7 +132,8 @@ export async function createSpace(data: SpaceSettingsForm) {
 
 export async function deleteSpace(spaceId: string) {
   try {
-    const user = await getCurrentUser()
+    const { user, payload } = await getServerAuth()
+
     await payload.delete({
       collection: 'spaces',
       id: spaceId,

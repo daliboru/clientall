@@ -1,9 +1,9 @@
 import { Card } from '@/app/(app)/_components/ui/card'
-import { getSpace } from '@/lib/actions/spaces'
 import { asManyRel } from '@/lib/payload-utils'
 import { User } from '@/payload-types'
-import { SpaceMembersContent } from './SpaceMembersContent'
-import { SpaceMembersHeader } from './SpaceMembersHeader'
+import { getSpace } from '../../../../../../lib/get/spaces'
+import { SpaceMembersContent } from '../../../../_components/members/space-members-content'
+import { SpaceMembersHeader } from '../../../../_components/members/space-members-header'
 
 type Params = Promise<{ spaceId: string }>
 
@@ -15,8 +15,6 @@ export async function generateMetadata(props: { params: Params }) {
 export default async function SpaceMembersPage(props: { params: Params }) {
   const { spaceId } = await props.params
   const space = await getSpace(spaceId)
-
-  if (!space) return null
 
   const members = asManyRel<User>(space.members)
 

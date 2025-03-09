@@ -1,10 +1,10 @@
-import { getCurrentUser } from '@/lib/actions/auth'
-import { getSpace } from '@/lib/actions/spaces'
-import { getUserById } from '@/lib/actions/users'
 import { isMediaRel, isRel } from '@/lib/payload-utils'
 import { ChevronLeft, ImageIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { getUserById } from '../../../../../lib/get/users'
+import { getServerAuth } from '../../../../../lib/getServerAuth'
 import { CalendlyButton } from '../../../_components/spaces/calendly-button'
 import SpaceNav from '../../../_components/spaces/space-nav'
 import { Button } from '../../../_components/ui/button'
@@ -24,17 +24,16 @@ export default async function Layout({
   params: Params
 }) {
   const { spaceId } = await params
-  const [space, user] = await Promise.all([getSpace(spaceId), getCurrentUser()])
-
+  const { user, payload } = await getServerAuth()
   if (!user) {
-    return (
-      <NotFound
-        title="Authentication Required"
-        description="Please sign in to access this space."
-        showBack={false}
-      />
-    )
+    return redirect('/login')
   }
+  const space = await payload.findByID({
+    collection: 'spaces',
+    id: spaceId,
+    user,
+    overrideAccess: false,
+  })
 
   if (!space) {
     return (

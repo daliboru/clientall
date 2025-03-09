@@ -4,7 +4,7 @@ import { AddMemberDialog } from '@/app/(app)/_components/spaces/add-member-dialo
 import { CardDescription, CardHeader, CardTitle } from '@/app/(app)/_components/ui/card'
 import { isRel } from '@/lib/payload-utils'
 import { Space } from '@/payload-types'
-import { useAuth } from '../../../../_providers/Auth'
+import { useAuth } from '../../_providers/Auth'
 
 export function SpaceMembersHeader({
   space,

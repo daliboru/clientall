@@ -5,7 +5,7 @@ import { CardContent } from '@/app/(app)/_components/ui/card'
 import { isRel } from '@/lib/payload-utils'
 import { Space, User } from '@/payload-types'
 import { redirect } from 'next/navigation'
-import { useAuth } from '../../../../_providers/Auth'
+import { useAuth } from '../../_providers/Auth'
 
 export function SpaceMembersContent({ members, space }: { members: User[]; space: Space }) {
   const { user } = useAuth()
