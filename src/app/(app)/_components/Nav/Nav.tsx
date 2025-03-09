@@ -10,20 +10,15 @@ import {
 } from '@/app/(app)/_components/ui/dropdown-menu'
 import { isMediaRel } from '@/lib/payload-utils'
 import { getInitials } from '@/lib/utils'
-import { User } from '@/payload-types'
 import { Bell } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useAuth } from '../../_providers/Auth'
 
-type Props = {
-  user: User
-}
-
-const Nav: React.FC<Props> = ({ user }) => {
+export default function Nav() {
   const router = useRouter()
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
   const [notifications] = useState([
     {
       id: 1,
@@ -105,5 +100,3 @@ const Nav: React.FC<Props> = ({ user }) => {
     </nav>
   )
 }
-
-export default Nav

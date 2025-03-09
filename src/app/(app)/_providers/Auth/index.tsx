@@ -12,7 +12,7 @@ export const AuthProvider: React.FC<{
   api?: 'rest'
   children: React.ReactNode
 }> = ({ api = 'rest', children }) => {
-  const [user, setUser] = useState<null | User>()
+  const [user, setUser] = useState<null | User>(null)
   const [permissions, setPermissions] = useState<null | SanitizedPermissions>(null)
 
   const login: Login = async (email: string, password: string): Promise<User> => {
@@ -52,7 +52,7 @@ export const AuthProvider: React.FC<{
           {},
           { method: 'GET' },
         )
-        setUser(user || null)
+        setUser(user)
       }
     }
     void fetchMe()

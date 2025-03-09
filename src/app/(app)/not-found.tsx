@@ -9,7 +9,7 @@ const fontSans = FontSans({
 
 export default function NotFoundPage() {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
         <div className="flex flex-col items-center justify-center min-h-screen p-4">
           <NotFound />

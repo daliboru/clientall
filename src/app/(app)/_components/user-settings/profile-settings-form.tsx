@@ -1,5 +1,16 @@
 'use client'
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/app/(app)/_components/ui/alert-dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '@/app/(app)/_components/ui/avatar'
 import { Button } from '@/app/(app)/_components/ui/button'
 import {
@@ -26,87 +37,77 @@ import {
   profileSettingsSchema,
   type ProfileSettingsFormValues,
 } from '@/lib/validations/user-settings'
-import { User } from '@/payload-types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, Trash2, Upload } from 'lucide-react'
-import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/app/(app)/_components/ui/alert-dialog'
-
-interface ProfileSettingsFormProps {
-  user: User
-}
+import { useAuth } from '../../_providers/Auth'
 
 const MAX_FILE_SIZE = 1024 * 1024 // 1MB
 
-export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
+export function ProfileSettingsForm() {
+  const { user, setUser } = useAuth()
   const [isPending, setIsPending] = useState(false)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState('')
+  const router = useRouter()
 
   // Update the form initialization
   const form = useForm<ProfileSettingsFormValues>({
     resolver: zodResolver(profileSettingsSchema),
     defaultValues: {
-      name: user.name,
-      calendly_url: user.calendly_url || '',
+      name: user?.name,
+      calendly_url: user?.calendly_url || '',
     },
   })
 
+  useEffect(() => {
+    if (user === null) {
+      router.push(`/login?unauthorized=account`)
+    }
+
+    if (user) {
+      form.reset({
+        name: user.name,
+        calendly_url: user.calendly_url || '',
+      })
+    }
+  }, [user, router, form])
+
   const onSubmit = async (values: ProfileSettingsFormValues) => {
     setIsPending(true)
-    try {
-      const formData = new FormData()
-      if (values.name) {
-        formData.append('name', values.name)
-      }
-      if (values.calendly_url !== undefined) {
-        formData.append('calendly_url', values.calendly_url)
-      }
-      if (avatar) {
-        formData.append('avatar', avatar)
-      }
 
-      const result = await updateUser(formData)
+    const formData = new FormData()
+    if (values.name) {
+      formData.append('name', values.name)
+    }
+    if (values.calendly_url !== undefined) {
+      formData.append('calendly_url', values.calendly_url)
+    }
+    if (avatar) {
+      formData.append('avatar', avatar)
+    }
 
-      if (!result.success) {
-        if (result.error) {
-          Object.entries(result.error).forEach(([key, value]) => {
-            form.setError(key as keyof ProfileSettingsFormValues, {
-              message: value as string,
-            })
-          })
-        }
-        throw new Error(result.error || 'Failed to update profile')
-      }
+    const updatedUser = await updateUser(formData)
 
-      setAvatar(null)
+    if (updatedUser) {
+      setUser(updatedUser)
 
       toast({
         title: 'Profile updated',
         description: 'Your profile has been updated successfully.',
         variant: 'success',
       })
-    } catch (error: any) {
+    } else {
       toast({
         title: 'Error',
-        description: error.message || 'Failed to update profile.',
+        description: 'Failed to update profile.',
         variant: 'destructive',
       })
-    } finally {
-      setIsPending(false)
     }
+
+    setIsPending(false)
   }
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,14 +130,15 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
   }
 
   const handleRemoveAvatar = async () => {
-    setIsPending(true)
-    try {
+    if (user) {
+      setIsPending(true)
       const formData = new FormData()
       formData.append('name', user.name)
       formData.append('removeAvatar', 'true')
 
-      const result = await updateUser(formData)
-      if (result.success) {
+      const updatedUser = await updateUser(formData)
+      if (updatedUser) {
+        setUser(updatedUser)
         setAvatar(null)
         setAvatarPreview('')
 
@@ -146,15 +148,12 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
           variant: 'success',
         })
       } else {
-        throw new Error(result.error || 'Failed to remove avatar')
+        toast({
+          title: 'Error',
+          description: 'Failed to remove avatar.',
+          variant: 'destructive',
+        })
       }
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to remove avatar.',
-        variant: 'destructive',
-      })
-    } finally {
       setIsPending(false)
     }
   }
@@ -182,14 +181,16 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
                 <div className="relative group">
                   <Avatar className="h-24 w-24 ring-2 ring-background">
                     <AvatarImage
-                      src={avatarPreview || (isMediaRel(user.avatar) ? user.avatar.url : undefined)}
+                      src={
+                        avatarPreview || (isMediaRel(user?.avatar) ? user.avatar.url : undefined)
+                      }
                       className="object-cover"
                     />
                     <AvatarFallback className="text-lg">
-                      {user.name ? getInitials(user.name) : 'U'}
+                      {user?.name ? getInitials(user.name) : 'U'}
                     </AvatarFallback>
                   </Avatar>
-                  {(avatarPreview || isMediaRel(user.avatar)) && (
+                  {(avatarPreview || isMediaRel(user?.avatar)) && (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button
@@ -254,7 +255,7 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input value={user.email} disabled className="bg-muted" />
+                  <Input value={user?.email} disabled className="bg-muted" />
                 </FormControl>
                 <CardDescription>Email cannot be changed</CardDescription>
               </FormItem>

@@ -1,7 +1,3 @@
-import { CalendlyButton } from '@/app/(app)/_components/spaces/calendly-button'
-import SpaceNav from '@/app/(app)/_components/spaces/space-nav'
-import { Button } from '@/app/(app)/_components/ui/button'
-import { NotFound } from '@/app/(app)/_components/ui/not-found'
 import { getCurrentUser } from '@/lib/actions/auth'
 import { getSpace } from '@/lib/actions/spaces'
 import { getUserById } from '@/lib/actions/users'
@@ -9,6 +5,10 @@ import { isMediaRel, isRel } from '@/lib/payload-utils'
 import { ChevronLeft, ImageIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { CalendlyButton } from '../../../_components/spaces/calendly-button'
+import SpaceNav from '../../../_components/spaces/space-nav'
+import { Button } from '../../../_components/ui/button'
+import { NotFound } from '../../../_components/ui/not-found'
 
 type Params = Promise<{ spaceId: string }>
 

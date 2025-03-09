@@ -21,11 +21,6 @@ export const rest = async <T = User>(
 
     const { errors, user } = await res.json()
 
-    console.log({
-      errors,
-      user,
-    })
-
     if (errors) {
       throw new Error(errors[0].message)
     }

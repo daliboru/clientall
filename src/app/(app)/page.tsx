@@ -1,18 +1,9 @@
-import config from '@/payload.config'
 import { ArrowRight, Building2, Users2, Zap } from 'lucide-react'
-import { headers as getHeaders } from 'next/headers'
 import Link from 'next/link'
-import { getPayload } from 'payload'
-import { HydrateClientUser } from './_components/HidrateClientUser'
 
 export default async function LandingPage() {
-  const headers = await getHeaders()
-  const payload = await getPayload({ config })
-  const { permissions, user } = await payload.auth({ headers })
-
   return (
     <>
-      <HydrateClientUser permissions={permissions} user={user} />
       <div className="min-h-screen bg-gradient-to-b from-white to-purple-50">
         {/* Navigation */}
         <nav className="px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0 max-w-7xl mx-auto">

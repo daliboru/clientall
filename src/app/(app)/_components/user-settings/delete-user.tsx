@@ -24,38 +24,38 @@ import { toast } from '@/lib/use-toast'
 import { Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { useAuth } from '../../_providers/Auth'
 
-interface Props {
-  userId: number
-}
-
-export function DeleteUser({ userId }: Props) {
+export function DeleteUser() {
+  const { user } = useAuth()
   const router = useRouter()
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDeleteUser = async () => {
-    setIsDeleting(true)
-    try {
-      const result = await deleteUser(userId)
+    if (user) {
+      setIsDeleting(true)
+      try {
+        const result = await deleteUser(user.id)
 
-      if (result.success) {
-        toast({
-          title: 'Account deleted',
-          description: 'Your account has been deleted.',
-          variant: 'destructive',
-        })
-        router.replace('/login')
-      } else {
-        toast({
-          title: 'Failed to delete account',
-          description: result.message,
-          variant: 'destructive',
-        })
+        if (result.success) {
+          toast({
+            title: 'Account deleted',
+            description: 'Your account has been deleted.',
+            variant: 'destructive',
+          })
+          router.replace('/login')
+        } else {
+          toast({
+            title: 'Failed to delete account',
+            description: result.message,
+            variant: 'destructive',
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setIsDeleting(false)
       }
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setIsDeleting(false)
     }
   }
 

@@ -6,8 +6,7 @@ type Params = Promise<{ spaceId: string }>
 
 export default async function NotesPage(props: { params: Params }) {
   const { spaceId } = await props.params
-  const space = await getSpace(spaceId)
-  const notes = await getNotes(spaceId, 1, 3)
+  const [space, notes] = await Promise.all([getSpace(spaceId), getNotes(spaceId, 1, 3)])
 
   if (!space || !notes) {
     return null

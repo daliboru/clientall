@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from '@/app/(app)/_components/ui/card'
 import { getSpace } from '@/lib/actions/spaces'
+import { NotFound } from '../../../../_components/ui/not-found'
 
 type Params = Promise<{ spaceId: string }>
 
@@ -21,7 +22,7 @@ export default async function SpaceSettingsPage(props: { params: Params }) {
   const space = await getSpace(spaceId)
 
   if (!space) {
-    return null
+    return <NotFound description="Space not found" />
   }
 
   return (
