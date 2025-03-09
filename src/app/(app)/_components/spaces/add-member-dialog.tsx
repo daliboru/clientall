@@ -15,7 +15,7 @@ import { toast } from '@/lib/use-toast'
 import { PlusCircle } from 'lucide-react'
 import { useState } from 'react'
 
-export function AddMemberDialog({ spaceId }: { spaceId: string }) {
+export function AddMemberDialog({ spaceId }: { spaceId: number }) {
   const [email, setEmail] = useState('')
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)

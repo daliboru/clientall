@@ -9,19 +9,23 @@ import {
   CardHeader,
   CardTitle,
 } from '@/app/(app)/_components/ui/card'
-import { asManyRel, isMediaRel } from '@/lib/payload-utils'
+import { asManyRel, isMediaRel, isRel } from '@/lib/payload-utils'
 import { getInitials } from '@/lib/utils'
 import { Space, User } from '@/payload-types'
 import { ImageIcon, Badge as LucideBadge } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useAuth } from '../../_providers/Auth'
 
 interface SpaceCardProps {
   space: Space
-  isOwner: boolean
 }
 
-export function SpaceCard({ space, isOwner }: SpaceCardProps) {
+export function SpaceCard({ space }: SpaceCardProps) {
+  const { user } = useAuth()
+
+  const isOwner = isRel(space.owner) && space.owner.id === user?.id
+
   return (
     <Link href={`/spaces/${space.id}`}>
       <Card className="h-full">

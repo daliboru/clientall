@@ -1,14 +1,9 @@
 'use client'
 
-import { Button } from '@/app/(app)/_components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/app/(app)/_components/ui/tooltip'
 import { Calendar } from 'lucide-react'
 import { PopupButton } from 'react-calendly'
+import { Button } from '../ui/button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
 
 interface CalendlyButtonProps {
   url?: string | null

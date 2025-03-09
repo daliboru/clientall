@@ -51,13 +51,13 @@ export default async function SpacePage(props: { params: Params }) {
     {
       id: 1,
       title: 'Weekly Sync',
-      date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days from now
+      date: new Date('2023-08-10T10:00:00Z'),
       attendees: 4,
     },
     {
       id: 2,
       title: 'Project Review',
-      date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // 5 days from now
+      date: new Date('2023-08-15T14:30:00Z'),
       attendees: 6,
     },
   ]

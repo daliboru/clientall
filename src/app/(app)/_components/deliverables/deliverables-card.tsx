@@ -59,7 +59,6 @@ interface DeliverablesCardProps {
   spaceId: string
   totalPages: number
   currentPage: number
-  isOwner: boolean
 }
 
 export function DeliverablesCard({
@@ -67,7 +66,6 @@ export function DeliverablesCard({
   spaceId,
   totalPages,
   currentPage,
-  isOwner,
 }: DeliverablesCardProps) {
   const [deliverables, setDeliverables] = useState(initialDeliverables)
   const [page, setPage] = useState(currentPage)
@@ -308,7 +306,7 @@ export function DeliverablesCard({
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        {isOwner && deliverable.status === 'pending' && (
+                        {deliverable.status === 'pending' && (
                           <>
                             <DropdownMenuItem
                               onClick={() => handleStatusUpdate(deliverable, 'approved')}

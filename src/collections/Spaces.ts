@@ -67,13 +67,9 @@ export const Spaces: CollectionConfig = {
       },
       hooks: {
         beforeChange: [
-          async ({ previousValue, value }) => {
-            const newMember = value[value.length - 1]
-            const isDuplicate = previousValue?.some((member: number) => member === newMember)
-
-            if (isDuplicate) {
-              throw new Error('Duplicate members not allowed')
-            }
+          async ({ data }) => {
+            if (!data) return
+            data.members = [...new Set(data.members)]
           },
         ],
       },

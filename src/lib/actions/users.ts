@@ -1,6 +1,5 @@
 'use server'
 
-import { profileSettingsSchema } from '@/lib/validations/user-settings'
 import { User } from '@/payload-types'
 import config from '@payload-config'
 import { revalidatePath } from 'next/cache'
@@ -24,17 +23,9 @@ export async function getUserById(id?: number) {
 }
 
 export async function updateUser(formData: FormData) {
-  try {
-    const user = await getCurrentUser()
-    if (!user) {
-      return { success: false, error: 'User not found' }
-    }
-
+  const user = await getCurrentUser()
+  if (user) {
     const { name, avatar, calendly_url, removeAvatar } = extractFormData(formData)
-    const validationResult = validateUserData({ name, calendly_url })
-    if (!validationResult.success) {
-      return validationResult
-    }
 
     const mediaId = await handleAvatarUpdate({
       currentUser: user,
@@ -43,17 +34,15 @@ export async function updateUser(formData: FormData) {
       userName: name,
     })
 
-    await updateUserProfile({
+    const updateUser = await updateUserProfile({
       userId: user.id,
       name,
       avatarId: mediaId,
       calendly_url,
     })
 
-    revalidatePath('/')
-    return { success: true }
-  } catch (error: any) {
-    return { success: false, error: 'Failed to update user' }
+    revalidatePath('/dashboard')
+    return updateUser
   }
 }
 
@@ -64,20 +53,6 @@ function extractFormData(formData: FormData) {
     calendly_url: formData.get('calendly_url') as string,
     removeAvatar: formData.get('removeAvatar') === 'true',
   }
-}
-
-function validateUserData({ name, calendly_url }: { name: string; calendly_url?: string }) {
-  const parse = profileSettingsSchema.safeParse({ name, calendly_url })
-
-  if (!parse.success) {
-    return {
-      success: false,
-      error: 'Invalid form data',
-      errors: parse.error.flatten().fieldErrors,
-    }
-  }
-
-  return parse
 }
 
 async function handleAvatarUpdate({
@@ -143,7 +118,7 @@ async function updateUserProfile({
   avatarId?: number
   calendly_url?: string
 }) {
-  await payload.update({
+  const user = await payload.update({
     collection: 'users',
     id: userId,
     data: {
@@ -152,6 +127,7 @@ async function updateUserProfile({
       calendly_url: calendly_url || null, // Ensure empty string is saved as null
     },
   })
+  return user
 }
 
 export async function deleteUser(userId: number) {

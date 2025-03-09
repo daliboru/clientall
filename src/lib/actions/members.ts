@@ -11,7 +11,7 @@ import { getCurrentUser } from './auth'
 
 const payload = await getPayload({ config })
 
-export async function addMember(email: string, spaceId: string) {
+export async function addMember(email: string, spaceId: number) {
   try {
     const parse = memberInviteSchema.safeParse({ email })
     if (!parse.success) {
