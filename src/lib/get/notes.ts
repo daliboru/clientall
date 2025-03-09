@@ -1,3 +1,5 @@
+'use server'
+
 import { getServerAuth } from '../getServerAuth'
 
 export async function getNotes(spaceId?: number | string, page: number = 1, limit: number = 3) {
