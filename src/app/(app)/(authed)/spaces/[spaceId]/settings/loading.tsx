@@ -1,4 +1,10 @@
-import { Card, CardContent, CardHeader } from '@/app/(app)/_components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/app/(app)/_components/ui/card'
 import { Skeleton } from '@/app/(app)/_components/ui/skeleton'
 
 export default function SpaceSettingsLoading() {
@@ -6,8 +12,10 @@ export default function SpaceSettingsLoading() {
     <Card>
       <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <Skeleton className="h-8 w-[150px]" />
-          <Skeleton className="h-5 w-[300px]" />
+          <CardTitle className="text-2xl font-bold text-purple-600">Space Settings</CardTitle>
+          <CardDescription className="text-base text-muted-foreground">
+            Customize your space appearance and information
+          </CardDescription>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">

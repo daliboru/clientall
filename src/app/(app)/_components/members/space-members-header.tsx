@@ -9,11 +9,9 @@ import { useAuth } from '../../_providers/Auth'
 export function SpaceMembersHeader({
   space,
   membersCount,
-  description,
 }: {
   space: Space
   membersCount: number
-  description: string
 }) {
   const { user } = useAuth()
 
@@ -25,7 +23,11 @@ export function SpaceMembersHeader({
         <CardTitle className="text-2xl font-bold text-purple-600">
           Members ({membersCount})
         </CardTitle>
-        <CardDescription className="text-base text-muted-foreground">{description}</CardDescription>
+        <CardDescription className="text-base text-muted-foreground">
+          {
+            'Collaborate with your team members and manage access to your space. Build a strong team to achieve your project goals together.'
+          }
+        </CardDescription>
       </div>
       {isOwner && <AddMemberDialog spaceId={space.id} />}
     </CardHeader>

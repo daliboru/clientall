@@ -1,4 +1,10 @@
-import { Card, CardContent, CardHeader } from '@/app/(app)/_components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/app/(app)/_components/ui/card'
 import { Skeleton } from '@/app/(app)/_components/ui/skeleton'
 
 export default function ResourcesLoading() {
@@ -7,8 +13,11 @@ export default function ResourcesLoading() {
       <Card>
         <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <Skeleton className="h-8 w-[150px]" />
-            <Skeleton className="h-5 w-[300px]" />
+            <CardTitle className="text-2xl font-bold text-purple-600">Resources</CardTitle>
+            <CardDescription className="text-base text-muted-foreground">
+              A centralized hub for all your project materials, files, and important links. Keep
+              everything organized and easily accessible to your team.
+            </CardDescription>
           </div>
           <div className="flex gap-2 w-full sm:w-auto">
             <Skeleton className="h-10 w-full sm:w-[120px]" />

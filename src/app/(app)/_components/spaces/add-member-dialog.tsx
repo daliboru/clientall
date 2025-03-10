@@ -51,9 +51,23 @@ export function AddMemberDialog({ spaceId }: { spaceId: number }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <PlusCircle className="h-4 w-4 mr-2" />
-          Add Member
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-8 w-full sm:w-auto active:scale-95 transition-transform"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <span className="h-4 w-4 mr-2 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              Adding...
+            </>
+          ) : (
+            <>
+              <PlusCircle className="h-4 w-4 mr-2" />
+              Add Member
+            </>
+          )}
         </Button>
       </DialogTrigger>
       <DialogContent>

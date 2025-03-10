@@ -20,11 +20,7 @@ export default async function SpaceMembersPage(props: { params: Params }) {
 
   return (
     <Card>
-      <SpaceMembersHeader
-        space={space}
-        membersCount={members.length}
-        description="Collaborate with your team members and manage access to your space. Build a strong team to achieve your project goals together."
-      />
+      <SpaceMembersHeader space={space} membersCount={members.length} />
       <SpaceMembersContent members={members} space={space} />
     </Card>
   )

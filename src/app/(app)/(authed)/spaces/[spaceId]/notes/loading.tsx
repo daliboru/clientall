@@ -1,4 +1,10 @@
-import { Card, CardContent, CardHeader } from '@/app/(app)/_components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/app/(app)/_components/ui/card'
 import { Skeleton } from '@/app/(app)/_components/ui/skeleton'
 
 export default function NotesLoading() {
@@ -7,8 +13,11 @@ export default function NotesLoading() {
       <Card>
         <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <Skeleton className="h-8 w-[150px]" />
-            <Skeleton className="h-5 w-[300px]" />
+            <CardTitle className="text-2xl font-bold text-purple-600">Notes</CardTitle>
+            <CardDescription className="text-base text-muted-foreground">
+              Share important updates, announcements, and insights with your team. Keep everyone
+              informed and aligned on project progress and key decisions.
+            </CardDescription>
           </div>
           <Skeleton className="h-10 w-full sm:w-[120px]" />
         </CardHeader>
