@@ -34,12 +34,6 @@ export const Spaces: CollectionConfig = {
       relationTo: 'media',
     },
     {
-      name: 'relatedResources',
-      type: 'join',
-      on: 'space',
-      collection: 'resources',
-    },
-    {
       name: 'owner',
       type: 'relationship',
       relationTo: 'users',

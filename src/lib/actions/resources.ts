@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { getResources } from '../get/resources'
+import { getResources } from '../functions/resources'
 import { getServerAuth } from '../getServerAuth'
 
 export async function createLinkResource(data: { name: string; url: string; spaceId: number }) {

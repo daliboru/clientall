@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { getDeliverables } from '../get/deliverables'
+import { getDeliverables } from '../functions/deliverables'
 import { getServerAuth } from '../getServerAuth'
 import { asManyRel, isRel } from '../payload-utils'
 
@@ -130,21 +130,23 @@ export async function updateDeliverableStatus(
   }
 }
 
-export async function deleteDeliverable(id: number, spaceId: string, currentPage: number = 1) {
+export async function deleteDeliverable(id: number, spaceId: string, page = 1) {
   try {
-    const { payload } = await getServerAuth()
+    const { payload, user } = await getServerAuth()
 
     await payload.delete({
       collection: 'deliverables',
       id,
+      user,
     })
 
-    const updatedDeliverables = await getDeliverables(spaceId, currentPage)
+    const deliverables = await getDeliverables(spaceId, page)
+
     revalidatePath(`/spaces/${spaceId}/deliverables`)
     return {
       message: 'Deliverable deleted successfully',
       success: true,
-      deliverables: updatedDeliverables,
+      deliverables,
     }
   } catch (error) {
     console.error(error)

@@ -29,7 +29,7 @@ import { formatDistanceToNow } from 'date-fns'
 import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { deleteNote } from '../../../../lib/actions/notes'
-import { getNotes } from '../../../../lib/get/notes'
+import { getNotes } from '../../../../lib/functions/notes'
 import { AddNoteDialog } from './add-note-dialog'
 
 interface NotesCardProps {

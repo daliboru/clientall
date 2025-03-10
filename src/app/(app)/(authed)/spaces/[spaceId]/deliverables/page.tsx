@@ -1,6 +1,6 @@
 import { DeliverablesCard } from '@/app/(app)/_components/deliverables/deliverables-card'
-import { getDeliverables } from '../../../../../../lib/get/deliverables'
-import { getSpace } from '../../../../../../lib/get/spaces'
+import { getDeliverables } from '../../../../../../lib/functions/deliverables'
+import { getSpace } from '../../../../../../lib/functions/spaces'
 
 type Params = Promise<{ spaceId: string }>
 
@@ -11,10 +11,7 @@ export async function generateMetadata(props: { params: Params }) {
 
 export default async function DeliverablesPage(props: { params: Params }) {
   const { spaceId } = await props.params
-  const [space, deliverables] = await Promise.all([
-    getSpace(spaceId),
-    getDeliverables(spaceId, 1, 3),
-  ])
+  const [space, deliverables] = await Promise.all([getSpace(spaceId), getDeliverables(spaceId, 1)])
 
   if (!deliverables || !space) {
     return null

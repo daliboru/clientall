@@ -1,6 +1,6 @@
 import { NotesCard } from '@/app/(app)/_components/spaces/notes-card'
-import { getNotes } from '../../../../../../lib/get/notes'
-import { getSpace } from '../../../../../../lib/get/spaces'
+import { getNotes } from '../../../../../../lib/functions/notes'
+import { getSpace } from '../../../../../../lib/functions/spaces'
 
 type Params = Promise<{ spaceId: string }>
 

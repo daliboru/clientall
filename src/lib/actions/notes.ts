@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { getNotes } from '../get/notes'
+import { getNotes } from '../functions/notes'
 import { getServerAuth } from '../getServerAuth'
 
 export async function createNote(content: string, spaceId: string) {

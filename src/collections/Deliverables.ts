@@ -89,9 +89,7 @@ export const Deliverables: CollectionConfig = {
     {
       name: 'statusComment',
       type: 'textarea',
-      admin: {
-        condition: (data) => data.status === 'correction',
-      },
+      defaultValue: '',
     },
     {
       name: 'views',

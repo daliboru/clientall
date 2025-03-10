@@ -34,7 +34,7 @@ import { formatDistanceToNow } from 'date-fns'
 import { FileText, Link as LinkIcon, MoreVertical, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
-import { getResources } from '../../../../lib/get/resources'
+import { getResources } from '../../../../lib/functions/resources'
 import { AddFileDialog } from './add-resource-file-dialog'
 import { AddLinkDialog } from './add-resource-link-dialog'
 

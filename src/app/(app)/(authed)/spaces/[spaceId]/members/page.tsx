@@ -1,7 +1,7 @@
 import { Card } from '@/app/(app)/_components/ui/card'
 import { asManyRel } from '@/lib/payload-utils'
 import { User } from '@/payload-types'
-import { getSpace } from '../../../../../../lib/get/spaces'
+import { getSpace } from '../../../../../../lib/functions/spaces'
 import { SpaceMembersContent } from '../../../../_components/members/space-members-content'
 import { SpaceMembersHeader } from '../../../../_components/members/space-members-header'
 

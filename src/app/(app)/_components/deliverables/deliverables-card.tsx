@@ -50,7 +50,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
-import { getDeliverables } from '../../../../lib/get/deliverables'
+import { getDeliverables } from '../../../../lib/functions/deliverables'
 import { AddFileDeliverableDialog } from './add-file-deliverable-dialog'
 import { AddLinkDeliverableDialog } from './add-link-deliverable-dialog'
 

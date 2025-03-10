@@ -1,4 +1,4 @@
-import { getSpace } from '../../../../../../lib/get/spaces'
+import { getSpace } from '../../../../../../lib/functions/spaces'
 import { DeleteSpace } from '../../../../_components/spaces/delete-space'
 import { SpaceSettingsForm } from '../../../../_components/spaces/space-settings-form'
 import {

@@ -1,7 +1,7 @@
 import { isRel } from '@/lib/payload-utils'
 import { formatDistanceToNow } from 'date-fns'
 import { Calendar, Users } from 'lucide-react'
-import { getSpace } from '../../../../../lib/get/spaces'
+import { getSpace } from '../../../../../lib/functions/spaces'
 import { NoSpaceFound } from '../../../_components/spaces/NoSpaceFound'
 import {
   Card,

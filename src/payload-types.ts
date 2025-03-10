@@ -82,7 +82,6 @@ export interface Config {
     };
     spaces: {
       relatedNotes: 'notes';
-      relatedResources: 'resources';
     };
   };
   collectionsSelect: {
@@ -191,10 +190,6 @@ export interface Space {
     hasNextPage?: boolean | null;
   } | null;
   logo?: (number | null) | Media;
-  relatedResources?: {
-    docs?: (number | Resource)[] | null;
-    hasNextPage?: boolean | null;
-  } | null;
   owner: number | User;
   members: (number | User)[];
   updatedAt: string;
@@ -383,7 +378,6 @@ export interface SpacesSelect<T extends boolean = true> {
   description?: T;
   relatedNotes?: T;
   logo?: T;
-  relatedResources?: T;
   owner?: T;
   members?: T;
   updatedAt?: T;
