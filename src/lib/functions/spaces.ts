@@ -11,3 +11,15 @@ export const getSpace = async (spaceId: string) => {
   })
   return space
 }
+
+export const getSpaces = async () => {
+  const { user, payload } = await getServerAuth()
+  const spaces = await payload.find({
+    collection: 'spaces',
+    user,
+    overrideAccess: false,
+    sort: 'title',
+    limit: 100,
+  })
+  return spaces
+}

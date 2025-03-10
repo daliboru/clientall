@@ -1,16 +1,10 @@
 import { SpaceCard } from '@/app/(app)/_components/dashboard/SpaceCard'
 import { CreateSpaceDialog } from '@/app/(app)/_components/dashboard/create-space-dialog'
 import { CreateSpaceForm } from '@/app/(app)/_components/dashboard/create-space-form'
-import { getServerAuth } from '../../../../lib/getServerAuth'
+import { getSpaces } from '../../../../lib/functions/spaces'
 
 export default async function Dashboard() {
-  const { payload, user } = await getServerAuth()
-
-  const spaces = await payload.find({
-    collection: 'spaces',
-    overrideAccess: false,
-    user,
-  })
+  const spaces = await getSpaces()
 
   return (
     <>
