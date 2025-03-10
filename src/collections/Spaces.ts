@@ -45,6 +45,18 @@ export const Spaces: CollectionConfig = {
       },
     },
     {
+      name: 'relatedResources',
+      type: 'join',
+      on: 'space',
+      collection: 'resources',
+    },
+    {
+      name: 'relatedDeliverables',
+      type: 'join',
+      on: 'space',
+      collection: 'deliverables',
+    },
+    {
       name: 'members',
       type: 'relationship',
       relationTo: 'users',
@@ -81,7 +93,7 @@ export const Spaces: CollectionConfig = {
       }
     },
     create: ({ req: { user } }) => Boolean(user),
-    update: ({ req: { user }, data }) => {
+    update: ({ req: { user } }) => {
       if (!user) return false
       if (user.role === 'admin') return true
 

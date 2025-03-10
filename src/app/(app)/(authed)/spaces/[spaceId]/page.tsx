@@ -1,8 +1,9 @@
+import { getSpace } from '@/lib/functions/spaces'
 import { isRel } from '@/lib/payload-utils'
 import { formatDistanceToNow } from 'date-fns'
 import { Calendar, Users } from 'lucide-react'
-import { getSpace } from '../../../../../lib/functions/spaces'
 import { NoSpaceFound } from '../../../_components/spaces/NoSpaceFound'
+import { Badge } from '../../../_components/ui/badge'
 import {
   Card,
   CardContent,
@@ -10,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '../../../_components/ui/card'
+import { AlertCircle, CheckCircle2, Clock } from 'lucide-react'
 
 type Params = Promise<{ spaceId: string }>
 
@@ -48,6 +50,15 @@ export default async function SpacePage(props: { params: Params }) {
   const owner = isRel(space.owner) ? space.owner : null
   const createdAt = formatDistanceToNow(new Date(space.createdAt), { addSuffix: true })
 
+  // Add deliverables data
+  const deliverables = space.relatedDeliverables?.docs ?? []
+  const statusCounts = {
+    approved: deliverables.filter((d) => isRel(d) && d.status === 'approved').length || 0,
+    pending: deliverables.filter((d) => isRel(d) && !d.status).length || 0,
+    correction: deliverables.filter((d) => isRel(d) && d.status === 'correction').length || 0,
+  }
+
+  // Add to existing card grid
   return (
     <div className="space-y-6 pb-6">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -132,6 +143,56 @@ export default async function SpacePage(props: { params: Params }) {
               ) : (
                 <p className="text-sm text-muted-foreground">No upcoming meetings</p>
               )}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Deliverables</CardTitle>
+            <CardDescription>Current submission statuses</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">{deliverables.length} Total</h3>
+                <div className="h-2 w-24 bg-muted rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-green-500 transition-all duration-300" 
+                    style={{ 
+                      width: `${(statusCounts.approved / deliverables.length) * 100 || 0}%`
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-2 rounded-lg bg-green-50 dark:bg-green-900/20">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    <span className="text-sm">Approved</span>
+                  </div>
+                  <Badge variant="outline" className="border-green-300 text-green-800">
+                    {statusCounts.approved} ({Math.round((statusCounts.approved / deliverables.length) * 100) || 0}%)
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-blue-600" />
+                    <span className="text-sm">Pending Review</span>
+                  </div>
+                  <Badge variant="outline" className="border-blue-300 text-blue-800">
+                    {statusCounts.pending}
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between p-2 rounded-lg bg-red-50 dark:bg-red-900/20">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4 text-red-600" />
+                    <span className="text-sm">Needs Correction</span>
+                  </div>
+                  <Badge variant="outline" className="border-red-300 text-red-800">
+                    {statusCounts.correction}
+                  </Badge>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
