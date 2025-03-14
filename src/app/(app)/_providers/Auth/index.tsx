@@ -69,8 +69,6 @@ export const AuthProvider: React.FC<{
   const resetPassword: ResetPassword = async (token: string, password: string) => {
     if (api === 'rest') {
       try {
-        console.log(token, password)
-
         const user = await rest<User>(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/reset-password`,
           {
