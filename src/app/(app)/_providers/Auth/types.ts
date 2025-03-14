@@ -3,6 +3,8 @@ import type { SanitizedPermissions } from 'payload'
 
 export type Login = (email: string, password: string) => Promise<User | undefined>
 export type Logout = () => Promise<void>
+export type ForgotPassword = (email: string) => Promise<void>
+export type ResetPassword = (token: string, password: string) => Promise<User | undefined>
 
 export interface AuthContext {
   permissions?: null | SanitizedPermissions
@@ -11,4 +13,6 @@ export interface AuthContext {
   user?: null | User
   login: Login
   logout: Logout
+  forgotPassword: ForgotPassword
+  resetPassword: ResetPassword
 }

@@ -2,18 +2,24 @@ import { isMediaRel, isRel } from '@/lib/payload-utils'
 import { ChevronLeft, ImageIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
+import { getSpace } from '../../../../../lib/functions/spaces'
 import { getUserById } from '../../../../../lib/functions/users'
 import { getServerAuth } from '../../../../../lib/getServerAuth'
 import { CalendlyButton } from '../../../_components/spaces/calendly-button'
 import SpaceNav from '../../../_components/spaces/space-nav'
 import { Button } from '../../../_components/ui/button'
-import { NotFound } from '../../../_components/ui/not-found'
 
 type Params = Promise<{ spaceId: string }>
 
-export async function generateMetadata({ params }: { params: Params }) {
-  const { spaceId } = await params
+export async function generateMetadata(props: { params: Params }) {
+  const params = await props.params
+  const spaceId = params.spaceId
+  const space = await getSpace(spaceId)
+
+  return {
+    title: space.name,
+    description: space.description,
+  }
 }
 
 export default async function Layout({
@@ -24,25 +30,8 @@ export default async function Layout({
   params: Params
 }) {
   const { spaceId } = await params
-  const { user, payload } = await getServerAuth()
-  if (!user) {
-    return redirect('/login')
-  }
-  const space = await payload.findByID({
-    collection: 'spaces',
-    id: spaceId,
-    user,
-    overrideAccess: false,
-  })
-
-  if (!space) {
-    return (
-      <NotFound
-        title="Space Not Found"
-        description="This space doesn't exist or you don't have permission to access it."
-      />
-    )
-  }
+  const { user } = await getServerAuth()
+  const space = await getSpace(spaceId)
 
   const isOwner = isRel(space.owner) && space.owner.id === user.id
   const ownerId = isRel(space.owner) ? space.owner.id : null

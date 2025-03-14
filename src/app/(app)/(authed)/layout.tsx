@@ -1,9 +1,17 @@
 import config from '@/payload.config'
+import { Metadata } from 'next'
 import { headers as getHeaders } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import { HydrateClientUser } from '../_components/HydrateClientUser'
 import Nav from '../_components/Nav/Nav'
+
+export const metadata: Metadata = {
+  title: {
+    template: '%s | Tiny Portals',
+    default: 'Tiny Portals',
+  },
+}
 
 export default async function AuthedLayout({ children }: { children: React.ReactNode }) {
   const headers = await getHeaders()

@@ -101,6 +101,9 @@ importers:
       payload:
         specifier: latest
         version: 3.24.0(bufferutil@4.0.9)(graphql@16.10.0)(typescript@5.7.2)(utf-8-validate@6.0.5)
+      qs-esm:
+        specifier: ^7.0.2
+        version: 7.0.2
       react:
         specifier: 19.0.0
         version: 19.0.0

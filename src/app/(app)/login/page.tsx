@@ -1,9 +1,14 @@
 import { LoginForm } from '@/app/(app)/_components/login/login-form'
 import config from '@/payload.config'
+import { Metadata } from 'next'
 import { headers as getHeaders } from 'next/headers'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
+
+export const metadata: Metadata = {
+  title: 'Login | Tiny Portals',
+}
 
 export default async function LoginPage() {
   const headers = await getHeaders()

@@ -1,12 +1,12 @@
-import { getSpace } from '@/lib/functions/spaces'
 import { isRel } from '@/lib/payload-utils'
 import { formatDistanceToNow } from 'date-fns'
+import { getSpace } from '../../../../../lib/functions/spaces'
 import { NoSpaceFound } from '../../../_components/spaces/NoSpaceFound'
-import { MembersCard } from '../../../_components/spaces/overview/members-card'
 import { ActivityCard } from '../../../_components/spaces/overview/activity-card'
+import { DeliverablesCard } from '../../../_components/spaces/overview/deliverables-card'
 import { DetailsCard } from '../../../_components/spaces/overview/details-card'
 import { MeetingsCard } from '../../../_components/spaces/overview/meetings-card'
-import { DeliverablesCard } from '../../../_components/spaces/overview/deliverables-card'
+import { MembersCard } from '../../../_components/spaces/overview/members-card'
 
 type Params = Promise<{ spaceId: string }>
 

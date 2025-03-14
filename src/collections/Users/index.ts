@@ -1,4 +1,5 @@
 import { CollectionConfig } from 'payload'
+import { resetPasswordEmail } from '../../lib/emails/resetPasswordEmail'
 import { completeUsersProfile } from './endpoints/completeUsersProfile'
 import { externalUsersLogin } from './endpoints/externalUsersLogin'
 import { inviteUsers } from './endpoints/inviteUsers'
@@ -13,6 +14,18 @@ export const Users: CollectionConfig = {
     verify: true,
     tokenExpiration: 28800, // 8 hours
     useAPIKey: true,
+    forgotPassword: {
+      expiration: 28800, // 8 hours
+      // @ts-ignore
+      generateEmailSubject: () => {
+        return 'Password Reset | Tiny Portals'
+      },
+      // @ts-ignore
+      generateEmailHTML: ({ token }) => {
+        const resetPasswordURL = `${process.env.NEXT_PUBLIC_SERVER_URL}/reset-password?token=${token}`
+        return resetPasswordEmail(resetPasswordURL)
+      },
+    },
   },
   fields: [
     // Email added by default

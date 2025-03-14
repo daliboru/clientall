@@ -1,5 +1,10 @@
 import { ArrowRight, Building2, Users2, Zap } from 'lucide-react'
+import { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Tiny Portals',
+}
 
 export default async function LandingPage() {
   return (

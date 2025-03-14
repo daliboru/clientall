@@ -4,7 +4,7 @@ import { User } from '@/payload-types'
 import { SanitizedPermissions } from 'payload'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { rest } from './rest'
-import { AuthContext, Login, Logout } from './types'
+import { AuthContext, ForgotPassword, Login, Logout, ResetPassword } from './types'
 
 const Context = createContext({} as AuthContext)
 
@@ -58,6 +58,39 @@ export const AuthProvider: React.FC<{
     void fetchMe()
   }, [api])
 
+  const forgotPassword: ForgotPassword = async (email: string) => {
+    if (api === 'rest') {
+      await rest(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/forgot-password`, {
+        email,
+      })
+    }
+  }
+
+  const resetPassword: ResetPassword = async (token: string, password: string) => {
+    if (api === 'rest') {
+      try {
+        console.log(token, password)
+
+        const user = await rest<User>(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/reset-password`,
+          {
+            token,
+            password,
+          },
+        )
+
+        if (!user) {
+          throw new Error('Failed to reset password')
+        }
+
+        setUser(user)
+        return user
+      } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to reset password')
+      }
+    }
+  }
+
   return (
     <Context.Provider
       value={{
@@ -65,6 +98,8 @@ export const AuthProvider: React.FC<{
         logout,
         permissions,
         setPermissions,
+        forgotPassword,
+        resetPassword,
         setUser,
         user,
       }}
