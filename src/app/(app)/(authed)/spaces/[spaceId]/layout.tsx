@@ -56,7 +56,7 @@ export default async function Layout({
         </div>
       </div>
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 pb-10">
         <div>
           <div className="flex items-center gap-4 mb-4">
             <div className="h-16 w-16 rounded-lg border flex items-center justify-center bg-muted shrink-0">
