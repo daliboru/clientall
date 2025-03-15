@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/app/(app)/_components/ui/alert-dialog'
+import { Avatar, AvatarFallback, AvatarImage } from '@/app/(app)/_components/ui/avatar'
 import { Button } from '@/app/(app)/_components/ui/button'
 import {
   Card,
@@ -27,8 +28,9 @@ import {
 } from '@/app/(app)/_components/ui/dropdown-menu'
 import { Pagination } from '@/app/(app)/_components/ui/pagination'
 import { createFileResource, createLinkResource, deleteResource } from '@/lib/actions/resources'
-import { getResourceSize, isFileResource } from '@/lib/payload-utils'
+import { getResourceSize, isFileResource, isMediaRel, isRel } from '@/lib/payload-utils'
 import { useToast } from '@/lib/use-toast'
+import { getInitials } from '@/lib/utils'
 import { Resource } from '@/payload-types'
 import { formatDistanceToNow } from 'date-fns'
 import { FileText, Link as LinkIcon, MoreVertical, Trash2 } from 'lucide-react'
@@ -170,10 +172,42 @@ export function ResourcesCard({
                   )}
                   <div className="min-w-0 flex-1">
                     <p className="font-medium truncate max-w-sm">{resource.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      Added {formatDistanceToNow(new Date(resource.createdAt), { addSuffix: true })}
-                      {resource.type === 'file' && ` • ${getResourceSize(resource)}`}
-                    </p>
+                    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-muted-foreground">
+                      <span className="inline-flex items-center">
+                        <span className="whitespace-nowrap">Added {formatDistanceToNow(new Date(resource.createdAt), { addSuffix: true })}</span>
+                      </span>
+                      {isRel(resource.createdBy) && (
+                        <div className="inline-flex items-center gap-1">
+                          <span>•</span>
+                          <div className="inline-flex items-center gap-1">
+                            <Avatar className="h-4 w-4 shrink-0">
+                              <AvatarImage
+                                src={
+                                  isMediaRel(resource.createdBy.avatar)
+                                    ? resource.createdBy.avatar.url
+                                    : undefined
+                                }
+                                alt={resource.createdBy.name}
+                              />
+                              <AvatarFallback className="text-[8px]">
+                                {getInitials(resource.createdBy.name)}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="whitespace-nowrap">
+                              {resource.createdBy.name.length > 12
+                                ? `${resource.createdBy.name.substring(0, 12)}...`
+                                : resource.createdBy.name}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      {resource.type === 'file' && (
+                        <span className="inline-flex items-center whitespace-nowrap">
+                          <span>•</span>
+                          <span className="ml-1">{getResourceSize(resource)}</span>
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
