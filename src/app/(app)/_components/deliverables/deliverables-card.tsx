@@ -29,6 +29,12 @@ import {
 } from '@/app/(app)/_components/ui/dropdown-menu'
 import { Pagination } from '@/app/(app)/_components/ui/pagination'
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/app/(app)/_components/ui/tooltip'
+import {
   createFileDeliverable,
   createLinkDeliverable,
   deleteDeliverable,
@@ -153,6 +159,9 @@ export function DeliverablesCard({
     }
   }
 
+  // First, import the Tooltip components
+
+  // Then update the renderViews function
   const renderViews = (deliverable: Deliverable) => {
     if (!deliverable.views?.length) return null
 
@@ -161,19 +170,30 @@ export function DeliverablesCard({
         <span className="text-xs text-muted-foreground">Viewed by:</span>
         <div className="flex -space-x-2">
           {deliverable.views.map((view, i) => (
-            <Avatar key={i} className="h-5 w-5 border-2 border-background">
-              <AvatarImage
-                src={
-                  isRel(view.user) && isMediaRel(view.user.avatar)
-                    ? view.user.avatar.url
-                    : undefined
-                }
-                alt={(isRel(view.user) && view.user.name) || ''}
-              />
-              <AvatarFallback className="text-[10px]">
-                {isRel(view.user) && getInitials(view.user.name)}
-              </AvatarFallback>
-            </Avatar>
+            <TooltipProvider key={i} delayDuration={300}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Avatar className="h-5 w-5 border-2 border-background cursor-pointer">
+                    <AvatarImage
+                      src={
+                        isRel(view.user) && isMediaRel(view.user.avatar)
+                          ? view.user.avatar.url
+                          : undefined
+                      }
+                      alt={(isRel(view.user) && view.user.name) || ''}
+                    />
+                    <AvatarFallback className="text-[10px]">
+                      {isRel(view.user) && getInitials(view.user.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[200px]">
+                  <span className="block truncate">
+                    {isRel(view.user) ? view.user.name : 'Unknown user'}
+                  </span>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           ))}
         </div>
       </div>
@@ -261,11 +281,47 @@ export function DeliverablesCard({
                       <p className="font-medium truncate max-w-sm">{deliverable.name}</p>
                       {getStatusBadge(deliverable.status)}
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      Submitted{' '}
-                      {formatDistanceToNow(new Date(deliverable.createdAt), { addSuffix: true })}
-                      {deliverable.type === 'file' && ` • ${getResourceSize(deliverable)}`}
-                    </p>
+                    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-muted-foreground">
+                      <span className="inline-flex items-center">
+                        <span className="whitespace-nowrap">
+                          Submitted{' '}
+                          {formatDistanceToNow(new Date(deliverable.createdAt), {
+                            addSuffix: true,
+                          })}
+                        </span>
+                      </span>
+                      {isRel(deliverable.createdBy) && (
+                        <div className="inline-flex items-center gap-1">
+                          <span>•</span>
+                          <div className="inline-flex items-center gap-1">
+                            <Avatar className="h-4 w-4 shrink-0">
+                              <AvatarImage
+                                src={
+                                  isMediaRel(deliverable.createdBy.avatar)
+                                    ? deliverable.createdBy.avatar.url
+                                    : undefined
+                                }
+                                alt={deliverable.createdBy.name}
+                              />
+                              <AvatarFallback className="text-[8px]">
+                                {getInitials(deliverable.createdBy.name)}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="whitespace-nowrap">
+                              {deliverable.createdBy.name.length > 12
+                                ? `${deliverable.createdBy.name.substring(0, 12)}...`
+                                : deliverable.createdBy.name}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      {deliverable.type === 'file' && (
+                        <span className="inline-flex items-center whitespace-nowrap">
+                          <span>•</span>
+                          <span className="ml-1">{getResourceSize(deliverable)}</span>
+                        </span>
+                      )}
+                    </div>
                     {deliverable.statusComment && (
                       <p className="text-sm text-destructive mt-1">{deliverable.statusComment}</p>
                     )}
