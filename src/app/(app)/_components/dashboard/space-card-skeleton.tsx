@@ -4,10 +4,6 @@ import { Skeleton } from '@/app/(app)/_components/ui/skeleton'
 export function SpaceCardListSkeleton() {
   return (
     <>
-      <div className="flex items-center justify-between mb-6">
-        <Skeleton className="h-8 w-[200px]" />
-        <Skeleton className="h-10 w-10 rounded-lg" />
-      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {Array.from({ length: 6 }).map((_, i) => (
           <Card key={i} className="cursor-default">

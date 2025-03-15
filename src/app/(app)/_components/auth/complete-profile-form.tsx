@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from '@/app/(app)/_components/ui/form'
 import { Input } from '@/app/(app)/_components/ui/input'
-import { toast } from '@/lib/use-toast'
+import { useToast } from '@/lib/use-toast'
 import {
   CompleteProfileFormValues,
   completeProfileSchema,
@@ -27,6 +27,7 @@ interface CompleteProfileFormProps {
 
 export function CompleteProfileForm({ token }: CompleteProfileFormProps) {
   const router = useRouter()
+  const { toast } = useToast()
   const form = useForm<CompleteProfileFormValues>({
     resolver: zodResolver(completeProfileSchema),
     defaultValues: {

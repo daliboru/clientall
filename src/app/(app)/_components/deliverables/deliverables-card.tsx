@@ -36,7 +36,7 @@ import {
   updateDeliverableStatus,
 } from '@/lib/actions/deliverables'
 import { getResourceSize, isFileResource, isMediaRel, isRel } from '@/lib/payload-utils'
-import { toast } from '@/lib/use-toast'
+import { useToast } from '@/lib/use-toast'
 import { getInitials } from '@/lib/utils'
 import { Deliverable } from '@/payload-types'
 import { formatDistanceToNow } from 'date-fns'
@@ -70,6 +70,7 @@ export function DeliverablesCard({
   const [deliverables, setDeliverables] = useState(initialDeliverables)
   const [page, setPage] = useState(currentPage)
   const [loading, setLoading] = useState(false)
+  const { toast } = useToast()
 
   const fetchDeliverables = async (pageNumber: number) => {
     setLoading(true)

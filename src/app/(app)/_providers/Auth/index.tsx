@@ -3,8 +3,13 @@
 import { User } from '@/payload-types'
 import { SanitizedPermissions } from 'payload'
 import { createContext, useContext, useEffect, useState } from 'react'
+import { serverChangePassword } from '../../../../lib/actions/users'
+import {
+  PasswordSettingsFormValues,
+  passwordSettingsSchema,
+} from '../../../../lib/validations/user-settings'
 import { rest } from './rest'
-import { AuthContext, ForgotPassword, Login, Logout, ResetPassword } from './types'
+import { AuthContext, ChangePassword, ForgotPassword, Login, Logout, ResetPassword } from './types'
 
 const Context = createContext({} as AuthContext)
 
@@ -89,6 +94,45 @@ export const AuthProvider: React.FC<{
     }
   }
 
+  const changePassword: ChangePassword = async (data: PasswordSettingsFormValues) => {
+    if (user) {
+      if (api === 'rest') {
+        const parse = passwordSettingsSchema.safeParse({
+          current: data.current,
+          new: data.new,
+          confirm: data.confirm,
+        })
+
+        if (!parse.success) {
+          throw new Error(parse.error.message)
+        }
+
+        try {
+          const loginResponse = await rest<User>(
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/login`,
+            {
+              email: user.email,
+              password: data.current,
+            },
+          )
+
+          if (!loginResponse) {
+            throw new Error('Current password is incorrect')
+          }
+
+          const userWithChangedPassword = await serverChangePassword(data.new)
+          if (!userWithChangedPassword) {
+            throw new Error('Failed to change password')
+          }
+          setUser(userWithChangedPassword)
+          return userWithChangedPassword
+        } catch (error) {
+          throw new Error(error instanceof Error ? error.message : 'Failed to change the password.')
+        }
+      }
+    }
+  }
+
   return (
     <Context.Provider
       value={{
@@ -98,6 +142,7 @@ export const AuthProvider: React.FC<{
         setPermissions,
         forgotPassword,
         resetPassword,
+        changePassword,
         setUser,
         user,
       }}

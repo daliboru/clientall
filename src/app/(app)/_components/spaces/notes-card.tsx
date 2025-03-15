@@ -22,7 +22,6 @@ import {
 } from '@/app/(app)/_components/ui/card'
 import { Pagination } from '@/app/(app)/_components/ui/pagination'
 import { getNoteAuthor, isMediaRel } from '@/lib/payload-utils'
-import { toast } from '@/lib/use-toast'
 import { getInitials } from '@/lib/utils'
 import { Note } from '@/payload-types'
 import { formatDistanceToNow } from 'date-fns'
@@ -30,6 +29,7 @@ import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { deleteNote } from '../../../../lib/actions/notes'
 import { getNotes } from '../../../../lib/functions/notes'
+import { useToast } from '../../../../lib/use-toast'
 import { AddNoteDialog } from './add-note-dialog'
 
 interface NotesCardProps {
@@ -49,6 +49,7 @@ export function NotesCard({
   const [page, setPage] = useState(currentPage)
   const [loading, setLoading] = useState(false)
   const [expandedNotes, setExpandedNotes] = useState<number[]>([])
+  const { toast } = useToast()
 
   const fetchNotes = async (pageNumber: number) => {
     setLoading(true)

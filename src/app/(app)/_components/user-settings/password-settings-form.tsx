@@ -25,8 +25,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useToast } from '../../../../lib/use-toast'
+import { useAuth } from '../../_providers/Auth'
 
 export function PasswordSettingsForm() {
+  const { changePassword } = useAuth()
+  const { toast } = useToast()
   const [isPending, setIsPending] = useState(false)
 
   const form = useForm<PasswordSettingsFormValues>({
@@ -38,43 +42,52 @@ export function PasswordSettingsForm() {
     },
   })
 
-  //   const onSubmit = async (values: PasswordSettingsFormValues) => {
-  //     try {
-  //       setIsPending(true)
-  //       const formData = new FormData()
-  //       formData.append('current', values.current)
-  //       formData.append('new', values.new)
-  //       formData.append('confirm', values.confirm)
+  const onSubmit = async (values: PasswordSettingsFormValues) => {
+    setIsPending(true)
+    try {
+      const formData = new FormData()
+      formData.append('current', values.current)
+      formData.append('new', values.new)
+      formData.append('confirm', values.confirm)
 
-  //       const result = await updatePassword(formData)
+      const result = await changePassword({
+        current: values.current,
+        new: values.new,
+        confirm: values.confirm,
+      })
 
-  //       if (!result.success) {
-  //         if (result.errors) {
-  //           Object.entries(result.errors).forEach(([key, value]) => {
-  //             form.setError(key as keyof PasswordSettingsFormValues, {
-  //               message: value[0],
-  //             })
-  //           })
-  //         }
-  //         throw new Error(result.error || 'Failed to update password')
-  //       }
+      if (!result) {
+        throw new Error('Failed to update password.')
+      }
 
-  //       form.reset()
-  //       toast({
-  //         title: 'Password updated',
-  //         description: 'Your password has been updated successfully.',
-  //         variant: 'success',
-  //       })
-  //     } catch (error: any) {
-  //       toast({
-  //         title: 'Error',
-  //         description: error.message || 'Failed to update password.',
-  //         variant: 'destructive',
-  //       })
-  //     } finally {
-  //       setIsPending(false)
-  //     }
-  //   }
+      form.reset()
+      toast({
+        title: 'Password updated',
+        description: 'Your password has been updated successfully.',
+        variant: 'success',
+      })
+    } catch (error: any) {
+      if (error.message?.includes('email or password')) {
+        form.setError('current', {
+          type: 'manual',
+          message: 'Current password is incorrect',
+        })
+      } else if (error.message?.includes('match')) {
+        form.setError('confirm', {
+          type: 'manual',
+          message: 'Passwords do not match',
+        })
+      } else {
+        toast({
+          title: 'Error',
+          description: error.message || 'Failed to update password.',
+          variant: 'destructive',
+        })
+      }
+    } finally {
+      setIsPending(false)
+    }
+  }
 
   return (
     <Card>
@@ -84,7 +97,7 @@ export function PasswordSettingsForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="current"
@@ -92,7 +105,12 @@ export function PasswordSettingsForm() {
                 <FormItem>
                   <FormLabel>Current Password</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} disabled={isPending} />
+                    <Input
+                      type="password"
+                      {...field}
+                      value={field.value ?? ''}
+                      disabled={isPending}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -106,7 +124,12 @@ export function PasswordSettingsForm() {
                 <FormItem>
                   <FormLabel>New Password</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} disabled={isPending} />
+                    <Input
+                      type="password"
+                      {...field}
+                      value={field.value ?? ''}
+                      disabled={isPending}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -120,7 +143,12 @@ export function PasswordSettingsForm() {
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} disabled={isPending} />
+                    <Input
+                      type="password"
+                      {...field}
+                      value={field.value ?? ''}
+                      disabled={isPending}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

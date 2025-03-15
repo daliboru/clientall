@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from '@/app/(app)/_components/ui/form'
 import { Input } from '@/app/(app)/_components/ui/input'
-import { toast } from '@/lib/use-toast'
+import { useToast } from '@/lib/use-toast'
 import { SignUpFormValues, signUpSchema } from '@/lib/validations/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
@@ -24,6 +24,7 @@ export function SignUpForm() {
   const router = useRouter()
   const [error, setError] = useState('')
   const [isPending, setIsPending] = useState(false)
+  const { toast } = useToast()
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),

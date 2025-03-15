@@ -31,7 +31,7 @@ import { Input } from '@/app/(app)/_components/ui/input'
 import { Textarea } from '@/app/(app)/_components/ui/textarea'
 import { updateSpace } from '@/lib/actions/spaces'
 import { isMediaRel } from '@/lib/payload-utils'
-import { toast } from '@/lib/use-toast'
+import { useToast } from '@/lib/use-toast'
 import { spaceSettingsSchema, type SpaceSettingsForm } from '@/lib/validations/space'
 import { Space } from '@/payload-types'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -50,6 +50,7 @@ export function SpaceSettingsForm({ space }: Props) {
   const [isPending, setIsPending] = useState(false)
   const [logo, setLogo] = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState('')
+  const { toast } = useToast()
 
   const form = useForm<SpaceSettingsForm>({
     resolver: zodResolver(spaceSettingsSchema),

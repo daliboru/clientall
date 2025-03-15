@@ -31,7 +31,7 @@ import {
 import { Input } from '@/app/(app)/_components/ui/input'
 import { updateUser } from '@/lib/actions/users'
 import { isMediaRel } from '@/lib/payload-utils'
-import { toast } from '@/lib/use-toast'
+import { useToast } from '@/lib/use-toast'
 import { getInitials } from '@/lib/utils'
 import {
   profileSettingsSchema,
@@ -52,24 +52,21 @@ export function ProfileSettingsForm() {
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState('')
   const router = useRouter()
+  const { toast } = useToast()
 
   // Update the form initialization
   const form = useForm<ProfileSettingsFormValues>({
     resolver: zodResolver(profileSettingsSchema),
     defaultValues: {
-      name: user?.name,
+      name: user?.name || '',
       calendly_url: user?.calendly_url || '',
     },
   })
 
   useEffect(() => {
-    if (user === null) {
-      router.push(`/login?unauthorized=account`)
-    }
-
     if (user) {
       form.reset({
-        name: user.name,
+        name: user.name || '',
         calendly_url: user.calendly_url || '',
       })
     }
@@ -255,7 +252,7 @@ export function ProfileSettingsForm() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input value={user?.email} disabled className="bg-muted" />
+                  <Input value={user?.email || ''} disabled className="bg-muted" />
                 </FormControl>
                 <CardDescription>Email cannot be changed</CardDescription>
               </FormItem>
@@ -267,7 +264,7 @@ export function ProfileSettingsForm() {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input {...field} disabled={isPending} />
+                      <Input {...field} value={field.value || ''} disabled={isPending} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -283,6 +280,7 @@ export function ProfileSettingsForm() {
                     <FormControl>
                       <Input
                         {...field}
+                        value={field.value || ''}
                         disabled={isPending}
                         placeholder="https://calendly.com/your-link"
                       />

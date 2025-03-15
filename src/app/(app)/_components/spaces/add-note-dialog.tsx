@@ -12,7 +12,7 @@ import {
 } from '@/app/(app)/_components/ui/dialog'
 import { Textarea } from '@/app/(app)/_components/ui/textarea'
 import { createNote } from '@/lib/actions/notes'
-import { toast } from '@/lib/use-toast'
+import { useToast } from '@/lib/use-toast'
 import { Note } from '@/payload-types'
 import { PlusCircle } from 'lucide-react'
 import { useState } from 'react'
@@ -26,6 +26,7 @@ export function AddNoteDialog({ spaceId, onSuccess }: AddNoteDialogProps) {
   const [content, setContent] = useState('')
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { toast } = useToast()
 
   const handleSubmit = async () => {
     setIsSubmitting(true)

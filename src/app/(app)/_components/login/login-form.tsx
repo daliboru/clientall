@@ -12,7 +12,7 @@ import {
 import { Input } from '@/app/(app)/_components/ui/input'
 import { Label } from '@/app/(app)/_components/ui/label'
 import { useAuth } from '@/app/(app)/_providers/Auth'
-import { toast } from '@/lib/use-toast'
+import { useToast } from '@/lib/use-toast'
 import { cn } from '@/lib/utils'
 import { UserLoginForm, userLoginSchema } from '@/lib/validations/space'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -30,6 +30,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
   const [isPending, setIsPending] = useState(false)
   const [error, setError] = useState('')
   const { login } = useAuth()
+  const { toast } = useToast()
 
   const form = useForm<UserLoginForm>({
     resolver: zodResolver(userLoginSchema),
@@ -57,7 +58,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         router.push('/dashboard')
       }
     } catch (error: any) {
-      setError('There was an error with the credentials provided. Please try again.')
+      setError(error.message)
       setIsPending(false)
     }
   }

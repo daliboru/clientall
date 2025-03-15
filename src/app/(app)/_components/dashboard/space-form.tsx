@@ -12,7 +12,7 @@ import {
 import { Input } from '@/app/(app)/_components/ui/input'
 import { Textarea } from '@/app/(app)/_components/ui/textarea'
 import { createSpace } from '@/lib/actions/spaces'
-import { toast } from '@/lib/use-toast'
+import { useToast } from '@/lib/use-toast'
 import { spaceSettingsSchema, type SpaceSettingsForm } from '@/lib/validations/space'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
@@ -24,6 +24,7 @@ interface SpaceFormProps {
 }
 
 export function SpaceForm({ onSuccess, submitLabel = 'Create Space' }: SpaceFormProps) {
+  const { toast } = useToast()
   const form = useForm<SpaceSettingsForm>({
     resolver: zodResolver(spaceSettingsSchema),
     defaultValues: {

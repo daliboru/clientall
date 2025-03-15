@@ -17,7 +17,7 @@ import { Button } from '@/app/(app)/_components/ui/button'
 import { ScrollArea } from '@/app/(app)/_components/ui/scroll-area'
 import { Separator } from '@/app/(app)/_components/ui/separator'
 import { isMediaRel, isRel } from '@/lib/payload-utils'
-import { toast } from '@/lib/use-toast'
+import { useToast } from '@/lib/use-toast'
 import { getInitials } from '@/lib/utils'
 import { Space, User } from '@/payload-types'
 import { useState } from 'react'
@@ -32,6 +32,7 @@ interface MemberListProps {
 
 export function MemberList({ members, space, currentUser, isOwner }: MemberListProps) {
   const [isRemoving, setIsRemoving] = useState(false)
+  const { toast } = useToast()
 
   const onRemove = async (member: User) => {
     setIsRemoving(true)

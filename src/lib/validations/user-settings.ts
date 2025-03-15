@@ -8,7 +8,7 @@ export const profileSettingsSchema = z.object({
 export const passwordSettingsSchema = z
   .object({
     current: z.string().min(1, 'Current password is required'),
-    new: z.string().min(8, 'Password must be at least 8 characters'),
+    new: z.string().min(6, 'Password must be at least 6 characters'),
     confirm: z.string(),
   })
   .refine((data) => data.new === data.confirm, {

@@ -304,3 +304,16 @@ export async function removeMember(memberId: number, spaceId: number) {
     return { success: false }
   }
 }
+
+export const serverChangePassword = async (newPassword: string) => {
+  const { user, payload } = await getServerAuth()
+
+  const updatedUser = await payload.update({
+    collection: 'users',
+    id: user.id,
+    data: {
+      password: newPassword,
+    },
+  })
+  return updatedUser
+}

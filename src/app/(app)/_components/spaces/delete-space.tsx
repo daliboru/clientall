@@ -13,7 +13,7 @@ import {
 } from '@/app/(app)/_components/ui/alert-dialog'
 import { Button } from '@/app/(app)/_components/ui/button'
 import { deleteSpace } from '@/lib/actions/spaces'
-import { toast } from '@/lib/use-toast'
+import { useToast } from '@/lib/use-toast'
 import { Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -26,6 +26,7 @@ interface DeleteSpaceProps {
 export function DeleteSpace({ spaceId, spaceName }: DeleteSpaceProps) {
   const router = useRouter()
   const [isDeleting, setIsDeleting] = useState(false)
+  const { toast } = useToast()
 
   const handleDelete = async () => {
     setIsDeleting(true)
