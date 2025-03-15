@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const spaceSettingsSchema = z.object({
-  name: z.string().min(1, 'Space name is required').max(50, 'Name is too long'),
+  name: z.string().min(1, 'Portal name is required').max(50, 'Name is too long'),
   description: z.string().max(200, 'Description is too long'),
 })
 

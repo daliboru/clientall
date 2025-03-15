@@ -23,7 +23,7 @@ interface SpaceFormProps {
   submitLabel?: string
 }
 
-export function SpaceForm({ onSuccess, submitLabel = 'Create Space' }: SpaceFormProps) {
+export function SpaceForm({ onSuccess, submitLabel = 'Create Portal' }: SpaceFormProps) {
   const { toast } = useToast()
   const form = useForm<SpaceSettingsForm>({
     resolver: zodResolver(spaceSettingsSchema),
@@ -69,11 +69,11 @@ export function SpaceForm({ onSuccess, submitLabel = 'Create Space' }: SpaceForm
           render={({ field }) => (
             <FormItem>
               <div className="flex justify-between items-center">
-                <FormLabel>Space Name*</FormLabel>
+                <FormLabel>Portal Name*</FormLabel>
                 <span className="text-sm text-muted-foreground">{nameLength}/50</span>
               </div>
               <FormControl>
-                <Input placeholder="Enter space name" {...field} disabled={isPending} />
+                <Input placeholder="Enter portal name" {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -90,7 +90,7 @@ export function SpaceForm({ onSuccess, submitLabel = 'Create Space' }: SpaceForm
                 <span className="text-sm text-muted-foreground">{descriptionLength}/200</span>
               </div>
               <FormControl>
-                <Textarea placeholder="Enter space description" {...field} disabled={isPending} />
+                <Textarea placeholder="Enter portal description" {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -80,20 +80,20 @@ export function SpaceSettingsForm({ space }: Props) {
             })
           })
         }
-        throw new Error(result.error || 'Failed to update space')
+        throw new Error(result.error || 'Failed to update portal')
       }
 
       setLogo(null)
 
       toast({
         title: 'Settings updated',
-        description: 'Your space settings have been updated successfully.',
+        description: 'Your portal settings have been updated successfully.',
         variant: 'success',
       })
     } catch (error: any) {
       toast({
         title: 'Error',
-        description: error.message || 'Failed to update space settings.',
+        description: error.message || 'Failed to update portal settings.',
         variant: 'destructive',
       })
     } finally {
@@ -134,7 +134,7 @@ export function SpaceSettingsForm({ space }: Props) {
 
         toast({
           title: 'Logo removed',
-          description: 'Your space logo has been removed.',
+          description: 'Your portal logo has been removed.',
           variant: 'success',
         })
       } else {
@@ -170,9 +170,9 @@ export function SpaceSettingsForm({ space }: Props) {
         <Card>
           <CardHeader className="space-y-4">
             <div className="space-y-1">
-              <CardTitle className="text-2xl font-bold text-purple-600">Space Settings</CardTitle>
+              <CardTitle className="text-2xl font-bold text-purple-600">Portal Settings</CardTitle>
               <CardDescription className="text-base text-muted-foreground">
-                Customize your space appearance and information
+                Customize your portal appearance and information
               </CardDescription>
             </div>
             <div className="border-b" />
@@ -180,9 +180,9 @@ export function SpaceSettingsForm({ space }: Props) {
           <CardContent className="space-y-6">
             <div className="space-y-6">
               <div>
-                <FormLabel className="text-base">Space Logo</FormLabel>
+                <FormLabel className="text-base">Portal Logo</FormLabel>
                 <CardDescription>
-                  This will be displayed in the space card and header.
+                  This will be displayed in the portal card and header.
                 </CardDescription>
               </div>
 
@@ -215,9 +215,9 @@ export function SpaceSettingsForm({ space }: Props) {
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Remove space logo?</AlertDialogTitle>
+                          <AlertDialogTitle>Remove portal logo?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This will permanently remove your space logo. This action cannot be
+                            This will permanently remove your portal logo. This action cannot be
                             undone.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
@@ -268,7 +268,7 @@ export function SpaceSettingsForm({ space }: Props) {
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center justify-between">
-                      <FormLabel>Space Name</FormLabel>
+                      <FormLabel>Portal Name</FormLabel>
                       <span className="text-sm text-muted-foreground">{nameCharCount}/50</span>
                     </div>
                     <FormControl>

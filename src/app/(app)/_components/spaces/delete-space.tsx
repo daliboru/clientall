@@ -57,13 +57,13 @@ export function DeleteSpace({ spaceId, spaceName }: DeleteSpaceProps) {
               Deleting...
             </>
           ) : (
-            'Delete Space'
+            'Delete Portal'
           )}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Space</AlertDialogTitle>
+          <AlertDialogTitle>Delete Portal</AlertDialogTitle>
           <AlertDialogDescription>
             Are you sure you want to delete &quot;{spaceName}&quot;? This action cannot be undone
             and will permanently delete all associated data including notes and resources.
@@ -75,7 +75,7 @@ export function DeleteSpace({ spaceId, spaceName }: DeleteSpaceProps) {
             onClick={handleDelete}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
-            Delete Space
+            Delete Portal
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

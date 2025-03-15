@@ -1,5 +1,11 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../_components/ui/card'
 import { User } from '@/payload-types'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../../../_components/ui/card'
 
 interface DetailsCardProps {
   createdAt: string
@@ -11,7 +17,7 @@ export function DetailsCard({ createdAt, owner }: DetailsCardProps) {
     <Card>
       <CardHeader>
         <CardTitle>Details</CardTitle>
-        <CardDescription>Space information</CardDescription>
+        <CardDescription>Portal information</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-2 text-sm">

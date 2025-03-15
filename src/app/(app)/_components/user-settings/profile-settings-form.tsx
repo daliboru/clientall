@@ -286,7 +286,7 @@ export function ProfileSettingsForm() {
                       />
                     </FormControl>
                     <CardDescription>
-                      Add your Calendly URL to enable scheduling in your spaces
+                      Add your Calendly URL to enable scheduling in your portals
                     </CardDescription>
                     <FormMessage />
                   </FormItem>

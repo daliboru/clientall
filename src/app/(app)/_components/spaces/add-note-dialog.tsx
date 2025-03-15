@@ -82,7 +82,7 @@ export function AddNoteDialog({ spaceId, onSuccess }: AddNoteDialogProps) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Note</DialogTitle>
-          <DialogDescription>Create a new note in this space.</DialogDescription>
+          <DialogDescription>Create a new note in this portal.</DialogDescription>
         </DialogHeader>
         <Textarea
           value={content}

@@ -120,12 +120,12 @@ export async function createSpace(data: SpaceSettingsForm) {
 
     return {
       success: true,
-      message: 'Space created successfully',
+      message: 'Portal created successfully',
     }
   } catch (error: any) {
     return {
       success: false,
-      error: error.message || 'Failed to create space',
+      error: error.message || 'Failed to create portal',
     }
   }
 }

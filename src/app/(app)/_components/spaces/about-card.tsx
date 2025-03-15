@@ -20,7 +20,7 @@ export function AboutCard({ space }: AboutCardProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>About this space</CardTitle>
+        <CardTitle>About this portal</CardTitle>
         <CardDescription className="whitespace-pre-line">{space.description}</CardDescription>
       </CardHeader>
       <CardContent>

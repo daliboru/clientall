@@ -1,4 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/app/(app)/_components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/app/(app)/_components/ui/card'
 import { Skeleton } from '@/app/(app)/_components/ui/skeleton'
 
 export default function SpaceLoading() {
@@ -9,7 +15,7 @@ export default function SpaceLoading() {
         <Card>
           <CardHeader>
             <CardTitle>Members</CardTitle>
-            <CardDescription>People with access to this space</CardDescription>
+            <CardDescription>People with access to this portal</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-4">
@@ -46,7 +52,7 @@ export default function SpaceLoading() {
         <Card>
           <CardHeader>
             <CardTitle>Details</CardTitle>
-            <CardDescription>Space information</CardDescription>
+            <CardDescription>Portal information</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-2 text-sm">
@@ -100,7 +106,10 @@ export default function SpaceLoading() {
               </div>
               <div className="space-y-3">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
+                  <div
+                    key={i}
+                    className="flex items-center justify-between p-2 rounded-lg bg-muted/30"
+                  >
                     <div className="flex items-center gap-2">
                       <Skeleton className="h-4 w-4 rounded-full" />
                       <Skeleton className="h-4 w-24" />

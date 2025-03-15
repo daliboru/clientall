@@ -35,7 +35,7 @@ export const Notes: CollectionConfig = {
             })
 
             if (!space.members.includes(req.user.id)) {
-              throw new Error('You do not have access to this space')
+              throw new Error('You do not have access to this portal')
             }
 
             return value

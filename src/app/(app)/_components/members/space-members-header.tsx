@@ -25,7 +25,7 @@ export function SpaceMembersHeader({
         </CardTitle>
         <CardDescription className="text-base text-muted-foreground">
           {
-            'Collaborate with your team members and manage access to your space. Build a strong team to achieve your project goals together.'
+            'Collaborate with your team members and manage access to your portal. Build a strong team to achieve your project goals together.'
           }
         </CardDescription>
       </div>

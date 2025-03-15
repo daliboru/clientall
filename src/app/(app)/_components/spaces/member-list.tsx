@@ -103,7 +103,7 @@ export function MemberList({ members, space, currentUser, isOwner }: MemberListP
                     <AlertDialogHeader>
                       <AlertDialogTitle>Remove member</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Are you sure you want to remove {member.name} from this space? This action
+                        Are you sure you want to remove {member.name} from this portal? This action
                         cannot be undone.
                       </AlertDialogDescription>
                     </AlertDialogHeader>

@@ -21,13 +21,13 @@ export function CreateSpaceDialog() {
       <DialogTrigger asChild>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
-          Create Space
+          Create Portal
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create New Space</DialogTitle>
-          <DialogDescription>Create a new space for your team</DialogDescription>
+          <DialogTitle>Create New Portal</DialogTitle>
+          <DialogDescription>Create a new portal for your team</DialogDescription>
         </DialogHeader>
         <SpaceForm onSuccess={() => setOpen(false)} />
       </DialogContent>

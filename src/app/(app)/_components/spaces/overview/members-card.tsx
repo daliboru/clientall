@@ -1,5 +1,11 @@
 import { Users } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../_components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../../../_components/ui/card'
 
 interface MembersCardProps {
   memberCount: number
@@ -10,7 +16,7 @@ export function MembersCard({ memberCount }: MembersCardProps) {
     <Card>
       <CardHeader>
         <CardTitle>Members</CardTitle>
-        <CardDescription>People with access to this space</CardDescription>
+        <CardDescription>People with access to this portal</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex items-center gap-4">
