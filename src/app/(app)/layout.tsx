@@ -1,5 +1,6 @@
 import { Toaster } from '@/app/(app)/_components/ui/toaster'
 import { cn } from '@/lib/utils'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Inter as FontSans } from 'next/font/google'
 import { ReactNode } from 'react'
 import { AuthProvider } from './_providers/Auth'
@@ -21,6 +22,7 @@ const Layout = ({ children }: LayoutProps) => {
           {children}
           <Toaster />
         </AuthProvider>
+        <SpeedInsights />
       </body>
     </html>
   )
