@@ -20,9 +20,7 @@ export function SpaceMembersHeader({
   return (
     <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       <div className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-purple-600">
-          Members ({membersCount})
-        </CardTitle>
+        <CardTitle className="text-2xl font-bold text-primary">Members ({membersCount})</CardTitle>
         <CardDescription className="text-base text-muted-foreground">
           {
             'Collaborate with your team members and manage access to your portal. Build a strong team to achieve your project goals together.'

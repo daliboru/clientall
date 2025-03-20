@@ -27,10 +27,10 @@ export default async function SignUpPage() {
         <Link href="/" className="flex items-center gap-2 self-center font-medium">
           Tiny Portals
         </Link>
-        <Card className="border-purple-100">
+        <Card className="border-border">
           <CardHeader className="text-center space-y-1">
-            <CardTitle className="text-2xl font-bold text-purple-600">Create an account</CardTitle>
-            <CardDescription className="text-gray-600">
+            <CardTitle className="text-2xl font-bold text-primary">Create an account</CardTitle>
+            <CardDescription className="text-foreground">
               Enter your details to create your account
             </CardDescription>
           </CardHeader>
@@ -38,7 +38,7 @@ export default async function SignUpPage() {
             <SignUpForm />
             <div className="mt-4 text-center text-sm">
               Already have an account?{' '}
-              <Link href="/login" className="text-purple-600 hover:underline">
+              <Link href="/login" className="text-primary hover:underline">
                 Login here
               </Link>
             </div>

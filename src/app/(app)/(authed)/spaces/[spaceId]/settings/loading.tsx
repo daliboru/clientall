@@ -12,7 +12,7 @@ export default function SpaceSettingsLoading() {
     <Card>
       <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-purple-600">Portal Settings</CardTitle>
+          <CardTitle className="text-2xl font-bold text-primary">Portal Settings</CardTitle>
           <CardDescription className="text-base text-muted-foreground">
             Customize your space appearance and information
           </CardDescription>

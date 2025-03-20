@@ -65,10 +65,10 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
-      <Card className="border-purple-100">
+      <Card className="border-border">
         <CardHeader className="text-center space-y-1">
-          <CardTitle className="text-2xl font-bold text-purple-600">Welcome back</CardTitle>
-          <CardDescription className="text-gray-600">
+          <CardTitle className="text-2xl font-bold text-primary">Welcome back</CardTitle>
+          <CardDescription className="text-foreground">
             Login with your Apple or Google account
           </CardDescription>
         </CardHeader>
@@ -81,7 +81,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
             )}
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
-                <Button variant="outline" className="w-full hover:bg-gray-50">
+                <Button variant="outline" className="w-full hover:bg-muted">
                   <svg
                     className="mr-2 h-4 w-4"
                     xmlns="http://www.w3.org/2000/svg"
@@ -94,7 +94,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                   </svg>
                   Login with Apple
                 </Button>
-                <Button variant="outline" className="w-full hover:bg-gray-50">
+                <Button variant="outline" className="w-full hover:bg-muted">
                   <svg
                     className="mr-2 h-4 w-4"
                     xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +109,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                 </Button>
               </div>
               <div className="relative text-center text-sm">
-                <span className="relative z-10 bg-background px-2 text-gray-500">
+                <span className="relative z-10 bg-background px-2 text-foreground">
                   Or continue with
                 </span>
                 <div className="absolute inset-0 flex items-center">
@@ -118,7 +118,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
               </div>
               <div className="grid gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="email" className="text-gray-700">
+                  <Label htmlFor="email" className="text-foreground">
                     Email
                   </Label>
                   <Input
@@ -133,12 +133,12 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
-                    <Label htmlFor="password" className="text-gray-700">
+                    <Label htmlFor="password" className="text-foreground">
                       Password
                     </Label>
                     <Link
                       href="/forgot-password"
-                      className="ml-auto text-sm text-purple-600 hover:text-purple-700"
+                      className="ml-auto text-sm text-primary hover:text-purple-700"
                     >
                       Forgot your password?
                     </Link>
@@ -154,7 +154,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                 </div>
                 <Button
                   type="submit"
-                  className="w-full bg-purple-600 hover:bg-purple-700"
+                  className="w-full bg-primary hover:bg-primary/90"
                   disabled={isPending}
                 >
                   {isPending ? (
@@ -167,11 +167,11 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                   )}
                 </Button>
               </div>
-              <div className="text-center text-sm text-gray-600">
+              <div className="text-center text-sm text-foreground">
                 Don&apos;t have an account?{' '}
                 <Link
                   href="/signup"
-                  className="text-purple-600 hover:text-purple-700 underline underline-offset-4"
+                  className="text-primary hover:text-purple-700 underline underline-offset-4"
                 >
                   Sign up
                 </Link>
@@ -180,7 +180,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
           </form>
         </CardContent>
       </Card>
-      <div className="text-balance text-center text-xs text-gray-500 [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-purple-600">
+      <div className="text-balance text-center text-xs text-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">
         By clicking continue, you agree to our <a href="#">Terms of Service</a> and{' '}
         <a href="#">Privacy Policy</a>.
       </div>

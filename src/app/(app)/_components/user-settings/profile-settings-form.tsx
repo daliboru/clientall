@@ -43,6 +43,8 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useAuth } from '../../_providers/Auth'
+import { Switch } from '@/app/(app)/_components/ui/switch'
+import { Moon, Sun } from 'lucide-react'
 
 const MAX_FILE_SIZE = 1024 * 1024 // 1MB
 
@@ -51,8 +53,27 @@ export function ProfileSettingsForm() {
   const [isPending, setIsPending] = useState(false)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState('')
+  const [darkMode, setDarkMode] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
+
+  // Add dark mode effect
+  useEffect(() => {
+    // Check for saved theme preference or system preference
+    const savedTheme = localStorage.getItem('theme')
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const initialDarkMode = savedTheme === 'dark' || (!savedTheme && prefersDark)
+    
+    setDarkMode(initialDarkMode)
+    document.documentElement.setAttribute('data-theme', initialDarkMode ? 'dark' : 'light')
+  }, [])
+
+  // Update theme when toggle changes
+  const handleThemeChange = (checked: boolean) => {
+    setDarkMode(checked)
+    document.documentElement.setAttribute('data-theme', checked ? 'dark' : 'light')
+    localStorage.setItem('theme', checked ? 'dark' : 'light')
+  }
 
   // Update the form initialization
   const form = useForm<ProfileSettingsFormValues>({
@@ -292,6 +313,20 @@ export function ProfileSettingsForm() {
                   </FormItem>
                 )}
               />
+
+              {/* Add dark mode toggle */}
+              <div className="flex items-center justify-between pt-2">
+                <div className="flex items-center gap-2">
+                  <Sun className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Appearance</span>
+                  <Moon className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <Switch
+                  checked={darkMode}
+                  onCheckedChange={handleThemeChange}
+                  className="data-[state=checked]:bg-purple-600"
+                />
+              </div>
             </div>
 
             <div className="flex justify-end">

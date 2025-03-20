@@ -170,7 +170,7 @@ export function SpaceSettingsForm({ space }: Props) {
         <Card>
           <CardHeader className="space-y-4">
             <div className="space-y-1">
-              <CardTitle className="text-2xl font-bold text-purple-600">Portal Settings</CardTitle>
+              <CardTitle className="text-2xl font-bold text-primary">Portal Settings</CardTitle>
               <CardDescription className="text-base text-muted-foreground">
                 Customize your portal appearance and information
               </CardDescription>

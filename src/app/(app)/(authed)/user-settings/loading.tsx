@@ -19,7 +19,7 @@ export default function UserSettingsLoading() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-purple-600">Profile Settings</CardTitle>
+          <CardTitle className="text-2xl font-bold text-primary">Profile Settings</CardTitle>
           <CardDescription className="text-base text-muted-foreground">
             Manage your account settings and profile information.
           </CardDescription>

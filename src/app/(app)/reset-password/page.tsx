@@ -52,10 +52,10 @@ export default async function ResetPasswordPage(props: { searchParams: SearchPar
         <Link href="/" className="flex items-center gap-2 self-center font-medium">
           Tiny Portals
         </Link>
-        <Card className="border-purple-100">
+        <Card className="border-border">
           <CardHeader className="text-center space-y-1">
-            <CardTitle className="text-2xl font-bold text-purple-600">Reset Password</CardTitle>
-            <CardDescription className="text-gray-600">
+            <CardTitle className="text-2xl font-bold text-primary">Reset Password</CardTitle>
+            <CardDescription className="text-foreground">
               Enter your new password below
             </CardDescription>
           </CardHeader>
@@ -63,7 +63,7 @@ export default async function ResetPasswordPage(props: { searchParams: SearchPar
             <PasswordResetForm token={token} />
             <div className="mt-4 text-center text-sm text-muted-foreground">
               Remember your password?{' '}
-              <Link href="/login" className="text-purple-600 hover:underline">
+              <Link href="/login" className="text-primary hover:underline">
                 Login here
               </Link>
             </div>

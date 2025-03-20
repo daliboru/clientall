@@ -143,7 +143,7 @@ export function ResourcesCard({
     <Card>
       <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-purple-600">Resources</CardTitle>
+          <CardTitle className="text-2xl font-bold text-primary">Resources</CardTitle>
           <CardDescription className="text-base text-muted-foreground">
             A centralized hub for all your project materials, files, and important links. Keep
             everything organized and easily accessible to your team.
@@ -174,7 +174,10 @@ export function ResourcesCard({
                     <p className="font-medium truncate max-w-sm">{resource.name}</p>
                     <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-muted-foreground">
                       <span className="inline-flex items-center">
-                        <span className="whitespace-nowrap">Added {formatDistanceToNow(new Date(resource.createdAt), { addSuffix: true })}</span>
+                        <span className="whitespace-nowrap">
+                          Added{' '}
+                          {formatDistanceToNow(new Date(resource.createdAt), { addSuffix: true })}
+                        </span>
                       </span>
                       {isRel(resource.createdBy) && (
                         <div className="inline-flex items-center gap-1">

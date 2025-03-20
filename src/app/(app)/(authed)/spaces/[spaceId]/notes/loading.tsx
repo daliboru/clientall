@@ -13,7 +13,7 @@ export default function NotesLoading() {
       <Card>
         <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-purple-600">Notes</CardTitle>
+            <CardTitle className="text-2xl font-bold text-primary">Notes</CardTitle>
             <CardDescription className="text-base text-muted-foreground">
               Share important updates, announcements, and insights with your team. Keep everyone
               informed and aligned on project progress and key decisions.

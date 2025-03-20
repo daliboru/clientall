@@ -44,10 +44,10 @@ export default function Nav() {
   }
 
   return (
-    <nav className="w-full flex justify-center py-4 bg-purple-600">
+    <nav className="w-full flex justify-center py-4 bg-primary">
       <div className="w-full max-w-7xl flex justify-between px-4 items-center">
         <Link href="/dashboard">
-          <div className="text-white/90 capitalize font-bold">Tiny Portals</div>
+          <div className="text-primary-foreground/90 capitalize font-bold">Tiny Portals</div>
         </Link>
         <ul className="flex gap-2 items-center">
           <DropdownMenu>
@@ -55,7 +55,7 @@ export default function Nav() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="relative text-white hover:text-white hover:bg-purple-700/50"
+                className="relative text-primary-foreground hover:text-primary-foreground hover:bg-primary/90/50"
               >
                 <Bell className="h-5 w-5" />
                 {notifications.length > 0 && (
@@ -82,7 +82,7 @@ export default function Nav() {
                 src={isMediaRel(user?.avatar) ? user.avatar.url : undefined}
                 alt={user?.name}
               />
-              <AvatarFallback className="bg-purple-700 text-white">
+              <AvatarFallback className="bg-purple-700 text-primary-foreground">
                 {user?.name ? getInitials(user.name) : '??'}
               </AvatarFallback>
             </Avatar>
@@ -90,7 +90,7 @@ export default function Nav() {
 
           <Button
             variant="ghost"
-            className="text-white hover:text-white hover:bg-purple-700/50"
+            className="text-primary-foreground hover:text-primary-foreground hover:bg-primary/90/50"
             onClick={onLogout}
           >
             Logout

@@ -20,10 +20,10 @@ export default function ForgotPasswordPage() {
         <Link href="/" className="flex items-center gap-2 self-center font-medium">
           Tiny Portals
         </Link>
-        <Card className="border-purple-100">
+        <Card className="border-border">
           <CardHeader className="text-center space-y-1">
-            <CardTitle className="text-2xl font-bold text-purple-600">Reset Password</CardTitle>
-            <CardDescription className="text-gray-600">
+            <CardTitle className="text-2xl font-bold text-primary">Reset Password</CardTitle>
+            <CardDescription className="text-foreground">
               Enter your email to receive a password reset link
             </CardDescription>
           </CardHeader>

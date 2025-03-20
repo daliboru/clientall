@@ -250,7 +250,7 @@ export function DeliverablesCard({
     <Card>
       <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-purple-600">Deliverables</CardTitle>
+          <CardTitle className="text-2xl font-bold text-primary">Deliverables</CardTitle>
           <CardDescription className="text-base text-muted-foreground">
             Track and manage project deliverables, submissions, and their approval status.
           </CardDescription>

@@ -13,7 +13,7 @@ export default function ResourcesLoading() {
       <Card>
         <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-purple-600">Resources</CardTitle>
+            <CardTitle className="text-2xl font-bold text-primary">Resources</CardTitle>
             <CardDescription className="text-base text-muted-foreground">
               A centralized hub for all your project materials, files, and important links. Keep
               everything organized and easily accessible to your team.
