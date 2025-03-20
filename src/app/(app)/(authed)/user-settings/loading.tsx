@@ -19,8 +19,10 @@ export default function UserSettingsLoading() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Profile Settings</CardTitle>
-          <CardDescription>Manage your account settings and profile information.</CardDescription>
+          <CardTitle className="text-2xl font-bold text-purple-600">Profile Settings</CardTitle>
+          <CardDescription className="text-base text-muted-foreground">
+            Manage your account settings and profile information.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-4">
