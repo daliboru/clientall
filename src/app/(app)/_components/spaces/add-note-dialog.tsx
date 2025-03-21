@@ -16,13 +16,15 @@ import { useToast } from '@/lib/use-toast'
 import { Note } from '@/payload-types'
 import { PlusCircle } from 'lucide-react'
 import { useState } from 'react'
+import { useAuth } from '../../_providers/Auth'
 
 interface AddNoteDialogProps {
   spaceId: string
-  onSuccess: (notes: Note[]) => void
+  onSuccess: (note: Note) => void
 }
 
 export function AddNoteDialog({ spaceId, onSuccess }: AddNoteDialogProps) {
+  const { user } = useAuth()
   const [content, setContent] = useState('')
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -30,18 +32,22 @@ export function AddNoteDialog({ spaceId, onSuccess }: AddNoteDialogProps) {
 
   const handleSubmit = async () => {
     setIsSubmitting(true)
+    const optimisticNote = {
+      id: Math.random(),
+      content,
+      createdAt: new Date().toISOString(),
+      createdBy: user,
+      space: parseInt(spaceId),
+    } as Note
+
+    onSuccess(optimisticNote)
+    setContent('')
+    setOpen(false)
+
     try {
       const result = await createNote(content, spaceId)
 
-      if (result.success && result.notes?.docs) {
-        onSuccess(result.notes.docs)
-        setContent('')
-        setOpen(false)
-        toast({
-          title: 'Note created successfully',
-          variant: 'success',
-        })
-      } else {
+      if (!result.success) {
         toast({
           title: 'Failed to create note',
           variant: 'destructive',

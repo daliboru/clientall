@@ -69,30 +69,45 @@ export function NotesCard({
     }
   }
 
-  const handleNotesUpdate = (updatedNotes: Note[]) => {
-    setNotes(updatedNotes)
+  const handleNotesUpdate = (newNote: Note) => {
+    setNotes((currentNotes) => [newNote, ...currentNotes])
     setPage(1)
+    toast({
+      title: 'Note added successfully',
+      variant: 'success',
+    })
   }
 
   const handleDeleteNote = async (noteId: number) => {
-    const result = await deleteNote(noteId, spaceId, page)
+    const previousNotes = notes
+    const updatedNotes = notes.filter((note) => note.id !== noteId)
+    setNotes(updatedNotes)
 
-    if (result.success) {
-      if (result.notes?.docs) {
-        setNotes(result.notes.docs)
-        // If we're on a page with no notes after deletion, go to previous page
-        if (result.notes.docs.length === 0 && page > 1) {
-          fetchNotes(page - 1)
-        }
+    if (updatedNotes.length === 0 && page > 1) {
+      setPage(page - 1)
+    }
+
+    try {
+      const result = await deleteNote(noteId, spaceId, page)
+
+      if (!result.success) {
+        setNotes(previousNotes)
+        toast({
+          title: 'Failed to delete note',
+          description: result.message,
+          variant: 'destructive',
+        })
+      } else {
+        toast({
+          title: 'Note deleted successfully',
+          variant: 'success',
+        })
       }
-      toast({
-        title: 'Note deleted successfully',
-        variant: 'success',
-      })
-    } else {
+    } catch (error) {
+      setNotes(previousNotes)
       toast({
         title: 'Failed to delete note',
-        description: result.message,
+        description: 'An unexpected error occurred',
         variant: 'destructive',
       })
     }
