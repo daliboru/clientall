@@ -69,13 +69,9 @@ export function NotesCard({
     }
   }
 
-  const handleNotesUpdate = (newNote: Note) => {
-    setNotes((currentNotes) => [newNote, ...currentNotes])
+  const handleNotesUpdate = (updatedNotes: Note[]) => {
+    setNotes(updatedNotes)
     setPage(1)
-    toast({
-      title: 'Note added successfully',
-      variant: 'success',
-    })
   }
 
   const handleDeleteNote = async (noteId: number) => {
@@ -168,7 +164,12 @@ export function NotesCard({
                   transform: swipeStart.id === note.id ? `translateX(-${swipeOffset}px)` : 'none',
                   transition: swipeStart.id === null ? 'transform 0.2s ease-out' : 'none',
                 }}
-                onClick={() => openChat(note.id, 'note')}
+                onClick={(e) => {
+                  // Don't open chat if clicking delete button or its dialog
+                  if (!(e.target as HTMLElement).closest('.delete-trigger')) {
+                    openChat(note.id, 'note')
+                  }
+                }}
                 onTouchStart={(e) => handleTouchStart(e, note.id)}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={() => handleTouchEnd(note.id)}
@@ -194,7 +195,7 @@ export function NotesCard({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:flex"
+                        className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:flex delete-trigger"
                       >
                         <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
                       </Button>
@@ -208,7 +209,12 @@ export function NotesCard({
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDeleteNote(note.id)}>
+                        <AlertDialogAction 
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleDeleteNote(note.id)
+                          }}
+                        >
                           Delete
                         </AlertDialogAction>
                       </AlertDialogFooter>
