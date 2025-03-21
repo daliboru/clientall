@@ -25,6 +25,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/app/(app)/_components/ui/dropdown-menu'
 import { Pagination } from '@/app/(app)/_components/ui/pagination'
@@ -362,7 +363,7 @@ export function DeliverablesCard({
                           <MoreVertical className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
+                      <DropdownMenuContent align="end" className="min-w-[160px]">
                         {deliverable.status === 'pending' && (
                           <>
                             <DropdownMenuItem
@@ -374,14 +375,15 @@ export function DeliverablesCard({
                             <DropdownMenuItem
                               onClick={() => handleStatusUpdate(deliverable, 'correction')}
                             >
-                              <XCircle className="mr-2 h-4 w-4 text-destructive" />
+                              <XCircle className="mr-2 h-4 w-4 text-red-600 dark:text-red-400" />
                               Request Changes
                             </DropdownMenuItem>
+                            <DropdownMenuSeparator />
                           </>
                         )}
                         <AlertDialogTrigger asChild>
-                          <DropdownMenuItem className="text-destructive">
-                            <Trash2 className="mr-2 h-4 w-4" />
+                          <DropdownMenuItem className="flex items-center text-red-600 dark:text-red-400 font-medium ">
+                            <Trash2 className="mr-2 h-4 w-4 text-red-600 dark:text-red-400" />
                             Delete
                           </DropdownMenuItem>
                         </AlertDialogTrigger>
