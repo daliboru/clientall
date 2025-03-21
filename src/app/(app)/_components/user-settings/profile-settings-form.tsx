@@ -43,6 +43,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useAuth } from '../../_providers/Auth'
+import { useTheme } from '../../_providers/Theme'
 import { Switch } from '@/app/(app)/_components/ui/switch'
 import { Moon, Sun } from 'lucide-react'
 
@@ -50,30 +51,14 @@ const MAX_FILE_SIZE = 1024 * 1024 // 1MB
 
 export function ProfileSettingsForm() {
   const { user, setUser } = useAuth()
+  const { darkMode, toggleDarkMode } = useTheme()
   const [isPending, setIsPending] = useState(false)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState('')
-  const [darkMode, setDarkMode] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
 
-  // Add dark mode effect
-  useEffect(() => {
-    // Check for saved theme preference or system preference
-    const savedTheme = localStorage.getItem('theme')
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    const initialDarkMode = savedTheme === 'dark' || (!savedTheme && prefersDark)
-    
-    setDarkMode(initialDarkMode)
-    document.documentElement.setAttribute('data-theme', initialDarkMode ? 'dark' : 'light')
-  }, [])
-
-  // Update theme when toggle changes
-  const handleThemeChange = (checked: boolean) => {
-    setDarkMode(checked)
-    document.documentElement.setAttribute('data-theme', checked ? 'dark' : 'light')
-    localStorage.setItem('theme', checked ? 'dark' : 'light')
-  }
+  // Remove the darkMode state and effects since they're now in the context
 
   // Update the form initialization
   const form = useForm<ProfileSettingsFormValues>({
@@ -314,19 +299,28 @@ export function ProfileSettingsForm() {
                 )}
               />
 
-              {/* Add dark mode toggle */}
-              <div className="flex items-center justify-between pt-2">
-                <div className="flex items-center gap-2">
-                  <Sun className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">Appearance</span>
-                  <Moon className="h-4 w-4 text-muted-foreground" />
+              {/* Dark mode toggle */}
+              <FormItem>
+                <FormLabel>Theme</FormLabel>
+                <div className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
+                  <div className="flex items-center gap-2">
+                    <Sun className="h-5 w-5 text-orange-500" />
+                    <span className="text-sm font-medium">Light</span>
+                  </div>
+                  <Switch
+                    checked={darkMode}
+                    onCheckedChange={toggleDarkMode}
+                    className="data-[state=checked]:bg-primary"
+                  />
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium">Dark</span>
+                    <Moon className="h-5 w-5 text-blue-500" />
+                  </div>
                 </div>
-                <Switch
-                  checked={darkMode}
-                  onCheckedChange={handleThemeChange}
-                  className="data-[state=checked]:bg-purple-600"
-                />
-              </div>
+                <CardDescription>
+                  Choose your preferred theme appearance
+                </CardDescription>
+              </FormItem>
             </div>
 
             <div className="flex justify-end">
