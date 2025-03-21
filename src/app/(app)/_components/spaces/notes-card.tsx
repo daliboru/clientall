@@ -53,6 +53,9 @@ export function NotesCard({
   const { openChat } = useChatSidebar()
   const { toast } = useToast()
 
+  const [swipeStart, setSwipeStart] = useState<{ x: number; id: number | null }>({ x: 0, id: null })
+  const [swipeOffset, setSwipeOffset] = useState(0)
+
   const fetchNotes = async (pageNumber: number) => {
     setLoading(true)
     try {
@@ -101,6 +104,24 @@ export function NotesCard({
     )
   }
 
+  const handleTouchStart = (e: React.TouchEvent, noteId: number) => {
+    setSwipeStart({ x: e.touches[0].clientX, id: noteId })
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (swipeStart.id === null) return
+    const diff = swipeStart.x - e.touches[0].clientX
+    if (diff > 0) setSwipeOffset(diff)
+  }
+
+  const handleTouchEnd = (noteId: number) => {
+    if (swipeOffset > 100) {
+      handleDeleteNote(noteId)
+    }
+    setSwipeStart({ x: 0, id: null })
+    setSwipeOffset(0)
+  }
+
   return (
     <Card>
       <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -126,9 +147,16 @@ export function NotesCard({
 
             return (
               <div
-                onClick={() => openChat(note.id, 'note')}
                 key={note.id}
-                className="group rounded-lg border p-4 space-y-3 hover:bg-muted/50 transition-colors mb-4 last:mb-0"
+                className="group rounded-lg border p-4 space-y-3 hover:bg-muted/50 transition-colors mb-4 last:mb-0 relative"
+                style={{
+                  transform: swipeStart.id === note.id ? `translateX(-${swipeOffset}px)` : 'none',
+                  transition: swipeStart.id === null ? 'transform 0.2s ease-out' : 'none',
+                }}
+                onClick={() => openChat(note.id, 'note')}
+                onTouchStart={(e) => handleTouchStart(e, note.id)}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={() => handleTouchEnd(note.id)}
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-3">
@@ -151,7 +179,7 @@ export function NotesCard({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity hidden sm:flex"
                       >
                         <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
                       </Button>
