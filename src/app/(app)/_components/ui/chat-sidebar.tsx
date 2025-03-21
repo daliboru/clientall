@@ -1,7 +1,7 @@
 'use client'
 
 import { Send, X } from 'lucide-react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from './avatar'
 import { Button } from './button'
 import { Card } from './card'
@@ -27,6 +27,9 @@ interface ChatSidebarProps {
 
 export function ChatSidebar({ isOpen, onClose, itemId, itemType }: ChatSidebarProps) {
   const [message, setMessage] = useState('')
+  const [dragStart, setDragStart] = useState<number | null>(null)
+  const [dragOffset, setDragOffset] = useState(0)
+  const sidebarRef = useRef<HTMLDivElement>(null)
 
   // Dummy data - replace with real data later
   const dummyMessages: Message[] = [
@@ -44,6 +47,23 @@ export function ChatSidebar({ isOpen, onClose, itemId, itemType }: ChatSidebarPr
     },
   ]
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setDragStart(e.touches[0].clientX)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!dragStart) return
+    const currentX = e.touches[0].clientX
+    const offset = currentX - dragStart
+    if (offset > 0) setDragOffset(offset)
+  }
+
+  const handleTouchEnd = () => {
+    if (dragOffset > 100) onClose()
+    setDragStart(null)
+    setDragOffset(0)
+  }
+
   const handleSend = () => {
     if (!message.trim()) return
     // Handle sending message
@@ -52,9 +72,14 @@ export function ChatSidebar({ isOpen, onClose, itemId, itemType }: ChatSidebarPr
 
   return (
     <div
+      ref={sidebarRef}
       className={`fixed right-0 top-0 h-screen w-[400px] bg-background border-l transform transition-transform duration-300 ease-in-out ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}
+      style={{ transform: `translateX(${isOpen ? dragOffset : '100%'})` }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       <div className="flex flex-col h-full">
         <div className="p-4 border-b flex justify-between items-center">
