@@ -4,6 +4,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Inter as FontSans } from 'next/font/google'
 import { ReactNode } from 'react'
 import { AuthProvider } from './_providers/Auth'
+import { ChatSidebarProvider } from './_providers/ChatSidebar'
 import { ThemeProvider } from './_providers/Theme'
 import './global.css'
 
@@ -21,8 +22,10 @@ const Layout = ({ children }: LayoutProps) => {
       <body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
         <ThemeProvider>
           <AuthProvider>
-            {children}
-            <Toaster />
+            <ChatSidebarProvider>
+              {children}
+              <Toaster />
+            </ChatSidebarProvider>
           </AuthProvider>
           <SpeedInsights />
         </ThemeProvider>

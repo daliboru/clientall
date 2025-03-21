@@ -30,6 +30,7 @@ import { useState } from 'react'
 import { deleteNote } from '../../../../lib/actions/notes'
 import { getNotes } from '../../../../lib/functions/notes'
 import { useToast } from '../../../../lib/use-toast'
+import { useChatSidebar } from '../../_providers/ChatSidebar'
 import { AddNoteDialog } from './add-note-dialog'
 
 interface NotesCardProps {
@@ -49,6 +50,7 @@ export function NotesCard({
   const [page, setPage] = useState(currentPage)
   const [loading, setLoading] = useState(false)
   const [expandedNotes, setExpandedNotes] = useState<number[]>([])
+  const { openChat } = useChatSidebar()
   const { toast } = useToast()
 
   const fetchNotes = async (pageNumber: number) => {
@@ -124,6 +126,7 @@ export function NotesCard({
 
             return (
               <div
+                onClick={() => openChat(note.id, 'note')}
                 key={note.id}
                 className="group rounded-lg border p-4 space-y-3 hover:bg-muted/50 transition-colors mb-4 last:mb-0"
               >
