@@ -13,13 +13,14 @@ export const Users: CollectionConfig = {
   auth: {
     verify: true,
     tokenExpiration: 28800, // 8 hours
-    useAPIKey: true,
     forgotPassword: {
       expiration: 28800, // 8 hours
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       generateEmailSubject: () => {
         return 'Password Reset | Tiny Portals'
       },
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       generateEmailHTML: ({ token }) => {
         const resetPasswordURL = `${process.env.NEXT_PUBLIC_SERVER_URL}/reset-password?token=${token}`
@@ -28,7 +29,6 @@ export const Users: CollectionConfig = {
     },
   },
   fields: [
-    // Email added by default
     {
       name: 'name',
       label: 'Name',
@@ -36,7 +36,6 @@ export const Users: CollectionConfig = {
       required: true,
       defaultValue: '',
     },
-
     {
       name: 'role',
       label: 'Role',
@@ -87,6 +86,15 @@ export const Users: CollectionConfig = {
       name: 'calendly_url',
       label: 'Calendly URL',
       type: 'text',
+      required: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'lastLogin',
+      label: 'Last Login',
+      type: 'date',
       required: false,
       admin: {
         position: 'sidebar',
@@ -183,6 +191,18 @@ export const Users: CollectionConfig = {
         if (!user._verified) {
           throw new Error('Verify your email to login')
         }
+        return user
+      },
+    ],
+    afterLogin: [
+      async ({ req, user }) => {
+        await req.payload.update({
+          collection: 'users',
+          id: user.id,
+          data: {
+            lastLogin: new Date().toISOString(),
+          },
+        })
         return user
       },
     ],

@@ -144,11 +144,9 @@ export interface User {
     hasNextPage?: boolean | null;
   } | null;
   calendly_url?: string | null;
+  lastLogin?: string | null;
   updatedAt: string;
   createdAt: string;
-  enableAPIKey?: boolean | null;
-  apiKey?: string | null;
-  apiKeyIndex?: string | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -346,11 +344,9 @@ export interface UsersSelect<T extends boolean = true> {
   avatar?: T;
   relatedSpaces?: T;
   calendly_url?: T;
+  lastLogin?: T;
   updatedAt?: T;
   createdAt?: T;
-  enableAPIKey?: T;
-  apiKey?: T;
-  apiKeyIndex?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;

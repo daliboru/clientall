@@ -1,5 +1,4 @@
 import { isRel } from '@/lib/payload-utils'
-import { formatDistanceToNow } from 'date-fns'
 import { getSpace } from '../../../../../lib/functions/spaces'
 import { NoSpaceFound } from '../../../_components/spaces/NoSpaceFound'
 import { ActivityCard } from '../../../_components/spaces/overview/activity-card'
@@ -43,7 +42,11 @@ export default async function SpacePage(props: { params: Params }) {
   const noteCount = space.relatedNotes?.docs?.length ?? 0
   const resourceCount = space.relatedResources?.docs?.length ?? 0
   const owner = isRel(space.owner) ? space.owner : null
-  const createdAt = formatDistanceToNow(new Date(space.createdAt), { addSuffix: true })
+  const createdAt = new Date(space.createdAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
 
   // Add deliverables data
   const deliverables = space.relatedDeliverables?.docs ?? []

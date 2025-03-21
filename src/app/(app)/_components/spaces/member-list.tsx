@@ -85,6 +85,16 @@ export function MemberList({ members, space, currentUser, isOwner }: MemberListP
                     )}
                   </div>
                   <p className="text-sm text-muted-foreground">{member.email}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {member.lastLogin
+                      ? `Last active: ${new Date(member.lastLogin).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}`
+                      : 'Never logged in'}
+                  </p>
                 </div>
               </div>
               {isOwner && member.id !== currentUser?.id && (
