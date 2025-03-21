@@ -26,20 +26,21 @@ export function ChatSidebarProvider({ children }: { children: ReactNode }) {
   }
 
   const closeChat = () => {
+    setTimeout(() => {
+      setActiveItem(null)
+    }, 300) // Match the transition duration
     setIsOpen(false)
   }
 
   return (
     <ChatSidebarContext.Provider value={{ openChat, closeChat }}>
       {children}
-      {activeItem && (
-        <ChatSidebar
-          isOpen={isOpen}
-          onClose={closeChat}
-          itemId={activeItem.id}
-          itemType={activeItem.type}
-        />
-      )}
+      <ChatSidebar
+        isOpen={isOpen}
+        onClose={closeChat}
+        itemId={activeItem?.id ?? 0}
+        itemType={activeItem?.type ?? 'note'}
+      />
     </ChatSidebarContext.Provider>
   )
 }
